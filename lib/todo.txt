@@ -1,0 +1,309 @@
+- ) İnstagram hesabı ekleme uyarısı.
+- ) Çekilebilecek tutarı göster
+- ) Komisyonları ekle
+- ) Lokasyonlardaki kişi sayılarını göster
+- ) Lokasyonlardaki kişi sayıları cinsiyete göre göster?
+- ) Ödeme sayfasında TC no (çıkıcak)
+- ) Şirket paylaşımlarını ödeme yapma
+- ) Resimleri cihaza indir
+v2) Para çekme talebinde işlem geçmişi kontrolü
+6 ) Faturaları göster
+
+*************************************************
+1. Url ile gönderilen resmi telefonda çek, onu byte olarak insta api gönder.
+2. Video linki gönder ve aynı şekilde. Nasıl olduğuna bak.
+3. Response body de insta hesabında işlem yaparken gelen cevap= chalange required, hesapları görürsen. 
+hesap sahibine bildirim gönder. 
+4. Kazanç tablosu. oluştur. 
+5. Reklam vs amacıyla bazı işlemler ücretsiz olabilecek. Ona bir çözüm bul. 
+    anononim işlemler için.
+6. İngilizce, türkçe, flemenkçe, almanca, italyanca, rusca, arapça, bulgarca. 
+7. gost hesap olayı: 
+    - gost hesap ekleme. Telefon sahinin haberi olmayacak. 
+      gost hesap chalange e düşerse silinecek. 
+      gost hesap admin panelde görünecek. Müşteride görünmeycek. 
+8. Not belli bir rakamı geçen (örn 1000 TL yada 500) e otomatik ödeme yapılacak.
+9 . Usdt, trc20 hesabı eklemesi zorunlu. (kazanc USD olarak hesaplanacak.)
+10. Cihaza istek gönderdiğimizde kullanım miktarı panelde göster. 
+11. 3. taraf api entegrasyonu (Takipçi beğeni, yorum. api yorum. apisi)
+
+12. 
+
+- sunucu değişince sistem çökmesin, firebase push servis
+- app ver. yüksemesinde. bu proğramın kullanmak istiyorsanız güncelleme yapın.
+- 
+# 
+----------------------------------------------------------------------------------
+[APİ KURGUSU]
+işlem başladı
+
+1. sıra 
+order id verilcek
+2. sıra
+#işleme başladı
+status:In progress
+3. sıra
+#işlem tamamlandı
+status:Completed
+#işlem kısmi tamamlandı
+status:Partial
+
+[1. işlem sırası]
+1- takipçi servisi. custom adminden. adminden api olarak sipariş yapma ekranı yapılmalı ve burdan sipariş verebilmeliyiz.
+2- takipçi servisi. apiden sipariş verilebilmeli. ve bu kısmı. api sipariş yönetiminde görebilmeliyiz.
+3- api servis listesini. customadmiden. servis detayı. servis fiyatı. minumum. maksimum sipariş miktarını güncelleyebilm eliyiz
+
+[2.işlem sırası]
+1. mobilden gelen kullanıcıların ayrıştırılacağı bir bölüm olmalı
+bu bölümde. instagram hesap sahibinin;
+
+kullanıcı adı
+şifresi
+*ülke kodu
+cep numarası
+mail adresi
+*cinsiyeti
+*ülke konumu
+*şehir konumu
+*mahalle konumu
+
+forma kullanıcı listesinde listelenmeli
+
+2- bu kullanıcılar. kategori olarak birleştirilebilmeli yada çıkartılabilmeli.
+bu kullanıcı kategorisini. custom admin veya api siparişlerinde. tanımlama yaparak. sadece bu kullanıcılara sipariş göndertebilmeliyiz.
+
+
+[3.işlem sırası]
+1- app uygulamaya gönderilecek. işlem ücretleerinin hizmet fiyatlandırması bölümü tablo olarak yapılacak
+örnek said tarafından gönderilecek
+bu tabloda fiyatlar değiştirildiğinde. tümm applerde fiyatlar değişmeli.
+kişilerin kazancını. bu tablodaki veriyi alarak sistem hesaplayıp. dbde güncellemeli
+
+not:* hesaplanmış fiyatlandırma. tekrardan hesaplanmamalı. yeni sipariş işlemi yapma durumunda. yeni bakiye sorgusu yapılmalı
+buna göre fiyatlandırmayı hesaplanmamalı
+
+[4.işlem sırası]
+1- bot hesap ekleme bölüm sayfasını yapmalıyız
+1 cihazda = maksimum 8 bot(hayalet) hesap ekleyebilmeliyiz.
+bu kısımda. sadece bot hesabın kullanıcı adını ve şifresini giricez. bu hesaplar. appte login olucaklar
+bu kısımda. cihazlar. ülke.il.ilçe ye göre gösterilmeli.
+bu kısımda. ne kadar cihaz dolu. ne kadar cihaz boş bilgiside gösterilmeli
+bu kısımda. cihazlardaki bot hesapları ekleme ve çıkarma yapabilmeliyiz
+bu kısımda.
+hc-kullanıcı login olduğunda(instagrama) gelen bilgileri kontrol et. Yeni request için gereklilikleri çıkarma
+
+[5.işlem sırası]
+1- app kullanıcılarına. filitrelendirme yapabilelim(cinsiyet.ülkekodu.ülke konum.ilkonum.ilçekonum.)
+2- bu sayfada ise. belirlenmiş tek app kullanıcısına yada belirlenmiş toplu kullanıcılara. cihazlarına.
+bildirim mesaj gönderme özelliği yapmalıyız.
+bu bölümde.
+mesaj resim yükleme/yada yüklenmeden
+mesaj yazı yazma(text area büyük)
+bölümleri olmalı. ve bu içerikler. kullanıcılara bildirim olarak gitmeli.
+kullanıcılar bu bildirime tıkladığında. Genel duyurular bölümünde. appte bu ieçriği görebilmeli
+3- appte Genel duyurular diye bir sayfa yapılmalı
+
+[6.işlem sırası]
+1- app kullanıcılarının. proxi olarak yönetebilme ve görme sayfamız
+bu kısımda.yapılmış olan websocket proxy istek iletişimi sayfası yapılmalı
+burda kullanıcılara. ülke.il.ilce.mahalle bilgisine göre ayrıştırılabilmlei
+bu cihazlara. websocket iletişimi istek yapısı.url.header.body.post tipi verileri apllere özel.
+kısmi belirlenmiş yada tüm app kullanıcılarına.gönderim şekli yapısı gösterilmeli.
+hangi cihazda. ne kadar proxy verisi tüketildiğini tesbit edip. bu sayfada yazalım.(sadece bizim proxy istek gödnerdiğimiz yapılar için bu gb kullanımı hesaplanmalı)
+
+[7.işlem sırası]
+medya resmi ve medya url ekleme özelliği
+instagram işlemlerinde. medya resmi ve medya videosu yükleme bölümü. hazır linkle gelme durumunda.[defaults] olarak apide yapalım
+fakat hazır medya link olmama durumunda. custom adminden. medya urlsini. mevcut django web sitesine yükleye yapabilelim.
+burdaki urlyi. resim post paylaşma. videopost paylaşma özelliklerinde kullanabilelim.
+
+
+[8.işlem sırası]
+1- ödeme talep eden kullanıcılar. burada listelenmeli
+bu kullanıcıların. ödeme yapabilmek için USDT  trc20 hesapları burda görünmeli
+burda kişilerin hesap bilgilerini alıp. manuel olarak veya binance api olarak ödeme yaollayabilelim
+her işlemde. yeni api key yazıcaz. bunun için txt area olmalı
+api keyi ekle ve sil özelliği olmalı
+ödemeyi manuel yaparsak. [ödeme yapıldı şeklinde pushing bildirimi gitmelii. bu kısım ödeme duyuruları bölümüne eklenmeli]
+[bildirim metnini. multi dilde txt era olarak burda yazabilelim]
+ödemeyi binance api ile yaparsak. otomatik olarak [ödeme yapıldı şeklinde pushing bildirimi gitmelii. bu kısım ödeme duyuruları bölümüne eklenmeli] gitmeli
+
+binance apikey. said tarafından hazır verilecek
+
+[9.işlem sırası]
+1- mobil uygulama.
+.po ve .mo dil dosyaları olarak. dil gösterim bölümü yapılmalı
+mobil uygulamada yapılacak diller
+ingilizce,
+türkçe,
+flemenkçe,
+almanca,
+italyanca,
+rusca,
+arapça,
+bulgarca. 
+2- sitede multi dilde yapılmalı
+.po ve .mo dil dosyaları olarak. dil gösterim bölümü yapılmalı
+mobil uygulamada yapılacak diller
+ingilizce,
+türkçe,
+flemenkçe,
+almanca,
+italyanca,
+rusca,
+arapça,
+bulgarca. 
+
+
+
+
+
+
+######### FOLLOW
+bu kısım bağlayınca api verisi "in progress" olmalı
+
+follow işlem başlangıcı
+1-
+kullanıcı adından userid alıncak
+2-
+user idden follow count alıncak
+apide startcount = followcount
+
+##################
+sonra tüm applere....
+1- sadece şu userid yi follow yap isteği gidicek
+......
+eğer apide quantitiy miktarı kadar işlem yapıldıysa. mevcut işlemin yapılıp yapılmadığını denetlememiz lazım
+
+followcount + quantitiy = AA
+
+AA - quantitiy = followcount ise işlem başarılı
+
+değilse
+
+AA - quantitiy = BB ise eğer.... BB miktarı kadar farklı kullanıcıya işlemi devam ettir.
+eğer tüm aktif cihaz sayısı işlem yaptıysa. BB miktarını. apide REMAİNS kısmına yaz ve partial ver.
+
+
+
+............
+tüm işlemler bittikten sonra. 
+bu kısım bağlayınca api verisi "Completed" olmalı
+
+
+########### LİKE
+bu kısım bağlayınca api verisi "in progress" olmalı
+
+like işlem başlangıcı
+1-
+kullanıcı adından medyaid alıncak
+2-
+user idden likeCountson alıncak
+apide startcount = likeCountson
+
+##################
+sonra tüm applere....
+1- sadece şu mediaid yi like yap isteği gidicek
+
+
+
+###COMMENTS
+bu kısım bağlayınca api verisi "in progress" olmalı
+
+COMMENTS işlem başlangıcı
+1-
+kullanıcı adından medyaid alıncak
+
+bu kısımda başlangıç sayısı olmadığı için başlangıç sayısına veri yazmayalım
+
+##################
+sonra tüm applere....
+1- sadece şu mediaid ye /r/n ile parçalanmış 1 adet satır verisi. appe özel. yorum yapma isteği gönderilmeli
+
+
+##########canlı yayın işlemi...
+
+bu kısım bağlayınca api verisi "in progress" olmalı
+
+Canlı yayın işlem başlangıcı
+1-
+kullanıcı adından userid alıncak
+2-
+user idden live id alıncak
+
+################## canlı yayın izleme
+sonra tüm applere....
+1- sadece şu liveid yi. belirtilen süre kadar izle işlem yap isteği gidicek
+
+############################ canlı yayı beğeni
+
+sonra tüm applere....
+1- sadece şu liveid yi beğeni yap isteği gidicek
+
+###############canlı yayın yorum
+
+sonra tüm applere....
+1- sadece şu liveid ye. type customcomentste gelen yorumları tek tek yorum işlem yap isteği gidicek
+
+
+###########################
+
+hesap login olduktan sonra. hesaptan alıncak veriler..
+
+https://i.instagram.com/api/v1/accounts/current_user/?edit=true
+cinsiyet verisi alıncak
+
+
+link2 = "accounts/current_user/?edit=true"
+status_code = self.SendRequestloginsonrasitoplu2get(link2)
+
+# print("çıktı: ",self.json1)
+
+phone_number = str(self.json1["user"]["phone_number"])
+print("phone_number: ", phone_number)
+
+if phone_number:
+    ulke_kodu = str(self.json1["user"]["country_code"])
+    print("ulke_kodu: ", ulke_kodu)
+else:
+    ulke_kodu = None
+
+cinsiyet = str(self.json1["user"]["gender"])
+print("cinsiyet: ", cinsiyet)
+
+email = str(self.json1["user"]["email"])
+print("email: ", email)
+
+
+
+
+
+"https://i.instagram.com/api/v1/users/" + "2238287305" + "/info/?from_module=self_profile");
+
+hesap sahibinin takipçi sayısı alınıp yazılcak. alttakide aynı işlemi yapıyor.
+getFollowCount()
+
+bunlar veritabanına kayıt oluyor.....
+
+sonra bu eklenen hesabı. info bilgileri ve takipçi sayısına göre dbye kaydedelim.
+
+takipçi sayısına göre kullanıcı belirlenen kategori hesaplamasına dahil edilsin.
+
+############# URL APİ EKLEME SİSTEMİ İNCELENEREK eklenmeli
+
+############ MEVCUT KULLANICILARA. PDFTE YOLLANAN HESAPLAMAYA GÖRE. YAPILAN İŞLEMLERİNİ HESAPLATTIRMA
+
+
+#KULLANICILARIN BAKİYE GEÇMİŞİ. PARA ÇEKME TALEBİ. TRC20 HESAP BİLGİLİER SAYFASI VB. GÖRÜNMELİ.
+
+#BİNANCE TRC20 ÖDEME YAPMA SAYFASI TASLAĞI.
+
+#
+
+
+
+
+
+
+
+

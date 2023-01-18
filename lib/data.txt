@@ -1,0 +1,264 @@
+self.deviceid = self.generateUUID(True
+        #print("deviceid son: ", self.deviceid)
+        self.phoneid = self.phoneidson
+        print("phoneid son: ", self.phoneid)
+
+        self.pigeonid = self.generateUUID(True)
+        #print("pigeonid son: ", self.pigeonid)
+        self.adid = self.generateUUID(True)
+        #print("adid son: ", self.adid)
+        self.guid = self.deviceid
+        #print("guid son: ", self.guid)
+        self.waterfall_id = self.generateUUID(True)
+self.androidid = cihaz devide id dir
+
+
+
+
+
+self.BloksVersionId = '38e807d1f50024907c1026934e57bf28a7c421e5ffcdc0a7b0aa31dbd44acd74'
+
+self.USER_AGENT = 'Instagram 177.0.0.30.119 '+ AGENT
+
+YANİ ŞÖYLE OLUYOR :
+
+Instagram 177.0.0.30.119 Android (26/8.0.0; 640dpi; 1440x2768; samsung; SM-G950F; dreamlte; samsungexynos8895; tr_TR; 104766900)
+
+- Device agent
+
+def SendRequestcookieal(self):
+        headerscc={
+
+            "X-IG-Connection-Speed": "-1kbps",
+            "X-IG-Bandwidth-Speed-KBPS": "-1.000",
+            "X-IG-Bandwidth-TotalBytes-B": "0",
+            "X-IG-Bandwidth-TotalTime-MS": "0",
+            "X-Bloks-Version-Id": self.BloksVersionId, #
+            "X-IG-WWW-Claim": "0",
+            "X-Bloks-Is-Layout-RTL": "false",
+            "X-Bloks-Is-Panorama-Enabled": "false",
+            "X-IG-Device-ID": self.deviceid, #
+            "X-IG-Android-ID": self.androidid, #
+            "X-IG-Connection-Type": "WIFI",
+            "X-IG-Capabilities": "3brTvx8=",
+            "X-IG-App-ID": "567067343352427",
+            "User-Agent": self.USER_AGENT, #
+            "Accept-Language": "tr-TR, en-US",
+            "Accept-Encoding": "gzip, deflate",
+            "Host": "b.i.instagram.com",
+            "X-FB-HTTP-Engine": "Liger",
+            "X-FB-Client-IP": "True",
+            "Connection": "keep-alive"
+        }
+
+            
+        self.urlm1 = "https://b.i.instagram.com/api/v1/zr/token/result/?device_id=%22+self.androidid+%22&token_hash=&custom_device_id=%22+self.deviceid+%22&fetch_reason=token_expired"
+
+        response1b = requests.get(self.urlm1, headers=headerscc,proxies=self.proxyson, verify=True, timeout=15)#proxies=proxy
+        print("Status:",response1b.status_code)
+        self.LastResponse1g = response1b
+
+        return True
+
+android-47796b1625b29540
+
+self.csrf = self.LastResponse1g.cookies["csrftoken"]
+            #print("csrf son: ", self.csrf)
+            self.mid = self.LastResponse1g.cookies["mid"]
+
+
+
+def pwdsifreleme(self):
+        try:
+
+            self.timeson114 = str(int(datetime.now().timestamp()))
+
+            data2 = {"id": self.deviceid, #
+             "server_config_retrieval": "1",
+             "experiments": "ig_android_reg_nux_headers_cleanup_universe,ig_android_device_detection_info_upload,ig_android_nux_add_email_device,ig_android_gmail_oauth_in_reg,ig_android_device_info_foreground_reporting,ig_android_device_verification_fb_signup,ig_android_direct_main_tab_universe_v2,ig_android_passwordless_account_password_creation_universe,ig_android_direct_add_direct_to_android_native_photo_share_sheet,ig_growth_android_profile_pic_prefill_with_fb_pic_2,ig_account_identity_logged_out_signals_global_holdout_universe,ig_android_quickcapture_keep_screen_on,ig_android_device_based_country_verification,ig_android_login_identifier_fuzzy_match,ig_android_reg_modularization_universe,ig_android_security_intent_switchoff,ig_android_device_verification_separate_endpoint,ig_android_suma_landing_page,ig_android_sim_info_upload,ig_android_smartlock_hints_universe,ig_android_fb_account_linking_sampling_freq_universe,ig_android_retry_create_account_universe,ig_android_caption_typeahead_fix_on_o_universe"
+             }
+
+            self.SendRequest2pwd('qe/sync/', self.generateSignature(json.dumps(data2)))
+            data9a = self.LastJsona2
+            data10 = self.HeadersJsona2
+            #print(data9a)
+            publickeyid = int(data10['ig-set-password-encryption-key-id'])
+            #print("keyidson",publickeyid)
+            publickey = data10['ig-set-password-encryption-pub-key']
+            #print("publickeyson",publickey)
+
+            ############################# ENCPASY ŞİFRE ÜRETME KISMI ####################################
+
+            key_id = publickeyid
+            pub_key = publickey
+            password = self.password
+            time = self.timeson114
+
+            data = {
+                'time': time,
+                'password': password,
+                'pubkey': pub_key,
+                'keyid': key_id,
+            }
+
+            response = requests.post('http://argeelektrik.com/insta/mobilpwd.php', data=data, verify=True, timeout=15)
+
+            atim = response.text
+
+            self.PASL = atim
+            #print("sonsifre: ", self.PASL)
+            pass
+        except:
+            self.pwdsifreleme()
+            pass
+
+        return True
+
+
+
+def SendRequest2pwd(self, endpoint, post=None):
+        headersbg={
+
+                    "X-IG-App-Locale": "tr_TR",
+                    "X-IG-Device-Locale": "tr_TR",
+                    "X-IG-Mapped-Locale": "tr_TR",
+                    "X-Pigeon-Session-Id": self.pigeonid, #
+                    "X-Pigeon-Rawclienttime": "1608885245.740",
+                    "X-IG-Connection-Speed": "-1kbps",
+                    "X-IG-Bandwidth-Speed-KBPS": "-1.000",
+                    "X-IG-Bandwidth-TotalBytes-B": "0",
+                    "X-IG-Bandwidth-TotalTime-MS": "0",
+                    "X-Bloks-Version-Id": self.BloksVersionId, #
+                    "X-IG-WWW-Claim": "0",
+                    "X-Bloks-Is-Layout-RTL": "false",
+                    "X-Bloks-Is-Panorama-Enabled": "false",
+                    "X-IG-Device-ID": self.deviceid, #
+                    "X-IG-Android-ID": self.androidid, #
+                    "X-IG-Connection-Type": "WIFI",
+                    "X-IG-Capabilities": "3brTvx8=",
+                    "X-IG-App-ID": "567067343352427",
+                    "User-Agent": self.USER_AGENT, #
+                    "Accept-Language": "tr-TR, en-US",
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "Accept-Encoding": "gzip, deflate",
+                    "Host": "b.i.instagram.com",
+                    "X-FB-HTTP-Engine": "Liger",
+                    "X-FB-Client-IP": "True",
+                    "Connection": "keep-alive"
+
+
+        }
+        response2 = requests.post(self.API_URL2 + endpoint, data=post,headers=headersbg,proxies=self.proxyson, verify=True, timeout=15)#proxies=proxy
+        print("Status: ",response2.status_code)
+        self.LastJsona2 = json.loads(response2.text)
+        self.HeadersJsona2 = response2.headers
+        self.Cookie = response2.cookies
+        #self.csrf = response2.cookies["csrftoken"]
+
+        return True
+
+def generateSignature(self, data, skip_quote=False):
+        if not skip_quote:
+            try:
+                parsedData = urllib.parse.quote(data)
+            except AttributeError:
+                parsedData = urllib.quote(data)
+        else:
+            parsedData = data
+        keysig = "signed_body=SIGNATURE.{}".format(parsedData)
+        # print(keysig)
+        return keysig
+
+
+POST https://z-p42.i.instagram.com/api/v1/accounts/login/ HTTP/1.1
+X-IG-App-Locale: tr_TR
+X-IG-Device-Locale: tr_TR
+X-IG-Mapped-Locale: tr_TR
+X-Pigeon-Session-Id: 9e1107cf-2b58-4258-80f5-0d960945d05a
+X-Pigeon-Rawclienttime: 1618768655.037
+X-IG-Connection-Speed: -1kbps
+X-IG-Bandwidth-Speed-KBPS: -1.000
+X-IG-Bandwidth-TotalBytes-B: 0
+X-IG-Bandwidth-TotalTime-MS: 0
+X-Bloks-Version-Id: 0647a22bbc02f6145d1c3ddd4e87fa47a90e9bf170164de4a4534b45a389e4d6
+X-IG-WWW-Claim: 0
+X-Bloks-Is-Layout-RTL: false
+X-Bloks-Is-Panorama-Enabled: true
+X-IG-Device-ID: 735aeabc-0663-4b43-a984-3d8dac1800f4
+X-IG-Android-ID: android-36f4ab19f092e4da
+X-IG-Connection-Type: WIFI
+X-IG-Capabilities: 3brTvx8=
+X-IG-App-ID: 567067343352427
+User-Agent: Instagram 172.0.0.21.123 Android (25/7.1.2; 240dpi; 720x1280; Asus; ASUS_Z01QD; ASUS_Z01QD; intel; tr_TR; 269790795)
+Accept-Language: tr-TR, en-US
+Cookie: mid=YHxy5QABAAHd5qllUrSb935-HU50; csrftoken=X3tXri0ZWHZhCh9VeLUxnXuTGIHjq30P
+X-MID: YHxy5QABAAHd5qllUrSb935-HU50
+DEBUG-IG-USER-ID: 0
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Accept-Encoding: gzip, deflate
+Host: z-p42.i.instagram.com
+X-FB-HTTP-Engine: Liger
+X-FB-Client-IP: True
+Connection: keep-alive
+Content-Length: 1101
+
+signed_body=SIGNATURE.%7B%22jazoest%22%3A%2222553%22%2C%22country_codes%22%3A%22%5B%7B%5C%22country_code%5C%22%3A%5C%2290%5C%22%2C%5C%22source%5C%22%3A%5B%5C%22default%5C%22%2C%5C%22sim%5C%22%5D%7D%5D%22%2C%22phone_id%22%3A%223cf46b7b-a101-4daf-aa45-6c0f6b639c7d%22%2C%22enc_password%22%3A%22%23PWD_INSTAGRAM%3A4%3A1618768655%3AAUXFak%2BKlC9EA%2F1LRUUAAR7fYoNlZRQtdHL%2BtBP2zFEZDv%2FBcwGsdE72842kaVVZYbCIw9hyPVEGpLlGjwfmyu8jnubS1W7vAN39axzDFQu0aCBwsVEM%2FKr7TSpj6E4OFNMr9R9qkWW7HlQgqMsr0jA%2Fl9wXfv%2BC8gWoGCFGHZdBtifxlByLlHwfSjtkhfMIAii4FxyVx5QUWxSZTma3rzBpJrsnSdXqCDDGFh3mIDbjeVEkxSo%2FP6p0rm1J2FxBDW2WTdMsnnoFHPbdOrHPjrArit7P54pS8w8%2F%2B5aRHw2voi3WeDe2B40%2BE1V0O5%2F6uutSAAGZE%2BWlIXhjsPYkrsxG6a3JOtsomkyXNZ0dxWZnVNNLPojZIhEF4VY78rSRf9mIS7aQ%2FKp5oA%3D%3D%22%2C%22_csrftoken%22%3A%22X3tXri0ZWHZhCh9VeLUxnXuTGIHjq30P%22%2C%22username%22%3A%22tumelsu%22%2C%22adid%22%3A%22c3d54b7c-2d0a-4fe2-869d-c623f526e53c%22%2C%22guid%22%3A%22735aeabc-0663-4b43-a984-3d8dac1800f4%22%2C%22device_id%22%3A%22android-36f4ab19f092e4da%22%2C%22google_tokens%22%3A%22%5B%5D%22%2C%22login_attempt_count%22%3A%220%22%7D
+
+
+
+def hesapacdevam(self):
+
+        #print("hesapacdevam1")
+        head1 = self.HeadersJsona5 
+
+        self.claim = head1["x-ig-set-www-claim"]
+        #print("gggg",self.claim)
+
+        self.authorization = head1["ig-set-authorization"]
+        #print("tttttt", self.authorization)
+
+        Cookiem = self.Cookie
+        #print(Cookiem)
+
+        self.csrf = Cookiem["csrftoken"]
+        #print("csrfson: ", self.csrf)
+
+        self.rur = Cookiem["rur"]
+        #print("csrfson: ", self.csrf)
+
+        self.ds_user_id = Cookiem['ds_user_id']
+        #print("userid son: ", self.ds_user_id)
+
+        self.sessionid = Cookiem['sessionid']
+
+
+// gulcanyurtman3768:kauqodttcg
+
+
+
+/// NEW
+
+kenburn
+
+
+
+     "0-100": {
+        ".indexOn": "place"
+            },
+        "100-500": {
+        ".indexOn": "place"
+            },
+              
+        "500-1000": {
+        ".indexOn": "place"
+            },
+        "1000-3000": {
+        ".indexOn": "place"
+            }
+        "3000-5000": {
+        ".indexOn": "place"
+            }
+        "5000+": {
+        ".indexOn": "place"
+            }
+

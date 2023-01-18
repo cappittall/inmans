@@ -1,0 +1,8 @@
+CROSS PLATFORM
+- update app version name to current app version from VersionController
+
+IOS
+- update build number and build name
+
+Android
+- update build number and build name

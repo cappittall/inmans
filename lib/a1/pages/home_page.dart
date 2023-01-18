@@ -1,0 +1,662 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:inmans/a1/pages/register_page.dart';
+import 'package:inmans/main.dart';
+import 'package:inmans/a1/models/local.model.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf/shelf_io.dart' as shelf_io;
+import 'package:carousel_slider/carousel_slider.dart';
+
+import 'package:hive/hive.dart';
+
+import 'package:url_launcher/url_launcher.dart';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:http/http.dart' as http;
+import 'package:web_socket_channel/io.dart';
+
+import 'package:inmans/pages/bills/bills_page.dart';
+import 'package:inmans/a1/pages/pages.dart';
+import 'package:inmans/services/balance_notifier.dart';
+import 'package:inmans/a1/instagramAccounts/globals.dart';
+import 'package:inmans/a1/localization/language_controller.dart';
+import 'package:inmans/services/location/location_manager.dart';
+import 'package:inmans/services/operations/interaction_operator.dart';
+import 'package:inmans/a1/utils/constants.dart';
+import 'package:inmans/a1/utils/multilang.dart';
+import 'package:inmans/a1/utils/navigate.dart';
+import 'package:inmans/a1/widgets/background.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:web_socket_channel/status.dart' as status;
+import 'package:inmans/a1/models/user.model.dart';
+import 'balance.dart';
+import 'package:inmans/main.dart';
+
+import 'package:inmans/a1/instagramAccounts/instagram_interractions.dart';
+
+import '../instagramAccounts/server/server.dart';
+import '../models/instagram_account.model.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  _HomePageState();
+
+  User user;
+  bool signedIn = false;
+  Map<String, dynamic> prices;
+  bool connected = false;
+  List<MostEarner> mostEarnings;
+  List<DrawerItem> drawerItems;
+  StreamSubscription<Position> subscription;
+  CollectionReference mostEarnersRef;
+  List accounts;
+  Timer timer;
+  IOWebSocketChannel channel;
+  InstagramInterractions interractions = InstagramInterractions();
+  List imgList = []; //= ['$conUrl/static/images/image1.jpeg'];
+  String headline;
+  @override
+  void initState() {
+    super.initState();
+
+    initDrawer();
+
+    // getImageUrls from server in order to serve in corasel
+    _getImageUrls();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _init());
+
+    Future.delayed(Duration.zero, () async {
+      await Server.getDeviceInfo(context);
+      await Server.generateIDs();
+    });
+  }
+
+  void _init() async {
+    await connectToSocket();
+
+    user = await initUserState();
+    headline = getString("backroundmessage");
+    setState(() {
+      signedIn = user != null;
+    });
+    timer = Timer.periodic(
+        Duration(seconds: 60), (Timer t) => listenlocaiton(user));
+  }
+
+  Future<String> downloadImage({String url, String fileName}) async {
+    var response = await http.get(Uri.parse(url));
+    var documentsDirectory = await getApplicationDocumentsDirectory();
+    var folderPath = documentsDirectory.path + "/mostEarnerImages";
+    var filePath = folderPath + "/$fileName.jpg".replaceAll(" ", "_");
+    if (!Directory(folderPath).existsSync()) {
+      await Directory(folderPath).create(recursive: true);
+    }
+    File image = File(filePath);
+    await image.writeAsBytes(response.bodyBytes);
+
+    return image.path;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    idOp();
+  }
+
+  void idOp() async {
+    await Server.getDeviceInfo(context);
+    Server.generateIDs();
+  }
+
+  /// added for locationSettins değişkeni
+  LocationSettings locationSettings = defaultTargetPlatform ==
+          TargetPlatform.android
+      ? AndroidSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 100,
+          forceLocationManager: true,
+          intervalDuration: const Duration(seconds: 10),
+          //(Optional) Set foreground notification config to keep the app alive
+          //when going to the background
+          foregroundNotificationConfig: const ForegroundNotificationConfig(
+            notificationText: "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor.",
+            notificationTitle: "Running in Background",
+            //enableWakeLock: true,
+          ))
+      : defaultTargetPlatform == TargetPlatform.iOS
+          ? AppleSettings(
+              accuracy: LocationAccuracy.high,
+              activityType: ActivityType.fitness,
+              distanceFilter: 100,
+              pauseLocationUpdatesAutomatically: true,
+              // Only set to true if our app will be started up in the background.
+              showBackgroundLocationIndicator: false,
+            )
+          : const LocationSettings(
+              accuracy: LocationAccuracy.high,
+              distanceFilter: 100,
+            );
+
+  listenlocaiton(User user) async {
+    if (user == null) return;
+    bool poz = false;
+    await LocationManager.checkPermission();
+    if (LocationManager.canUseLocation()) {
+      Geolocator.getPositionStream(locationSettings: locationSettings)
+          .listen((Position position) async {
+        if (position != null && channel.closeCode == null) {
+          //&& channel.closeCode == null
+
+          List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude,
+            position.longitude,
+          );
+
+          Map<String, dynamic> userData = userDataFromUser(user);
+          Map<String, dynamic> place = placemarks[0].toJson();
+          Map<String, dynamic> dbplace = userData['profil']['place'];
+          // Daha iyi bir karşılaştırma için önceden lat,lon silelim
+
+          if ((dbplace['administrativeArea'] != place['administrativeArea'] &&
+              dbplace['subAdministrativeArea'] !=
+                  place['subAdministrativeArea'])) {
+            place['lat'] = position.latitude;
+            place['long'] = position.longitude;
+
+            userData['profil']['place'] = place;
+            print('>>> Userdatap place ${userData['profil']['place']}');
+            writeUserDataToLocal(userData);
+            // headers
+            Map<String, String> header = {
+              "Content-Type": "application/json; charset=UTF-8",
+              "Authorization": "Token ${userData['profil']['token']}"
+            };
+            //TODO: Databaseden de sil...
+            http.Response response = await http.patch(
+                Uri.parse("$conUrl/api/profil/${userData['profil']['id']}/"),
+                body: jsonEncode(userData['profil']),
+                headers: header);
+
+            setState(() {
+              user = User.fromJson(userData);
+            });
+          }
+          sendDataToWebSocket(place);
+          poz = !poz;
+        }
+      });
+      if (!poz) {
+        // In order to send
+        Position position = await Geolocator.getCurrentPosition();
+        Map place = {};
+        place['lat'] = position.latitude;
+        place['long'] = position.longitude;
+        sendDataToWebSocket(place);
+      }
+    }
+  }
+
+  void sendDataToWebSocket(place) {
+    if (user == null) return;
+    Map<String, dynamic> data = {
+      'action': 'Location',
+      'message': place.toString(),
+      'sender': user.id,
+      'receiver': 0
+    };
+    channel.sink.add(jsonEncode(data)); // to be implemented
+  }
+
+  shelf.Response _echoRequest(shelf.Request request) =>
+      shelf.Response.ok('Request for localhost:8080 "${request.url}"');
+
+  connectToSocket() async {
+    channel = IOWebSocketChannel.connect(Uri.parse(socketUrl),
+        headers: {'Connection': 'upgrade', 'Upgrade': 'websocket'});
+
+    StreamController<String> streamController =
+        StreamController.broadcast(sync: true);
+    channel.stream.listen((event) async {
+      //Check if event comes not from this user
+      var msg = jsonDecode(event)['message'];
+      if (msg['action'] != 'MobileAction' && msg['action'] != 'Location') {
+        print(
+            'Sender ile user id karşılaştırması ${msg['sender']} , ${user.id}');
+        streamController.add(event);
+        prices ??= await getPriceList();
+        Map<String, dynamic> profil = user.profil;
+
+        var accounts =
+            profil['instagram'].map((x) => InstagramAccount.fromData(x));
+        if (accounts.length == 0) {
+          // ignore: use_build_context_synchronously
+          print('accounts $accounts');
+          // ignore: use_build_context_synchronously
+          showSnackBar(context, getString("addInstagramAccountToStart"),
+              Colors.redAccent);
+        } else {
+          accounts.forEach((account) async {
+            String resp = await interractions.interactWithInstagramApi(
+                msg, account, prices, profil);
+            if (resp.toString().contains('challenge_required')) {
+              print('challenge_required');
+              // ignore: use_build_context_synchronously
+              showSnackBar(
+                  context,
+                  "${getString('challenge_required')} ${account.userName}",
+                  Colors.redAccent,
+                  isLong: true);
+            }
+            Map<String, dynamic> returnData = {
+              'action': 'MobileAction',
+              'message': resp.toString(),
+              'sender': user.id,
+              'receiver': 0
+            };
+            channel.sink.add(jsonEncode(returnData));
+          });
+        }
+      }
+
+      //socket.sink.add(jsonEncode({'message': msgback}));
+    }, onDone: () async {
+      print("conecting aborted, Reconnecting...");
+      await Future.delayed(const Duration(seconds: 50));
+      channel.sink.close();
+      connectToSocket();
+    }, onError: (e) async {
+      print(
+          'Server error: $e Reconnecting ... \n${status.internalServerError}');
+      await Future.delayed(const Duration(seconds: 10));
+      channel.sink.close();
+      connectToSocket();
+    });
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer.cancel();
+    channel.sink.close();
+  }
+
+  void initDrawer() {
+    drawerItems = [
+      DrawerItem(
+          title: getString("account"),
+          icon: Icons.person,
+          target: AccountPage()),
+      DrawerItem(
+          title: getString("settings"),
+          icon: Icons.settings,
+          target: SettingsPage()),
+/*       DrawerItem(
+          title: getString("products"),
+          icon: Icons.menu_book,
+          target: ProductsPage()), */
+      DrawerItem(
+          title: getString("balance"),
+          icon: Icons.monetization_on,
+          target: BalancePage()),
+/*       DrawerItem(
+          title: getString("bills"),
+          icon: Icons.receipt,
+          target: const Bills()), */
+      DrawerItem(
+          title: getString("penalties"),
+          icon: Icons.close,
+          target: PenaltiesPage()),
+      DrawerItem(
+          title: getString("instaAccounts"),
+          icon: Icons.person,
+          target: InstagramAccounts()),
+    ];
+
+    if (Platform.isAndroid) {
+      drawerItems.insert(
+          3,
+          DrawerItem(
+              title: getString("earningTable"),
+              icon: Icons.table_chart,
+              target: EarningTablePage()));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: const Color.fromARGB(255, 132, 16, 8),
+        drawer: Drawer(
+          child: Container(
+            color: const Color(0xFF913248),
+            child: Column(
+              children: [
+                const SizedBox(height: 50),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 40),
+                  child: Text("Together Earn |",
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  child: Container(
+                    height: 0.5,
+                    width: double.infinity,
+                    color: Colors.grey,
+                  ),
+                ),
+                Expanded(
+                  child: ListView(padding: EdgeInsets.zero, children: [
+                    ...drawerItems.map((drawerItem) {
+                      return CupertinoButton(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                height: 40,
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      height: 35,
+                                      width: 35,
+                                      child: Center(
+                                        child: Icon(
+                                          drawerItem.icon,
+                                          color: kMainColor,
+                                          size: 30,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      drawerItem.title,
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: 0.5,
+                                color: Colors.grey,
+                                width: double.infinity,
+                              ),
+                            ],
+                          ),
+                          onPressed: () async {
+                            if (signedIn ||
+                                drawerItem.title == getString("settings")) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => drawerItem.target,
+                                      settings:
+                                          RouteSettings(arguments: user)));
+                            } else {
+                              showSnackBar(context, getString("notSignedIn"),
+                                  Colors.redAccent);
+                            }
+                          });
+                    }).toList(),
+                    CupertinoButton(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
+                        onPressed: _signOut,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 40,
+                              child: Row(
+                                children: [
+                                  const SizedBox(
+                                    height: 35,
+                                    width: 35,
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.logout,
+                                        color: kMainColor,
+                                        size: 30,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    getString("logOut"),
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 0.5,
+                              color: Colors.grey,
+                              width: double.infinity,
+                            ),
+                          ],
+                        )),
+                  ]),
+                ),
+                RichText(
+                  text: TextSpan(
+                      text: getString("privacyPolicy"),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          decoration: TextDecoration.underline,
+                          fontSize: 18),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          launchUrl(Uri.parse('$conUrl/api/privacy-policy/'));
+                        }),
+                ),
+                const SizedBox(
+                  height: 10,
+                )
+              ],
+            ),
+          ),
+        ),
+        appBar: AppBar(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          automaticallyImplyLeading: false,
+          leading: Builder(builder: (context) {
+            return IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: const Icon(
+                Icons.menu,
+                color: Colors.white,
+                size: 30,
+              ),
+            );
+          }),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text('Together Earn | '),
+              Expanded(
+                  child: Text(signedIn ? "${user.email.split('@')[0]} | " : "",
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 15))),
+              Expanded(
+                  child: Text(
+                      signedIn ? getString('logout') : getString('login'),
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 15))),
+              Expanded(
+                child: IconButton(
+                  icon:
+                      Icon(signedIn ? Icons.exit_to_app : Icons.account_circle),
+                  onPressed: () async {
+                    // if not signed in, go to login page
+                    if (signedIn) {
+                      _signOut();
+                    } else {
+                      user = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                      if (user != null) {
+                        setState(() {
+                          signedIn = true;
+                        });
+                      }
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        body: Background(
+          child: Column(
+            children: [
+              Container(
+                height: 120,
+                width: double.infinity,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          getString("mostEarnings"),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 20),
+                        ),
+                      ]),
+                ),
+              ),
+              // insert slider here at main screen
+              CarouselSlider(
+                options: CarouselOptions(
+                  aspectRatio: 9 / 10,
+                  viewportFraction: 0.8,
+                  initialPage: 0,
+                  enableInfiniteScroll: true,
+                  reverse: false,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 3),
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  enlargeCenterPage: true,
+                  scrollDirection: Axis.horizontal,
+                ),
+                items: imgList.map((imgUrl) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.symmetric(horizontal: 10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                        ),
+                        child: Image.network(imgUrl),
+                      );
+                    },
+                  );
+                }).toList(),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _getImageUrls() async {
+    List<String> imageUrls = await getImageUrls();
+    setState(() {
+      imgList = imageUrls;
+    });
+  }
+
+  Future<List<String>> getImageUrls() async {
+    final response = await http.get(Uri.parse('$conUrl/get_image_urls/'));
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      return body.map((dynamic item) => item as String).toList();
+    } else {
+      throw Exception('Failed to load image URLs');
+    }
+  }
+
+  void _signOut() async {
+    var userBox = await Hive.openBox('localUser');
+    await userBox.clear();
+    await localDataBox.clear();
+    setState(() {
+      signedIn = false;
+    });
+  }
+
+  getPriceList() async {
+    http.Response response = await http
+        .get(Uri.parse('$conUrl/api/serviceprices/'), headers: headers);
+    return json.decode(utf8.decode(response.bodyBytes))['results'][0];
+  }
+
+  getMostEarners() async {
+    // get most earners picture from phones's documentsDirectory.path + "/mostEarnerImages" images for slider
+
+    http.Response response =
+        await http.get(Uri.parse('$conUrl/api/mostearners/'), headers: headers);
+    return json.decode(utf8.decode(response.bodyBytes))['results'];
+  }
+}
+
+class QueryDocumentSnapshot {
+  get(String s) {}
+}
+
+class DrawerItem {
+  String title;
+  Widget target;
+  IconData icon;
+
+  DrawerItem({this.target, this.title, this.icon});
+}
+
+class MostEarner {
+  String name;
+  double earning;
+  String image;
+
+  MostEarner({this.name, this.earning, this.image, user});
+}

@@ -1,0 +1,510 @@
+<!-- message/templates/message/message.html -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>message to all</title>
+    <link rel="shortcut icon" type="image/png" href="/static/img/favicon.png"/>
+    <link href="/static/css/mycss.css" rel="stylesheet">
+</head>
+<body>
+<form action="javascript:void(0);">
+    <textarea class="s-textarea" id="message-log" cols="100" rows="20"></textarea><br>
+    <label for="actions">Aksiyon:</label>
+
+    <select id="choice-value" name="action" class="">
+    <option value="" selected="selected">-----</option>
+    
+    </select>
+
+    <input id="message-input" type="text" name="s_input" class="s-input" autocomplete="on"><br>
+    <input id="message-submit" type="button" value="   G Ö N D E R   ">
+    <script id="room-name" type="application/json">""</script>
+
+    <div>User id:  </div>
+    <div>Sender 0 --> Server   x --> Kullanıcı id  </div>
+    <div>V.004 </div>
+    <br><hr/>
+</form>
+
+<div>
+    <fieldset>
+    <legend>Users </legend>
+        <ul id='list'>
+        </ul>
+    </fieldset>
+</div>
+
+<script>
+const users={};
+const intervalId = setInterval(function() {
+    listUsersOnScreen();
+  }, 3000);
+// in order to stop loop.: clearInterval(interval);
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+function listUsersOnScreen(){
+    // reduce users id numbers
+    const lists = [];
+    for (var key in users){
+        lists.push(users[key])
+    }
+    let sortedUsers = lists.sort( function ( a, b ) { return b.dtm - a.dtm; } );
+    // clear recent all li
+    document.getElementById("list").innerHTML = "";
+    // append all li again
+    for (const key in sortedUsers){
+        // list users by last logged time sorted.
+        var u = sortedUsers[key];
+        var textnode = u.datetime + " - " + u.userId + ' Lokasyonu: ' + u.location;
+        var ul = document.getElementById('list');
+        var li = document.createElement('li');    
+        li.style = u.dtm >= (new Date() .getTime()) - 60000*5 ? "color:green;" : "color:grey;" ; 
+        li.appendChild(document.createTextNode(textnode));
+        ul.appendChild(li);
+
+    }
+}
+function connect(){
+            var proc = window.location.protocol=="https:"? "wss://":"ws://";
+            const roomName = document.getElementById('room-name').textContent;
+            console.log('Local mi? '+ proc + window.location.host
+            + '/ws/messages/'
+            + roomName
+            + '/');
+
+            const messageSocket = new WebSocket(
+                proc + window.location.host
+                + '/ws/messages/'
+                + roomName
+                + '/'  );
+                
+    messageSocket.onopen = function (event) {
+                    console.log('connected');
+                };
+    messageSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        if (data['message']['action']=='Location') {
+            var userId = data['message']['sender'];
+            var place = data['message']['message']
+            users[userId] = {userId: userId, location : place, 
+                            datetime: new Date().toLocaleString(), dtm: new Date() .getTime()};
+            console.log(users);
+            // 10/17/2022, 2:24:30 PM - 2 Lokasyonu: {name: 18 A, street: Tepecik, isoCountryCode: TR, country: Türkiye, postalCode: 35460, administrativeArea: İzmir, subAdministrativeArea: Seferihisar, locality: , subLocality: Tepecik, thoroughfare: 1506. Sokak, subThoroughfare: 18 A}
+            // if full // clear and change place data as json in order to post (save) to database
+            place = JSON.parse(place.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ')
+                        .replaceAll(':  ',':"').replaceAll(',','",').replace('}','"}'));
+
+            // at first loggin in flutter write new position to database                  
+            if ("country" in place ){
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", "/update-location/");
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    "place":place,
+                    "id": userId
+                }))
+                xhr.onreadystatechange = function(e) { 
+                        console.log(xhr.responseText);
+                }
+            }
+
+        } else {
+            document.querySelector('#message-log').value = ( 
+                new Date().toLocaleString() + ": " + 
+                data['message']['action'].toString() +   '-> ' +  
+                data['message']['sender'].toString() +   ' - ' + 
+                data['message']['receiver'].toString() + ' - ' +
+                data['message']['message'] +' \n') + document.querySelector('#message-log').value ;
+        }
+    };
+
+    messageSocket.onclose = function(e) {
+        console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+        setTimeout(function() {
+          connect();
+        }, 1000);
+    };
+
+    document.querySelector('#message-input').focus();
+    document.querySelector('#message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#message-submit').click();
+        }
+    };
+
+    document.querySelector('#message-submit').onclick = function(e) {
+        console.log(' >>>> Clicked');
+        const message = document.querySelector('#message-input').value;
+        const choice = document.querySelector('#choice-value').value;
+
+        console.log('Choice is : ', choice)
+        messageSocket.send(JSON.stringify({
+            'action' : choice,  // follow, post_like, post_comment, 
+            'message': message, "sender" :0, "receiver":0
+        }));
+        document.querySelector('#message-input').value = '';
+    };
+}
+connect();
+
+</script><!-- message/templates/message/message.html -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>message to all</title>
+    <link rel="shortcut icon" type="image/png" href="/static/img/favicon.png"/>
+    <link href="/static/css/mycss.css" rel="stylesheet">
+</head>
+<body>
+<form action="javascript:void(0);">
+    <textarea class="s-textarea" id="message-log" cols="100" rows="20"></textarea><br>
+    <label for="actions">Aksiyon:</label>
+
+    <select id="choice-value" name="action" class="">
+    <option value="" selected="selected">-----</option>
+    
+    </select>
+
+    <input id="message-input" type="text" name="s_input" class="s-input" autocomplete="on"><br>
+    <input id="message-submit" type="button" value="   G Ö N D E R   ">
+    <script id="room-name" type="application/json">""</script>
+
+    <div>User id:  </div>
+    <div>Sender 0 --> Server   x --> Kullanıcı id  </div>
+    <div>V.004 </div>
+    <br><hr/>
+</form>
+
+<div>
+    <fieldset>
+    <legend>Users </legend>
+        <ul id='list'>
+        </ul>
+    </fieldset>
+</div>
+
+<script>
+const users={};
+const intervalId = setInterval(function() {
+    listUsersOnScreen();
+  }, 3000);
+// in order to stop loop.: clearInterval(interval);
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+function listUsersOnScreen(){
+    // reduce users id numbers
+    const lists = [];
+    for (var key in users){
+        lists.push(users[key])
+    }
+    let sortedUsers = lists.sort( function ( a, b ) { return b.dtm - a.dtm; } );
+    // clear recent all li
+    document.getElementById("list").innerHTML = "";
+    // append all li again
+    for (const key in sortedUsers){
+        // list users by last logged time sorted.
+        var u = sortedUsers[key];
+        var textnode = u.datetime + " - " + u.userId + ' Lokasyonu: ' + u.location;
+        var ul = document.getElementById('list');
+        var li = document.createElement('li');    
+        li.style = u.dtm >= (new Date() .getTime()) - 60000*5 ? "color:green;" : "color:grey;" ; 
+        li.appendChild(document.createTextNode(textnode));
+        ul.appendChild(li);
+
+    }
+}
+function connect(){
+            var proc = window.location.protocol=="https:"? "wss://":"ws://";
+            const roomName = document.getElementById('room-name').textContent;
+            console.log('Local mi? '+ proc + window.location.host
+            + '/ws/messages/'
+            + roomName
+            + '/');
+
+            const messageSocket = new WebSocket(
+                proc + window.location.host
+                + '/ws/messages/'
+                + roomName
+                + '/'  );
+                
+    messageSocket.onopen = function (event) {
+                    console.log('connected');
+                };
+    messageSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        if (data['message']['action']=='Location') {
+            var userId = data['message']['sender'];
+            var place = data['message']['message']
+            users[userId] = {userId: userId, location : place, 
+                            datetime: new Date().toLocaleString(), dtm: new Date() .getTime()};
+            console.log(users);
+            // 10/17/2022, 2:24:30 PM - 2 Lokasyonu: {name: 18 A, street: Tepecik, isoCountryCode: TR, country: Türkiye, postalCode: 35460, administrativeArea: İzmir, subAdministrativeArea: Seferihisar, locality: , subLocality: Tepecik, thoroughfare: 1506. Sokak, subThoroughfare: 18 A}
+            // if full // clear and change place data as json in order to post (save) to database
+            place = JSON.parse(place.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ')
+                        .replaceAll(':  ',':"').replaceAll(',','",').replace('}','"}'));
+
+            // at first loggin in flutter write new position to database                  
+            if ("country" in place ){
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", "/update-location/");
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    "place":place,
+                    "id": userId
+                }))
+                xhr.onreadystatechange = function(e) { 
+                        console.log(xhr.responseText);
+                }
+            }
+
+        } else {
+            document.querySelector('#message-log').value = ( 
+                new Date().toLocaleString() + ": " + 
+                data['message']['action'].toString() +   '-> ' +  
+                data['message']['sender'].toString() +   ' - ' + 
+                data['message']['receiver'].toString() + ' - ' +
+                data['message']['message'] +' \n') + document.querySelector('#message-log').value ;
+        }
+    };
+
+    messageSocket.onclose = function(e) {
+        console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+        setTimeout(function() {
+          connect();
+        }, 1000);
+    };
+
+    document.querySelector('#message-input').focus();
+    document.querySelector('#message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#message-submit').click();
+        }
+    };
+
+    document.querySelector('#message-submit').onclick = function(e) {
+        console.log(' >>>> Clicked');
+        const message = document.querySelector('#message-input').value;
+        const choice = document.querySelector('#choice-value').value;
+
+        console.log('Choice is : ', choice)
+        messageSocket.send(JSON.stringify({
+            'action' : choice,  // follow, post_like, post_comment, 
+            'message': message, "sender" :0, "receiver":0
+        }));
+        document.querySelector('#message-input').value = '';
+    };
+}
+connect();
+
+</script>
+</body>
+</html><!-- message/templates/message/message.html -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>message to all</title>
+    <link rel="shortcut icon" type="image/png" href="/static/img/favicon.png"/>
+    <link href="/static/css/mycss.css" rel="stylesheet">
+</head>
+<body>
+<form action="javascript:void(0);">
+    <textarea class="s-textarea" id="message-log" cols="100" rows="20"></textarea><br>
+    <label for="actions">Aksiyon:</label>
+
+    <select id="choice-value" name="action" class="">
+    <option value="" selected="selected">-----</option>
+    
+    </select>
+
+    <input id="message-input" type="text" name="s_input" class="s-input" autocomplete="on"><br>
+    <input id="message-submit" type="button" value="   G Ö N D E R   ">
+    <script id="room-name" type="application/json">""</script>
+
+    <div>User id:  </div>
+    <div>Sender 0 --> Server   x --> Kullanıcı id  </div>
+    <div>V.004 </div>
+    <br><hr/>
+</form>
+
+<div>
+    <fieldset>
+    <legend>Users </legend>
+        <ul id='list'>
+        </ul>
+    </fieldset>
+</div>
+
+<script>
+const users={};
+const intervalId = setInterval(function() {
+    listUsersOnScreen();
+  }, 3000);
+// in order to stop loop.: clearInterval(interval);
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+function listUsersOnScreen(){
+    // reduce users id numbers
+    const lists = [];
+    for (var key in users){
+        lists.push(users[key])
+    }
+    let sortedUsers = lists.sort( function ( a, b ) { return b.dtm - a.dtm; } );
+    // clear recent all li
+    document.getElementById("list").innerHTML = "";
+    // append all li again
+    for (const key in sortedUsers){
+        // list users by last logged time sorted.
+        var u = sortedUsers[key];
+        var textnode = u.datetime + " - " + u.userId + ' Lokasyonu: ' + u.location;
+        var ul = document.getElementById('list');
+        var li = document.createElement('li');    
+        li.style = u.dtm >= (new Date() .getTime()) - 60000*5 ? "color:green;" : "color:grey;" ; 
+        li.appendChild(document.createTextNode(textnode));
+        ul.appendChild(li);
+
+    }
+}
+function connect(){
+            var proc = window.location.protocol=="https:"? "wss://":"ws://";
+            const roomName = document.getElementById('room-name').textContent;
+            console.log('Local mi? '+ proc + window.location.host
+            + '/ws/messages/'
+            + roomName
+            + '/');
+
+            const messageSocket = new WebSocket(
+                proc + window.location.host
+                + '/ws/messages/'
+                + roomName
+                + '/'  );
+                
+    messageSocket.onopen = function (event) {
+                    console.log('connected');
+                };
+    messageSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        if (data['message']['action']=='Location') {
+            var userId = data['message']['sender'];
+            var place = data['message']['message']
+            users[userId] = {userId: userId, location : place, 
+                            datetime: new Date().toLocaleString(), dtm: new Date() .getTime()};
+            console.log(users);
+            // 10/17/2022, 2:24:30 PM - 2 Lokasyonu: {name: 18 A, street: Tepecik, isoCountryCode: TR, country: Türkiye, postalCode: 35460, administrativeArea: İzmir, subAdministrativeArea: Seferihisar, locality: , subLocality: Tepecik, thoroughfare: 1506. Sokak, subThoroughfare: 18 A}
+            // if full // clear and change place data as json in order to post (save) to database
+            place = JSON.parse(place.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ')
+                        .replaceAll(':  ',':"').replaceAll(',','",').replace('}','"}'));
+
+            // at first loggin in flutter write new position to database                  
+            if ("country" in place ){
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", "/update-location/");
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    "place":place,
+                    "id": userId
+                }))
+                xhr.onreadystatechange = function(e) { 
+                        console.log(xhr.responseText);
+                }
+            }
+
+        } else {
+            document.querySelector('#message-log').value = ( 
+                new Date().toLocaleString() + ": " + 
+                data['message']['action'].toString() +   '-> ' +  
+                data['message']['sender'].toString() +   ' - ' + 
+                data['message']['receiver'].toString() + ' - ' +
+                data['message']['message'] +' \n') + document.querySelector('#message-log').value ;
+        }
+    };
+
+    messageSocket.onclose = function(e) {
+        console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+        setTimeout(function() {
+          connect();
+        }, 1000);
+    };
+
+    document.querySelector('#message-input').focus();
+    document.querySelector('#message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#message-submit').click();
+        }
+    };
+
+    document.querySelector('#message-submit').onclick = function(e) {
+        console.log(' >>>> Clicked');
+        const message = document.querySelector('#message-input').value;
+        const choice = document.querySelector('#choice-value').value;
+
+        console.log('Choice is : ', choice)
+        messageSocket.send(JSON.stringify({
+            'action' : choice,  // follow, post_like, post_comment, 
+            'message': message, "sender" :0, "receiver":0
+        }));
+        document.querySelector('#message-input').value = '';
+    };
+}
+connect();
+
+</script>
+</body>
+</html>
+
+
+</body>
+</html>
