@@ -3,9 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:inmans/a1/utils/constants.dart';
-
 import 'package:inmans/a1/utils/multilang.dart';
 import 'package:inmans/a1/widgets/background.dart';
 import 'package:inmans/a1/widgets/custom_app_bar.dart';

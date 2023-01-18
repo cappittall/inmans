@@ -59,7 +59,7 @@ dependencies:
   permission_handler: ^10.0.2
   video_player: ^2.4.7
   carousel_slider: ^4.2.1
-  flutter_full_pdf_viewer: ^1.0.6
+  
 
 
 
