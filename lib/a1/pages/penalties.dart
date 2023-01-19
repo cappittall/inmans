@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inmans/models/penalty.model.dart';
 import 'package:inmans/a1/utils/constants.dart';
 import 'package:inmans/a1/utils/multilang.dart';
 import 'package:inmans/a1/widgets/background.dart';
 import 'package:inmans/a1/widgets/custom_app_bar.dart';
+
+import '../models/penalty.model.dart';
 
 class PenaltiesPage extends StatefulWidget {
   @override

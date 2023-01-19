@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:inmans/a1/pages/forgot_password_page.dart';
 import 'package:inmans/a1/pages/home_page.dart';
 import 'package:inmans/a1/pages/register_page.dart';
-import 'package:inmans/services/database/database_manager.dart';
 
 import 'package:inmans/a1/utils/constants.dart';
 import 'package:inmans/a1/utils/multilang.dart';
@@ -14,6 +13,7 @@ import 'package:inmans/a1/widgets/custom_button.dart';
 import 'package:inmans/a1/widgets/custom_input_widget.dart';
 
 import '../models/user.model.dart';
+import '../services/database/database_manager.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key key, User user}) : super(key: key);
@@ -86,7 +86,6 @@ class _LoginPageState extends State<LoginPage> {
                             loginLoading = false;
                             // pop the page with signIn value
                             Navigator.pop(context, user);
-                            
                           } else {
                             // ignore: use_build_context_synchronously
                             showSnackBar(

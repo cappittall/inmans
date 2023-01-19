@@ -2,23 +2,16 @@
 
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:inmans/a1/models/operation_history.model.dart';
 import 'package:inmans/a1/models/user.model.dart';
 import 'package:inmans/a1/pages/register_page.dart';
-import 'package:inmans/pages/balance/deposit.dart';
-import 'package:inmans/pages/balance/withdraw.dart';
-import 'package:inmans/services/balance_notifier.dart';
-import 'package:inmans/a1/instagramAccounts/globals.dart';
 import 'package:inmans/a1/utils/multilang.dart';
-import 'package:inmans/a1/utils/navigate.dart';
 import 'package:inmans/a1/widgets/background.dart';
 import 'package:inmans/a1/widgets/custom_app_bar.dart';
 import 'package:inmans/a1/widgets/custom_button.dart';
-
+import '../services/balance_notifier.dart';
 import '../utils/constants.dart';
 
 class BalancePage extends StatefulWidget {

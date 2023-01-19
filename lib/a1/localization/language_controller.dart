@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-
-import 'package:inmans/services/database/database_manager.dart';
 import 'package:inmans/a1/instagramAccounts/globals.dart';
 import 'package:inmans/a1/localization/strings.dart';
+
+import '../services/database/database_manager.dart';
 
 LanguageController languageController = LanguageController();
 
@@ -210,22 +210,23 @@ class LanguageController with ChangeNotifier {
       "interaction": "Etkileşim",
       "gotWithdrawRequest": "Ödeme talebini aldık.",
       "gotWithdrawRequestError": "Ödeme talebini daha önce aldık.",
-      "minWithdraw":"Minimum ödeme tutarı 50\$'dir.",
+      "minWithdraw": "Minimum ödeme tutarı 50\$'dir.",
       "invalidQuantityLocation":
           "En fazla seçilen konumlardaki toplam kişi sayısı veya toplam kullanıcı sayısı kadar etkileşim satın alabilirsin",
       "phoneVRequired":
           "Ödeme talebi için doğrulanmış bir telefon numarası gerekir.",
       "starredFields": "*Yıldızlı alanlar zorunludur.",
       "nosucces": "İşlem başarısız",
-      "attention":"Dikkat!",
-      "areyousure":"Silmek istediğinizden eminmisiniz? ",
-      "yes":"Evet",
-      "no":"Hayır",
-      "notSignedIn":"Giriş yapmadınız",
-      "signIn":"Giris yap",
-      "challenge_required": "Lütfen belirtilen instagram hesabınızı silip tekrar ekleyiniz. : ",
-      "backroundmessage": "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor."
-
+      "attention": "Dikkat!",
+      "areyousure": "Silmek istediğinizden eminmisiniz? ",
+      "yes": "Evet",
+      "no": "Hayır",
+      "notSignedIn": "Giriş yapmadınız",
+      "signIn": "Giris yap",
+      "challenge_required":
+          "Lütfen belirtilen instagram hesabınızı silip tekrar ekleyiniz. : ",
+      "backroundmessage":
+          "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor."
     },
     "en": {
       "email": "email",
@@ -373,20 +374,22 @@ class LanguageController with ChangeNotifier {
       "interaction": "Interaction",
       "gotWithdrawRequest": "We got your withdraw request.",
       "gotWithdrawRequestError": "We got your withdraw request already.",
-      "minWithdraw":"Minimum withdraw amount is \$50.00",
+      "minWithdraw": "Minimum withdraw amount is \$50.00",
       "invalidQuantityLocation":
           "You can buy interaction total of locations you selected or total users",
       "phoneVRequired": "Verified phone number is required to request withdraw",
       "starredFields": "*Starred fields are required.",
       "nosucces": "Operation failed",
-      "attantion":"Attention! ",
-      "areyousure":"Are you sure to delete item? ",
-      "yes":"Yes",
-      "no":"No",
-      "notSignedIn":"You are not signed in",
-      "signIn":"Sign in",
-      "challenge_required": "Please delete the instagram account from the app and log in again. Account name: ",
-      "backroundmessage": "You are still winning. Because your instagram accounts are active and your app is running in the background."
+      "attantion": "Attention! ",
+      "areyousure": "Are you sure to delete item? ",
+      "yes": "Yes",
+      "no": "No",
+      "notSignedIn": "You are not signed in",
+      "signIn": "Sign in",
+      "challenge_required":
+          "Please delete the instagram account from the app and log in again. Account name: ",
+      "backroundmessage":
+          "You are still winning. Because your instagram accounts are active and your app is running in the background."
     }
   };
 

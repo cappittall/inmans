@@ -5,9 +5,10 @@ import 'package:inmans/a1/pages/pages.dart';
 import 'package:inmans/a1/pages/splah.dart';
 import 'package:inmans/a1/instagramAccounts/globals.dart';
 import 'package:inmans/a1/localization/language_controller.dart';
-import 'package:inmans/services/location/location_manager.dart';
+// ignore: depend_on_referenced_packages
 import 'package:intl/date_symbol_data_local.dart';
 import 'a1/models/user.model.dart';
+import 'a1/services/location/location_manager.dart';
 
 bool emulator;
 

@@ -6,10 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:inmans/a1/server/values.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
- 
-import '../../a1/models/user.model.dart';
-import '../../pages/balance/withdraw.dart';
-import '../../a1/pages/pages.dart';
+
+import '../../models/user.model.dart';
+import '../../pages/withdraw.dart';
 
 class DataBaseManager {
   static DatabaseReference interactionDBRef;
@@ -21,22 +20,15 @@ class DataBaseManager {
       "https://inmans-interactions.firebaseio.com/";
   static const String _userDataURL = "https://inmans-user-data.firebaseio.com/";
 
-  static const String _errorDBURL = "https://insta-together-errors.firebaseio.com/";
-
-  static CollectionReference usersRef;
+  static const String _errorDBURL =
+      "https://insta-together-errors.firebaseio.com/";
 
   static DocumentReference _userDocument;
   static User currentUser;
 
-  static FirebaseFirestore cloudFirestore = FirebaseFirestore.instance;
-
-  static CollectionReference accountsRef;
-
   static get ServerValue => null;
 
-  static get FieldValue => null; 
-
-
+  static get FieldValue => null;
 
   static Future setNewUSerData(data, uid) async {
     /* int timeStamp = DateTime.now().millisecondsSinceEpoch;
@@ -172,34 +164,6 @@ class DataBaseManager {
         .collection("instagramAccounts"); */
   }
 
-  static Future incrementInteraction({
-    @required String interactionKey,
-    @required String parentKey,
-    @required int interaction,
-    @required int request,
-    bool realtime = true,
-  }) async {
-    if (realtime) {
-      await DataBaseManager.interactionDBRef
-          .child(interactionKey)
-          .child(parentKey)
-          .update({"interaction": ServerValue.increment(1)});
-    } else {
-      await DataBaseManager.cloudFirestore
-          .collection(interactionKey)
-          .doc(parentKey)
-          .update({"interaction": FieldValue.increment(1)});
-
-      if (interaction >= request) {
-        await DataBaseManager.cloudFirestore
-            .collection(interactionKey)
-            .doc(parentKey)
-            .delete();
-      }
-    }
-  }
-
-
   static Future updateTextData(String interactionKey, String key, Map typeData,
       textData, bool realtime) async {
     await DataBaseManager.interactionDBRef
@@ -226,7 +190,6 @@ class DataBaseManager {
   }
 
   static Future updateIDData(data) async {
-   
     /*  _userDocument.set({
       "idData": data,
     }, SetOptions(merge: true)); */
@@ -257,7 +220,6 @@ class DataBaseManager {
       "time": timeStamp.toString()
     });
   }
- 
 
   static Future setTC(tc) async {
     print('>>>>>>>Database_Manager->L308 >>>> SetTC');
@@ -271,7 +233,8 @@ class DataBaseManager {
         .set(DateTime.now().millisecondsSinceEpoch); */
   }
 
-  static Future getBills() async {/* 
+  static Future getBills() async {
+    /* 
     Source source;
 
     String key = "historyLastModified";
@@ -409,12 +372,6 @@ class SetOptions {}
 
 class FirebaseDatabase {
   DatabaseReference reference() {}
-}
-
-class FirebaseFirestore {
-  static FirebaseFirestore instance;
-
-  CollectionReference collection(String s) {}
 }
 
 class DocumentReference {

@@ -3,14 +3,15 @@ import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:inmans/a1/pages/register_page.dart';
-import 'package:inmans/services/balance_notifier.dart';
-import 'package:inmans/services/database/database_manager.dart';
+
 import 'package:inmans/a1/utils/multilang.dart';
 import 'package:inmans/a1/widgets/background.dart';
 import 'package:inmans/a1/widgets/custom_app_bar.dart';
 import 'package:inmans/a1/widgets/custom_button.dart';
 import 'package:inmans/a1/widgets/custom_input_widget.dart';
 
+import '../services/balance_notifier.dart';
+import '../services/database/database_manager.dart';
 
 class WithdrawPage extends StatefulWidget {
   final double comission;
@@ -460,7 +461,6 @@ class _WithdrawPageState extends State<WithdrawPage> {
     @override
     void initState() {
       super.initState();
-
     }
 
     double tempAmount = 0;
@@ -515,11 +515,13 @@ class _WithdrawPageState extends State<WithdrawPage> {
                   child: Row(
                     children: [
                       Text("${getString("total")}: ",
-                          style: const TextStyle(color: Colors.white, fontSize: 22)),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 22)),
                       const Spacer(),
                       Text(
                         "${total.toStringAsFixed(2)}₺",
-                        style: const TextStyle(color: Colors.white, fontSize: 22),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 22),
                       ),
                     ],
                   ),
@@ -530,10 +532,12 @@ class _WithdrawPageState extends State<WithdrawPage> {
                   child: Row(
                     children: [
                       Text("${getString("fee")}: ",
-                          style: const TextStyle(color: Colors.white, fontSize: 22)),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 22)),
                       const Spacer(),
                       Text("${totalComission.toStringAsFixed(2)}₺",
-                          style: const TextStyle(color: Colors.white, fontSize: 22))
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 22))
                     ],
                   ),
                 ),
@@ -543,10 +547,12 @@ class _WithdrawPageState extends State<WithdrawPage> {
                   child: Row(
                     children: [
                       Text("${getString("youGet")}: ",
-                          style: const TextStyle(color: Colors.white, fontSize: 22)),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 22)),
                       const Spacer(),
                       Text("${amount.toStringAsFixed(2)}₺",
-                          style: const TextStyle(color: Colors.white, fontSize: 22))
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 22))
                     ],
                   ),
                 ),
@@ -617,9 +623,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                             return;
                           }
 
-                          
-
-                         /*  if (userData["TC"] == 0) {
+                          /*  if (userData["TC"] == 0) {
                             showSnackBar(context, getString("tcRequired"),
                                 Colors.redAccent,
                                 ms: 1000);
@@ -631,7 +635,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                             return;
                           } */
 
-                         /*  if (userData["iban"] == "") {
+                          /*  if (userData["iban"] == "") {
                             showSnackBar(
                                 context,
                                 getString("checkPaymentInfoWarn"),
@@ -645,24 +649,25 @@ class _WithdrawPageState extends State<WithdrawPage> {
                           } */
 
                           int timeStamp = DateTime.now().millisecondsSinceEpoch;
-                          await Future.delayed(const Duration(seconds: 3), () {});
-                          await DataBaseManager.cloudFirestore
-                              .collection("users")
-                              .doc('firebaseAuth.currentUser.uid')
-                              .collection("operationHistory")
-                              .doc()
-                              .set({
-                            "type": "withdraw",
-                            "timeStamp": timeStamp,
-                            "operationData": {
-                              "userID": 'firebaseAuth.currentUser.uid',
-                              "amount": double.parse(withdrawAmount),
-                              "status": "pending",
-                              // pending: Bekliyor
-                              // completed: Tamamlandı
-                              // failed: Başarısız
-                            }
-                          });
+                          await Future.delayed(
+                              const Duration(seconds: 3), () {});
+                          // await DataBaseManager.cloudFirestore
+                          //     .collection("users")
+                          //     .doc('firebaseAuth.currentUser.uid')
+                          //     .collection("operationHistory")
+                          //     .doc()
+                          //     .set({
+                          //   "type": "withdraw",
+                          //   "timeStamp": timeStamp,
+                          //   "operationData": {
+                          //     "userID": 'firebaseAuth.currentUser.uid',
+                          //     "amount": double.parse(withdrawAmount),
+                          //     "status": "pending",
+                          //     // pending: Bekliyor
+                          //     // completed: Tamamlandı
+                          //     // failed: Başarısız
+                          //   }
+                          // });
 
                           showSnackBar(context, getString("gotWithdrawRequest"),
                               Colors.green);
@@ -694,8 +699,6 @@ class _WithdrawPageState extends State<WithdrawPage> {
     // TODO: implement build
     throw UnimplementedError();
   }
-
-  
 }
 
 class DataSnapshot {

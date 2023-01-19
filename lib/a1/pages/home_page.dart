@@ -20,14 +20,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/io.dart';
-
-import 'package:inmans/pages/bills/bills_page.dart';
 import 'package:inmans/a1/pages/pages.dart';
-import 'package:inmans/services/balance_notifier.dart';
 import 'package:inmans/a1/instagramAccounts/globals.dart';
 import 'package:inmans/a1/localization/language_controller.dart';
-import 'package:inmans/services/location/location_manager.dart';
-import 'package:inmans/services/operations/interaction_operator.dart';
 import 'package:inmans/a1/utils/constants.dart';
 import 'package:inmans/a1/utils/multilang.dart';
 import 'package:inmans/a1/utils/navigate.dart';
@@ -35,6 +30,7 @@ import 'package:inmans/a1/widgets/background.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:inmans/a1/models/user.model.dart';
+import '../services/location/location_manager.dart';
 import 'balance.dart';
 import 'package:inmans/main.dart';
 
@@ -61,7 +57,6 @@ class _HomePageState extends State<HomePage> {
   List<MostEarner> mostEarnings;
   List<DrawerItem> drawerItems;
   StreamSubscription<Position> subscription;
-  CollectionReference mostEarnersRef;
   List accounts;
   Timer timer;
   IOWebSocketChannel channel;
@@ -132,7 +127,8 @@ class _HomePageState extends State<HomePage> {
           //(Optional) Set foreground notification config to keep the app alive
           //when going to the background
           foregroundNotificationConfig: const ForegroundNotificationConfig(
-            notificationText: "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor.",
+            notificationText:
+                "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor.",
             notificationTitle: "Running in Background",
             //enableWakeLock: true,
           ))

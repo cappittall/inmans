@@ -3,7 +3,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:inmans/a1/pages/home_page.dart';
-import 'package:inmans/services/database/database_manager.dart';
 import 'package:inmans/a1/localization/language_controller.dart';
 import 'package:inmans/a1/utils/constants.dart';
 import 'package:inmans/a1/utils/multilang.dart';
@@ -13,14 +12,14 @@ import 'package:inmans/a1/widgets/custom_input_widget.dart';
 import 'package:inmans/a1/widgets/custom_leading.dart';
 import 'package:inmans/a1/models/user.model.dart';
 
+import '../services/database/database_manager.dart';
+
 class RegisterPage extends StatefulWidget {
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
-  
   bool termsAccepted = false;
   TextEditingController emailController =
       TextEditingController(text: 'hak001@gmail.com');
@@ -32,7 +31,8 @@ class _RegisterPageState extends State<RegisterPage> {
       TextEditingController(text: 'hakunamatata22');
   TextEditingController firstnameController =
       TextEditingController(text: 'hak00');
-  TextEditingController lastNameController = TextEditingController(text: 'cetin');
+  TextEditingController lastNameController =
+      TextEditingController(text: 'cetin');
 
   User user;
   bool loading = false;
@@ -177,26 +177,24 @@ class _RegisterPageState extends State<RegisterPage> {
                             "phone": phoneController.text,
                           }
                         };
-                        
+
                         User user = await createUpdateUser(
-                              data, updateServer = false, null, context);
+                            data, updateServer = false, null, context);
 
-                        
-                          if (user != null) {
-                            loading = false;
+                        if (user != null) {
+                          loading = false;
 
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage(),
-                                    settings: RouteSettings(
-                                      arguments: user,
-                                    )));
-                          } else {
-                            showSnackBar(context, getString("nosucces"),
-                                Colors.redAccent);
-                          }
-                        
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage(),
+                                  settings: RouteSettings(
+                                    arguments: user,
+                                  )));
+                        } else {
+                          showSnackBar(
+                              context, getString("nosucces"), Colors.redAccent);
+                        }
                       } else {
                         showSnackBar(context, getString("passwordsNotEqual"),
                             Colors.redAccent);
@@ -225,17 +223,20 @@ class _RegisterPageState extends State<RegisterPage> {
 void showSnackBar(BuildContext context, String msg, Color color,
     {int ms = 1500, bool isLong = false}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    duration: isLong ? Duration(milliseconds: ms): Duration(milliseconds: 5000),
+    duration:
+        isLong ? Duration(milliseconds: ms) : Duration(milliseconds: 5000),
     content: Text(
       msg,
       style: const TextStyle(color: Colors.white),
     ),
     backgroundColor: color,
-    action: isLong ? SnackBarAction(
-    label: 'Dismiss',
-    onPressed: () {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    },):null,
-    
+    action: isLong
+        ? SnackBarAction(
+            label: 'Dismiss',
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          )
+        : null,
   ));
 }
