@@ -1,13 +1,8 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import 'package:inmans/a1/pages/pages.dart';
 import 'package:inmans/a1/pages/splah.dart';
-import 'package:inmans/a1/models/instagram_account.model.dart';
 import 'package:inmans/a1/instagramAccounts/globals.dart';
 import 'package:inmans/a1/localization/language_controller.dart';
 import 'package:inmans/services/location/location_manager.dart';
@@ -30,7 +25,7 @@ void main() async {
 
   LocationManager.initializeLocation();
   initializeDateFormatting('tr_TR', null).then((_) => runApp(const Inmans()));
-} 
+}
 
 class Inmans extends StatefulWidget {
   const Inmans({Key key}) : super(key: key);
@@ -72,9 +67,7 @@ class _InmansState extends State<Inmans> {
             body: FutureBuilder<User>(
                 future: _init(),
                 builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-                  locale:
                   Locale(languageController.getLocale());
-                  theme:
                   ThemeData(
                     unselectedWidgetColor: Colors.white,
                     appBarTheme: const AppBarTheme(
@@ -96,10 +89,9 @@ class _InmansState extends State<Inmans> {
                   print('Snapshot:  ${snapshot.hasData}');
                   if (signedIn == null) {
                     return const SplashScreen();
-                  } else  {
+                  } else {
                     return HomePage();
                   }
-
                 })));
   }
 }
