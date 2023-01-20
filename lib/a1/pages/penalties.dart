@@ -21,7 +21,7 @@ class _PenaltiesPageState extends State<PenaltiesPage> {
   void initState() {
     super.initState();
     // wait 3 seconds to simulate a network call, in flutter this is not necessary
-    Future.delayed(const Duration(seconds: 3), () async {
+    Future.delayed(const Duration(seconds: 0), () async {
       // simulate a network call
       await Future.delayed(const Duration(seconds: 1));
       setState(() {
@@ -115,7 +115,7 @@ class _PenaltiesPageState extends State<PenaltiesPage> {
                 ),
               )
             : const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: Colors.red,),
               ),
       ),
     );

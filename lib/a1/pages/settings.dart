@@ -12,7 +12,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   String currentLangCode = "tr";
-  String currentMoneyUnit = "TRY";
+  String currentMoneyUnit = "USD";
 
   List<Language> supportedLanguages = [
     Language("tr"),
@@ -21,7 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
   ];
 
   List<String> supportedMoneyUnits = [
-    "TRY", /*"USD", "EUR"*/
+    "USD", /*"USD", "EUR"*/
   ];
 
   @override

@@ -20,19 +20,19 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  bool termsAccepted = false;
+  bool termsAccepted = true;
   TextEditingController emailController =
-      TextEditingController(text: 'hak001@gmail.com');
+      TextEditingController(text: '');
   TextEditingController phoneController =
-      TextEditingController(text: '555 55 55 555');
+      TextEditingController(text: '555 555 5555');
   TextEditingController passwordController =
-      TextEditingController(text: 'aspros99100');
+      TextEditingController(text: '');
   TextEditingController passwordConfirmController =
-      TextEditingController(text: 'hakunamatata22');
+      TextEditingController(text: '');
   TextEditingController firstnameController =
-      TextEditingController(text: 'hak00');
+      TextEditingController(text: '');
   TextEditingController lastNameController =
-      TextEditingController(text: 'cetin');
+      TextEditingController(text: '');
 
   User user;
   bool loading = false;
@@ -72,11 +72,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 hintText: "*" + getString("email"),
                 controller: emailController,
               ),
-              CustomTextInput(
+             /*  CustomTextInput(
                 hintText: "*" + getString("phone"),
                 inputType: TextInputType.number,
                 controller: phoneController,
-              ),
+              ), */
               const SizedBox(height: 30),
               CustomTextInput(
                 hintText: "*" + getString("password"),
@@ -93,6 +93,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Checkbox(
+                    checkColor: Colors.white,
+                    focusColor: Colors.redAccent,
+                    activeColor: Colors.redAccent,
                     value: termsAccepted,
                     onChanged: (bool term) {
                       setState(() {
@@ -101,26 +104,33 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                   if (languageController.getLocale() == "tr")
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                              text: getString("termsOfUse") + " ",
+                    TextButton(
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                                text: getString("termsOfUse") + " ",
+                                style: const TextStyle(
+                                    color: kMainColor, fontSize: 15),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    var url =
+                                        await DataBaseManager.privacyPolicyURL;
+                                    DataBaseManager.launchURL(url);
+                                  }),
+                            TextSpan(
+                              text: getString("IAccept"),
                               style: const TextStyle(
-                                  color: kMainColor, fontSize: 15),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () async {
-                                  var url =
-                                      await DataBaseManager.privacyPolicyURL;
-                                  DataBaseManager.launchURL(url);
-                                }),
-                          TextSpan(
-                            text: getString("IAccept"),
-                            style: const TextStyle(
-                                color: Colors.grey, fontSize: 15),
-                          ),
-                        ],
+                                  color: Colors.grey, fontSize: 15),
+                            ),
+                          ],
+                        ),
                       ),
+                      onPressed: () async {
+                        setState(() {
+                          termsAccepted = !termsAccepted;
+                        });
+                      },
                     ),
                   if (languageController.getLocale() != "tr")
                     RichText(

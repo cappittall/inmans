@@ -104,20 +104,21 @@ class _EarningTablePageState extends State<EarningTablePage> {
               itemCount: data.length,
               itemBuilder: (context, index) {
                 var row = data[index];
-                final textStyle = TextStyle(color: Colors.white, fontSize: 20);
+                final textStyle = TextStyle(color: Colors.blueGrey, fontSize: 20);
                 return Container(
                   decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
                       border: Border.all(
-                          width: 2.0, color: Color.fromARGB(255, 54, 5, 1)),
-                      borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                          width: 5.0, color: Color.fromARGB(255, 54, 5, 5)),
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   child: ExpansionTile(
                     initiallyExpanded: true,
-                    backgroundColor: Colors.red,
+                    backgroundColor: Colors.white70,
                     title: Text(
                       "${getString('withFollower')}".replaceFirst(
                           '{follower}', row['followerCount'].toString()),
-                      style: TextStyle(
-                          color: Colors.white,
+                      style: const TextStyle(
+                          color: Colors.blueAccent,
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,

@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/user.model.dart';
 import '../../pages/withdraw.dart';
+import '../../utils/constants.dart';
 
 class DataBaseManager {
   static DatabaseReference interactionDBRef;
@@ -343,9 +344,7 @@ class DataBaseManager {
   }
 
   static Future<String> get privacyPolicyURL async {
-    var data = await db.child("privacyPolicyURL").once();
-
-    return data.value ?? "https://www.togetherearn.com/privacy-policy.pdf";
+      launchUrl(Uri.parse('$conUrl/api/privacy-policy/'));
   }
 
   static void launchURL(url) async {

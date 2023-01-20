@@ -226,7 +226,11 @@ class LanguageController with ChangeNotifier {
       "challenge_required":
           "Lütfen belirtilen instagram hesabınızı silip tekrar ekleyiniz. : ",
       "backroundmessage":
-          "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor."
+          "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor.",
+      "eraseAccount": "Hesabı sil",
+      "userDeleted":"Kullanıcı silindi",
+      "cancel": "İptal",
+      "delete": "Sil",
     },
     "en": {
       "email": "email",
@@ -389,7 +393,11 @@ class LanguageController with ChangeNotifier {
       "challenge_required":
           "Please delete the instagram account from the app and log in again. Account name: ",
       "backroundmessage":
-          "You are still winning. Because your instagram accounts are active and your app is running in the background."
+          "You are still winning. Because your instagram accounts are active and your app is running in the background.",
+      "eraseAccount": "Delete account",
+      "userDeleted": "User deleted",
+      "cancel": "Cancel",
+      "delete": "Delete",
     }
   };
 

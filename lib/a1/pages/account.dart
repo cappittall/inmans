@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inmans/a1/pages/register_page.dart';
@@ -13,6 +14,9 @@ import 'package:intl/intl.dart';
 import 'package:inmans/a1/pages/home_page.dart';
 import 'package:iban/iban.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:http/http.dart' as http;
+
+import 'login_page.dart';
 
 // Then somewhere in your code:
 
@@ -153,7 +157,9 @@ class _AccountPageState extends State<AccountPage> {
                                 width: 12,
                               ),
                               (profil['birth_date'] != null)
-                                  ? Text(dateFormatEnTr(profil['birth_date'].toString()),
+                                  ? Text(
+                                      dateFormatEnTr(
+                                          profil['birth_date'].toString()),
                                       style:
                                           const TextStyle(color: Colors.white),
                                     )
@@ -230,6 +236,13 @@ class _AccountPageState extends State<AccountPage> {
                       const SizedBox(
                         height: 15,
                       ),
+                      TextButton(
+                          onPressed: _onPressed,
+                          child: Center(
+                            child: Text(getString("eraseAccount"), 
+                                  style: TextStyle(color: Colors.red, fontSize: 15), 
+                                  textAlign: TextAlign.right),
+                          ), ),
                       Builder(builder: (context) {
                         bool saveLoading = false;
 
@@ -306,5 +319,42 @@ class _AccountPageState extends State<AccountPage> {
     var outputDate = outputFormat.format(inputDate);
     print(outputDate);
     return outputDate;
+  }
+
+  void _onPressed() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(getString("areyousure")),
+          content: Text(getString("eraseAccount")),
+          actions: [
+            TextButton(
+              child: Text(getString("cancel")),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(getString("delete")),
+              onPressed: () async {
+                await deleteUser(user);
+                navigate(context: context, page: LoginPage(), replace: true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  deleteUser(User user) {
+    var url = Uri.parse('$conUrl/users/${user.id}');
+    Response response = http.delete(url, headers: headers) as Response;
+    if (response.statusCode == 200) {
+      print('User deleted');
+
+      showSnackBar(context, getString("userDeleted"), Colors.redAccent);
+    }
   }
 }

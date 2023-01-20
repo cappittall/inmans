@@ -62,6 +62,7 @@ class _HomePageState extends State<HomePage> {
   IOWebSocketChannel channel;
   InstagramInterractions interractions = InstagramInterractions();
   List imgList = []; //= ['$conUrl/static/images/image1.jpeg'];
+  List imgNames = []; //= ['$conUrl/static/images/names.txt'];
   String headline;
   @override
   void initState() {
@@ -91,7 +92,7 @@ class _HomePageState extends State<HomePage> {
         Duration(seconds: 60), (Timer t) => listenlocaiton(user));
   }
 
-  Future<String> downloadImage({String url, String fileName}) async {
+  /*  Future<String> downloadImage({String url, String fileName}) async {
     var response = await http.get(Uri.parse(url));
     var documentsDirectory = await getApplicationDocumentsDirectory();
     var folderPath = documentsDirectory.path + "/mostEarnerImages";
@@ -103,7 +104,7 @@ class _HomePageState extends State<HomePage> {
     await image.writeAsBytes(response.bodyBytes);
 
     return image.path;
-  }
+  } */
 
   @override
   void didChangeDependencies() {
@@ -476,7 +477,7 @@ class _HomePageState extends State<HomePage> {
                         }),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 100,
                 )
               ],
             ),
@@ -509,32 +510,43 @@ class _HomePageState extends State<HomePage> {
                       style:
                           const TextStyle(color: Colors.white, fontSize: 15))),
               Expanded(
-                  child: Text(
-                      signedIn ? getString('logout') : getString('login'),
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 15))),
-              Expanded(
-                child: IconButton(
-                  icon:
-                      Icon(signedIn ? Icons.exit_to_app : Icons.account_circle),
-                  onPressed: () async {
-                    // if not signed in, go to login page
-                    if (signedIn) {
-                      _signOut();
-                    } else {
-                      user = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
+                child: InkWell(
+                  onTap: () {/* Handle tap event */},
+                  child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: Icon(signedIn
+                              ? Icons.exit_to_app
+                              : Icons.account_circle),
+                          onPressed: () async {
+                            /* Handle press event */
+                            // if not signed in, go to login page
+                            if (signedIn) {
+                              _signOut();
+                            } else {
+                              user = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const LoginPage()));
+                              if (user != null) {
+                                setState(() {
+                                  signedIn = true;
+                                });
+                              }
+                            }
+                          },
                         ),
-                      );
-                      if (user != null) {
-                        setState(() {
-                          signedIn = true;
-                        });
-                      }
-                    }
-                  },
+                        Text(
+                            signedIn ? getString('logout') : getString('login'),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 15))
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -583,7 +595,63 @@ class _HomePageState extends State<HomePage> {
                         decoration: BoxDecoration(
                           color: Colors.transparent,
                         ),
-                        child: Image.network(imgUrl),
+                        child: Stack(
+                          children: [
+                            Image.network(imgUrl),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color.fromARGB(200, 0, 0, 0),
+                                      Color.fromARGB(0, 0, 0, 0)
+                                    ],
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                  ),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 80, horizontal: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      // get index of image
+                                      "${imgNames[imgList.indexOf(imgUrl)].split(',')[0]}",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "${getString("balance")}: ",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        Text(
+                                          "\$${imgNames[imgList.indexOf(imgUrl)].split(',')[1]}",
+                                          style: const TextStyle(
+                                            color: Colors.greenAccent,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     },
                   );
@@ -597,17 +665,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _getImageUrls() async {
-    List<String> imageUrls = await getImageUrls();
-    setState(() {
-      imgList = imageUrls;
-    });
-  }
-
-  Future<List<String>> getImageUrls() async {
     final response = await http.get(Uri.parse('$conUrl/get_image_urls/'));
     if (response.statusCode == 200) {
-      List<dynamic> body = jsonDecode(response.body);
-      return body.map((dynamic item) => item as String).toList();
+      var body = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
+
+      print("$body , ${body.runtimeType}");
+      imgList = body['urls'];
+      imgNames = body['names'];
+      print("Image urls ve names: \n $imgList, \n $imgNames");
+      setState(() {});
     } else {
       throw Exception('Failed to load image URLs');
     }
@@ -656,3 +722,35 @@ class MostEarner {
 
   MostEarner({this.name, this.earning, this.image, user});
 }
+
+/* 
+Expanded(
+                  child: Text(
+                      signedIn ? getString('logout') : getString('login'),
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 15))),
+              Expanded(
+                child: IconButton(
+                  icon:
+                      Icon(signedIn ? Icons.exit_to_app : Icons.account_circle),
+                  onPressed: () async {
+                    // if not signed in, go to login page
+                    if (signedIn) {
+                      _signOut();
+                    } else {
+                      user = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                      if (user != null) {
+                        setState(() {
+                          signedIn = true;
+                        });
+                      }
+                    }
+                  },
+                ),
+              ), 
+*/
