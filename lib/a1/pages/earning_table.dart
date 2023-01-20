@@ -3,16 +3,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/utils/constants.dart';
-import 'package:inmans/a1/utils/multilang.dart';
-import 'package:inmans/a1/widgets/background.dart';
-import 'package:inmans/a1/widgets/custom_app_bar.dart';
-import 'package:inmans/a1/models/local.model.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/widgets/background.dart';
+import 'package:togetherearn/a1/widgets/custom_app_bar.dart';
+import 'package:togetherearn/a1/models/local.model.dart';
 import 'package:path_provider/path_provider.dart';
 import '../instagramAccounts/globals.dart';
 import 'package:http/http.dart' as http;
-import 'package:inmans/a1/localization/strings.dart';
-import 'package:inmans/a1/localization/language_controller.dart';
+import 'package:togetherearn/a1/localization/strings.dart';
+import 'package:togetherearn/a1/localization/language_controller.dart';
 
 class EarningTablePage extends StatefulWidget {
   @override
@@ -24,7 +24,7 @@ class _EarningTablePageState extends State<EarningTablePage> {
   // ignore: prefer_typing_uninitialized_variables
   var path;
   List data = [];
-  String local="tr";
+  String local = "tr";
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class _EarningTablePageState extends State<EarningTablePage> {
     path = await _localPath;
     fileName = "$path/kazanc_tablosu.pdf";
     var res = await downloadPdfIfNotExists(
-        "https://inmansdj.herokuapp.com/static/pdf/kazanc_tablosu.pdf",
+        "https://togetherearndj.herokuapp.com/static/pdf/kazanc_tablosu.pdf",
         fileName);
     print(res);
   }
@@ -104,7 +104,8 @@ class _EarningTablePageState extends State<EarningTablePage> {
               itemCount: data.length,
               itemBuilder: (context, index) {
                 var row = data[index];
-                final textStyle = TextStyle(color: Colors.blueGrey, fontSize: 20);
+                final textStyle =
+                    TextStyle(color: Colors.blueGrey, fontSize: 20);
                 return Container(
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
@@ -124,7 +125,6 @@ class _EarningTablePageState extends State<EarningTablePage> {
                       textAlign: TextAlign.center,
                     ),
                     children: [
-                      
                       ListTile(
                         title: Text(interactionStrings[local]['userToFollow'],
                             style: textStyle),
@@ -132,24 +132,28 @@ class _EarningTablePageState extends State<EarningTablePage> {
                             style: textStyle),
                       ),
                       ListTile(
-                        title: Text(interactionStrings[local]['postLikes'], style: textStyle),
+                        title: Text(interactionStrings[local]['postLikes'],
+                            style: textStyle),
                         trailing: Text(
                           "% ${row['postLikes'].toString()}",
                           style: textStyle,
                         ),
                       ),
                       ListTile(
-                        title: Text(interactionStrings[local]['postComments'], style: textStyle),
+                        title: Text(interactionStrings[local]['postComments'],
+                            style: textStyle),
                         trailing: Text("% ${row['postComments'].toString()}",
                             style: textStyle),
                       ),
                       ListTile(
-                        title: Text(interactionStrings[local]['postSaves'], style: textStyle),
+                        title: Text(interactionStrings[local]['postSaves'],
+                            style: textStyle),
                         trailing: Text("% ${row['postSaves'].toString()}",
                             style: textStyle),
                       ),
                       ListTile(
-                        title: Text(interactionStrings[local]['commentLikes'], style: textStyle),
+                        title: Text(interactionStrings[local]['commentLikes'],
+                            style: textStyle),
                         trailing: Text("% ${row['commentLikes'].toString()}",
                             style: textStyle),
                       ),

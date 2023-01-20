@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:inmans/a1/pages/pages.dart';
-import 'package:inmans/a1/pages/splah.dart';
-import 'package:inmans/a1/instagramAccounts/globals.dart';
-import 'package:inmans/a1/localization/language_controller.dart';
+import 'package:togetherearn/a1/pages/pages.dart';
+import 'package:togetherearn/a1/pages/splah.dart';
+import 'package:togetherearn/a1/instagramAccounts/globals.dart';
+import 'package:togetherearn/a1/localization/language_controller.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/date_symbol_data_local.dart';
 import 'a1/models/user.model.dart';
@@ -25,18 +25,19 @@ void main() async {
   languageController.initialize();
 
   LocationManager.initializeLocation();
-  initializeDateFormatting('tr_TR', null).then((_) => runApp(const Inmans()));
+  initializeDateFormatting('tr_TR', null)
+      .then((_) => runApp(const togetherearn()));
 }
 
-class Inmans extends StatefulWidget {
-  const Inmans({Key key}) : super(key: key);
+class togetherearn extends StatefulWidget {
+  const togetherearn({Key key}) : super(key: key);
 
   @override
-  State<Inmans> createState() => _InmansState();
+  State<togetherearn> createState() => _togetherearnState();
 }
 
-class _InmansState extends State<Inmans> {
-  _InmansState();
+class _togetherearnState extends State<togetherearn> {
+  _togetherearnState();
 
   User user;
   bool signedIn;

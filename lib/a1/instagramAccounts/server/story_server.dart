@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
-import 'package:inmans/a1/models/instagram_account.model.dart';
+import 'package:togetherearn/a1/models/instagram_account.model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import '../../server/values.dart';

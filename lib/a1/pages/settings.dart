@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/localization/language_controller.dart';
-import 'package:inmans/a1/utils/multilang.dart';
-import 'package:inmans/a1/widgets/background.dart';
-import 'package:inmans/a1/widgets/cirlce_check_box.dart';
-import 'package:inmans/a1/widgets/custom_app_bar.dart';
+import 'package:togetherearn/a1/localization/language_controller.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/widgets/background.dart';
+import 'package:togetherearn/a1/widgets/cirlce_check_box.dart';
+import 'package:togetherearn/a1/widgets/custom_app_bar.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -80,7 +80,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         Text(
                           language.title,
-                          style: const TextStyle(fontSize: 20, color: Colors.white),
+                          style: const TextStyle(
+                              fontSize: 20, color: Colors.white),
                         )
                       ],
                     ),
@@ -119,7 +120,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         Text(
                           money,
-                          style: const TextStyle(fontSize: 20, color: Colors.white),
+                          style: const TextStyle(
+                              fontSize: 20, color: Colors.white),
                         )
                       ],
                     ),

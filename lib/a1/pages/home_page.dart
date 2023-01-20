@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:inmans/a1/pages/register_page.dart';
-import 'package:inmans/main.dart';
-import 'package:inmans/a1/models/local.model.dart';
+import 'package:togetherearn/a1/pages/register_page.dart';
+import 'package:togetherearn/main.dart';
+import 'package:togetherearn/a1/models/local.model.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:carousel_slider/carousel_slider.dart';
@@ -20,21 +20,21 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/io.dart';
-import 'package:inmans/a1/pages/pages.dart';
-import 'package:inmans/a1/instagramAccounts/globals.dart';
-import 'package:inmans/a1/localization/language_controller.dart';
-import 'package:inmans/a1/utils/constants.dart';
-import 'package:inmans/a1/utils/multilang.dart';
-import 'package:inmans/a1/utils/navigate.dart';
-import 'package:inmans/a1/widgets/background.dart';
+import 'package:togetherearn/a1/pages/pages.dart';
+import 'package:togetherearn/a1/instagramAccounts/globals.dart';
+import 'package:togetherearn/a1/localization/language_controller.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/utils/navigate.dart';
+import 'package:togetherearn/a1/widgets/background.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:web_socket_channel/status.dart' as status;
-import 'package:inmans/a1/models/user.model.dart';
+import 'package:togetherearn/a1/models/user.model.dart';
 import '../services/location/location_manager.dart';
 import 'balance.dart';
-import 'package:inmans/main.dart';
+import 'package:togetherearn/main.dart';
 
-import 'package:inmans/a1/instagramAccounts/instagram_interractions.dart';
+import 'package:togetherearn/a1/instagramAccounts/instagram_interractions.dart';
 
 import '../instagramAccounts/server/server.dart';
 import '../models/instagram_account.model.dart';
@@ -570,6 +570,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ]),
                 ),
+              ),
+              // insert space here
+              const SizedBox(
+                height: 30,
               ),
               // insert slider here at main screen
               CarouselSlider(

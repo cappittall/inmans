@@ -1,16 +1,16 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import 'package:inmans/a1/pages/forgot_password_page.dart';
-import 'package:inmans/a1/pages/home_page.dart';
-import 'package:inmans/a1/pages/register_page.dart';
+import 'package:togetherearn/a1/pages/forgot_password_page.dart';
+import 'package:togetherearn/a1/pages/home_page.dart';
+import 'package:togetherearn/a1/pages/register_page.dart';
 
-import 'package:inmans/a1/utils/constants.dart';
-import 'package:inmans/a1/utils/multilang.dart';
-import 'package:inmans/a1/utils/navigate.dart';
-import 'package:inmans/a1/widgets/background.dart';
-import 'package:inmans/a1/widgets/custom_button.dart';
-import 'package:inmans/a1/widgets/custom_input_widget.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/utils/navigate.dart';
+import 'package:togetherearn/a1/widgets/background.dart';
+import 'package:togetherearn/a1/widgets/custom_button.dart';
+import 'package:togetherearn/a1/widgets/custom_input_widget.dart';
 
 import '../models/user.model.dart';
 import '../services/database/database_manager.dart';

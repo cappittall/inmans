@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:inmans/a1/models/instagram_account.model.dart';
+import 'package:togetherearn/a1/models/instagram_account.model.dart';
 import 'package:http/http.dart' as http;
 import 'server.dart';
 import '../../server/values.dart';

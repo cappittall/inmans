@@ -1,20 +1,13 @@
 import 'dart:convert';
 
-
-import 'package:inmans/a1/instagramAccounts/server/server.dart';
-import 'package:inmans/a1/server/values.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/server.dart';
+import 'package:togetherearn/a1/server/values.dart';
 import 'package:http/http.dart' as http;
-
-
 
 class LoginServer {
   static Future sendRequestForCookies() async {
-    
-
     String url =
         "https://b.i.instagram.com/api/v1/zr/token/result/?device_id=%22$osID%22&token_hash=&custom_device_id=%22$instaDeviceID%22&fetch_reason=token_expired";
-
-    
 
     var headerscc = {
       "X-IG-Connection-Speed": "-1kbps",
@@ -72,7 +65,6 @@ class LoginServer {
 
     // };
 
-    
     var response = await http.get(
       Uri.parse(url),
       headers: headerscc,
@@ -80,7 +72,7 @@ class LoginServer {
     print("Response ${response.statusCode}");
     print("Response ${response.body}");
     print("Response ${response.headers}");
-    
+
     if (response.statusCode != 200) {
       return null;
     }
@@ -168,8 +160,6 @@ class LoginServer {
 
   static Future<Map<String, dynamic>> login(
       {String username, String password, bool ghost = false}) async {
-  
-
     String url = API_URL + "accounts/login/";
 
     /*  
@@ -196,7 +186,8 @@ class LoginServer {
 
     // Burayı flutter e convert et
     // python - str(int(datetime.now().timestamp()))
-    var timeson114 = (DateTime.now().millisecondsSinceEpoch / 1000).round().toString();
+    var timeson114 =
+        (DateTime.now().millisecondsSinceEpoch / 1000).round().toString();
 
     var body = {
       "jazoest": "22553",
@@ -247,7 +238,8 @@ class LoginServer {
     var response =
         await http.post(Uri.parse(url), headers: headerslg, body: signature);
 
-    print('Ahanda buraya bak: ${response.statusCode}, \n*********************\n\nHeaderslg: $headerslg \nSignature: $signature' );
+    print(
+        'Ahanda buraya bak: ${response.statusCode}, \n*********************\n\nHeaderslg: $headerslg \nSignature: $signature');
 
     if (response.statusCode == 200) {
       var loginHeaders = response.headers;

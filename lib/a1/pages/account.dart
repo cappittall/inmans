@@ -1,17 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/pages/register_page.dart';
-import 'package:inmans/a1/utils/navigate.dart';
-import 'package:inmans/a1/models/user.model.dart';
-import 'package:inmans/a1/utils/constants.dart';
-import 'package:inmans/a1/utils/multilang.dart';
-import 'package:inmans/a1/widgets/background.dart';
-import 'package:inmans/a1/widgets/custom_app_bar.dart';
-import 'package:inmans/a1/widgets/custom_button.dart';
-import 'package:inmans/a1/widgets/custom_input_widget.dart';
+import 'package:togetherearn/a1/pages/register_page.dart';
+import 'package:togetherearn/a1/utils/navigate.dart';
+import 'package:togetherearn/a1/models/user.model.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/widgets/background.dart';
+import 'package:togetherearn/a1/widgets/custom_app_bar.dart';
+import 'package:togetherearn/a1/widgets/custom_button.dart';
+import 'package:togetherearn/a1/widgets/custom_input_widget.dart';
 import 'package:intl/intl.dart';
-import 'package:inmans/a1/pages/home_page.dart';
+import 'package:togetherearn/a1/pages/home_page.dart';
 import 'package:iban/iban.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/http.dart' as http;
@@ -237,12 +237,13 @@ class _AccountPageState extends State<AccountPage> {
                         height: 15,
                       ),
                       TextButton(
-                          onPressed: _onPressed,
-                          child: Center(
-                            child: Text(getString("eraseAccount"), 
-                                  style: TextStyle(color: Colors.red, fontSize: 15), 
-                                  textAlign: TextAlign.right),
-                          ), ),
+                        onPressed: _onPressed,
+                        child: Center(
+                          child: Text(getString("eraseAccount"),
+                              style: TextStyle(color: Colors.red, fontSize: 15),
+                              textAlign: TextAlign.right),
+                        ),
+                      ),
                       Builder(builder: (context) {
                         bool saveLoading = false;
 

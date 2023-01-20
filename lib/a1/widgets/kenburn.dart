@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/pages/home_page.dart';
-import 'package:inmans/a1/utils/multilang.dart';
-import 'package:inmans/a1/widgets/ggy_loading_indicator.dart';
+import 'package:togetherearn/a1/pages/home_page.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/widgets/ggy_loading_indicator.dart';
 
 class KenburnSlider extends StatefulWidget {
   final List<MostEarner> mostEarnings;
@@ -147,8 +147,7 @@ class _KenburnSliderState extends State<KenburnSlider> {
               }).toList(),
             )
           : const Center(
-              child:
-                  SizedBox(height: 25, width: 25, child: LoadingIndicator()),
+              child: SizedBox(height: 25, width: 25, child: LoadingIndicator()),
             ),
     );
   }

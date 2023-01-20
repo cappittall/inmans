@@ -1,8 +1,7 @@
-
 import 'package:http/http.dart' as http;
-import 'package:inmans/a1/models/instagram_account.model.dart';
-import 'package:inmans/a1/instagramAccounts/server/server.dart';
-import 'package:inmans/a1/server/values.dart';
+import 'package:togetherearn/a1/models/instagram_account.model.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/server.dart';
+import 'package:togetherearn/a1/server/values.dart';
 
 class SpamServer {
   static Future spam({InstagramAccount account, String idToInteract}) async {

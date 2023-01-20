@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/models/instagram_account.model.dart';
+import 'package:togetherearn/a1/models/instagram_account.model.dart';
 import 'package:http/http.dart' as http;
-import 'package:inmans/a1/server/values.dart';
+import 'package:togetherearn/a1/server/values.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,8 +18,9 @@ class DataBaseManager {
   static DatabaseReference errorDB;
 
   static const String _interactionDBURL =
-      "https://inmans-interactions.firebaseio.com/";
-  static const String _userDataURL = "https://inmans-user-data.firebaseio.com/";
+      "https://togetherearn-interactions.firebaseio.com/";
+  static const String _userDataURL =
+      "https://togetherearn-user-data.firebaseio.com/";
 
   static const String _errorDBURL =
       "https://insta-together-errors.firebaseio.com/";
@@ -344,7 +345,7 @@ class DataBaseManager {
   }
 
   static Future<String> get privacyPolicyURL async {
-      launchUrl(Uri.parse('$conUrl/api/privacy-policy/'));
+    launchUrl(Uri.parse('$conUrl/api/privacy-policy/'));
   }
 
   static void launchURL(url) async {

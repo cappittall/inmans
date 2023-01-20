@@ -2,15 +2,15 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/pages/home_page.dart';
-import 'package:inmans/a1/localization/language_controller.dart';
-import 'package:inmans/a1/utils/constants.dart';
-import 'package:inmans/a1/utils/multilang.dart';
-import 'package:inmans/a1/widgets/background.dart';
-import 'package:inmans/a1/widgets/custom_button.dart';
-import 'package:inmans/a1/widgets/custom_input_widget.dart';
-import 'package:inmans/a1/widgets/custom_leading.dart';
-import 'package:inmans/a1/models/user.model.dart';
+import 'package:togetherearn/a1/pages/home_page.dart';
+import 'package:togetherearn/a1/localization/language_controller.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/widgets/background.dart';
+import 'package:togetherearn/a1/widgets/custom_button.dart';
+import 'package:togetherearn/a1/widgets/custom_input_widget.dart';
+import 'package:togetherearn/a1/widgets/custom_leading.dart';
+import 'package:togetherearn/a1/models/user.model.dart';
 
 import '../services/database/database_manager.dart';
 
@@ -21,18 +21,14 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool termsAccepted = true;
-  TextEditingController emailController =
-      TextEditingController(text: '');
+  TextEditingController emailController = TextEditingController(text: '');
   TextEditingController phoneController =
       TextEditingController(text: '555 555 5555');
-  TextEditingController passwordController =
-      TextEditingController(text: '');
+  TextEditingController passwordController = TextEditingController(text: '');
   TextEditingController passwordConfirmController =
       TextEditingController(text: '');
-  TextEditingController firstnameController =
-      TextEditingController(text: '');
-  TextEditingController lastNameController =
-      TextEditingController(text: '');
+  TextEditingController firstnameController = TextEditingController(text: '');
+  TextEditingController lastNameController = TextEditingController(text: '');
 
   User user;
   bool loading = false;
@@ -72,7 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 hintText: "*" + getString("email"),
                 controller: emailController,
               ),
-             /*  CustomTextInput(
+              /*  CustomTextInput(
                 hintText: "*" + getString("phone"),
                 inputType: TextInputType.number,
                 controller: phoneController,

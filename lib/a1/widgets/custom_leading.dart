@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/utils/constants.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
 
 class CustomLeading extends StatelessWidget {
   @override

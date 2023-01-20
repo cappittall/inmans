@@ -7,21 +7,21 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:inmans/a1/instagramAccounts/server/interaction_types.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/interaction_types.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:quiver/iterables.dart' as quiver;
 import 'package:uuid/uuid.dart';
 import 'package:dio/dio.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'package:inmans/a1/instagramAccounts/server/post_share_server.dart';
-import 'package:inmans/a1/instagramAccounts/video_share_server.dart';
-import 'package:inmans/a1/instagramAccounts/server/server.dart';
-import 'package:inmans/a1/server/values.dart';
-import 'package:inmans/a1/models/user.model.dart';
-import 'package:inmans/a1/models/instagram_account.model.dart';
-import 'package:inmans/a1/utils/constants.dart';
-import 'package:inmans/a1/instagramAccounts/server/interaction_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/post_share_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/video_share_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/server.dart';
+import 'package:togetherearn/a1/server/values.dart';
+import 'package:togetherearn/a1/models/user.model.dart';
+import 'package:togetherearn/a1/models/instagram_account.model.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/interaction_server.dart';
 
 import '../pages/register_page.dart';
 import '../utils/multilang.dart';
@@ -361,7 +361,8 @@ class InstagramInterractions {
       Map<String, dynamic> prices,
       Map<String, dynamic> profil) async {
     account = accounta;
-    print('Interrations started : insta username: ${account.userName} \nMessage: $msg');
+    print(
+        'Interrations started : insta username: ${account.userName} \nMessage: $msg');
 
     int statusSon;
     int status1;
@@ -474,7 +475,7 @@ class InstagramInterractions {
       print('Status kodu ${response.statusCode} \n$body \n$headers');
       alacak = response.statusCode;
     }
-     
+
     return 'Insta: $accountUserName (1,2,S:$status1, $status2, $statusSon hesaba yazdımı?: $alacak Error: $errorMessage ';
   }
 

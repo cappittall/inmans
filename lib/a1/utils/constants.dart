@@ -11,7 +11,8 @@ const kSecondColor = Color(0xFF913248);
 const secureKey = "jibAaQNZD30RwR+82JIcogQVs8LClBbMrm9/tyJm3ig=";
 // ignore: constant_identifier_names
 
-const privacyPolicyURL = "https://inmansdj.herokuapp.com/privacy-policy.pdf";
+const privacyPolicyURL =
+    "https://inmansdj.herokuapp.com/privacy-policy.pdf";
 
 /// SET WHERE YOU WORK !!!!!!!!
 const bool isLocal = false;

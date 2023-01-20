@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:inmans/a1/instagramAccounts/globals.dart';
-
+import 'package:togetherearn/a1/instagramAccounts/globals.dart';
 
 class NotificationManager {
   FlutterLocalNotificationsPlugin notification =
@@ -38,15 +37,16 @@ class NotificationManager {
 
     AndroidNotificationDetails androidNotificationDetails =
         const AndroidNotificationDetails(
-            "inmans-notifications", "Notifications for inmans");
-    IOSNotificationDetails iosNotificationDetails = const IOSNotificationDetails();
+            "togetherearn-notifications", "Notifications for togetherearn");
+    IOSNotificationDetails iosNotificationDetails =
+        const IOSNotificationDetails();
     NotificationDetails notificationDetails = NotificationDetails(
         android: androidNotificationDetails, iOS: iosNotificationDetails);
     await notification.show(id, title, body, notificationDetails);
   }
 
   Future updateNotificationToken(String token) async {
-   // await DataBaseManager.updateNotificationToken(token);
+    // await DataBaseManager.updateNotificationToken(token);
   }
 
   void createNotificationListener() async {
@@ -55,7 +55,7 @@ class NotificationManager {
     await notificationManager.updateNotificationToken(token);
 
     if (Platform.isIOS) {
-    /*   fcm.requestPermission(
+      /*   fcm.requestPermission(
         sound: true,
         alert: false,
       ); */

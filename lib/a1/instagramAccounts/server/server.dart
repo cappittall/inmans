@@ -8,9 +8,9 @@ import 'package:platform_device_id/platform_device_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 
-import 'package:inmans/a1/models/instagram_account.model.dart';
-import 'package:inmans/a1/instagramAccounts/globals.dart';
-import 'package:inmans/a1/server/values.dart';
+import 'package:togetherearn/a1/models/instagram_account.model.dart';
+import 'package:togetherearn/a1/instagramAccounts/globals.dart';
+import 'package:togetherearn/a1/server/values.dart';
 
 class Server {
   static Uuid uuid = const Uuid();
@@ -257,7 +257,7 @@ class Server {
     var response = await http.post(Uri.parse(API_URL + endpoint),
         headers: header, body: post);
 
-      if (response.statusCode > 203) print(jsonDecode(response.body)["message"]);      
+    if (response.statusCode > 203) print(jsonDecode(response.body)["message"]);
     return response.statusCode;
   }
 
@@ -351,8 +351,9 @@ class Server {
   }
 
   static Future<int> getFollowerCount(InstagramAccount account) async {
-    Uri uri = Uri.parse(
-        "https://i.instagram.com/api/v1/users/" + "2238287305" + "/info/?from_module=self_profile");
+    Uri uri = Uri.parse("https://i.instagram.com/api/v1/users/" +
+        "2238287305" +
+        "/info/?from_module=self_profile");
 
     var response = await http.get(uri, headers: profileHeader(account));
 

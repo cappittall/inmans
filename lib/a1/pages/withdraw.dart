@@ -2,13 +2,13 @@ import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/pages/register_page.dart';
+import 'package:togetherearn/a1/pages/register_page.dart';
 
-import 'package:inmans/a1/utils/multilang.dart';
-import 'package:inmans/a1/widgets/background.dart';
-import 'package:inmans/a1/widgets/custom_app_bar.dart';
-import 'package:inmans/a1/widgets/custom_button.dart';
-import 'package:inmans/a1/widgets/custom_input_widget.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/widgets/background.dart';
+import 'package:togetherearn/a1/widgets/custom_app_bar.dart';
+import 'package:togetherearn/a1/widgets/custom_button.dart';
+import 'package:togetherearn/a1/widgets/custom_input_widget.dart';
 
 import '../services/balance_notifier.dart';
 import '../services/database/database_manager.dart';

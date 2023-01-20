@@ -6,18 +6,18 @@
     "configurations": [
         
         {
-            "name": "inmans",
+            "name": "togetherearn",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "inmans (profile mode)",
+            "name": "togetherearn (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "inmans (release mode)",
+            "name": "togetherearn (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

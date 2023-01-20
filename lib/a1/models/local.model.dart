@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:inmans/a1/models/user.model.dart';
+import 'package:togetherearn/a1/models/user.model.dart';
 
 /* User user(Map<String, dynamic> json) {
   return User(
@@ -44,8 +44,8 @@ Future<User> readUserDataFromLocal() async {
   try {
     final file = await _localFile;
     String contents = await file.readAsString();
-    
-       return User.fromJson(jsonDecode(contents));
+
+    return User.fromJson(jsonDecode(contents));
   } catch (e) {
     print(e);
     return null; //just loads a placeholder json in the assets folder;

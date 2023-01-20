@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
-import 'package:inmans/a1/models/instagram_account.model.dart';
+import 'package:togetherearn/a1/models/instagram_account.model.dart';
 import '../../server/values.dart';
 import 'server.dart';
 
@@ -200,7 +200,6 @@ class ShareImagePostServer {
     print('Sonuc; ');
     print(response.statusCode);
     if (response.statusCode == 200) {
-
       return response.statusCode;
     } else {
       print('esle : ${jsonDecode(response.body)["message"]}');

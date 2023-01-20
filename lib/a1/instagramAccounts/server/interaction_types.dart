@@ -1,11 +1,12 @@
-import 'package:inmans/a1/instagramAccounts/broadcast_server.dart';
-import 'package:inmans/a1/instagramAccounts/server/ig_tv_server.dart';
-import 'package:inmans/a1/instagramAccounts/server/interaction_server.dart';
-import 'package:inmans/a1/instagramAccounts/server/post_share_server.dart';
-import 'package:inmans/a1/instagramAccounts/server/reels_server.dart';
-import 'package:inmans/a1/instagramAccounts/server/spam_server.dart';
-import 'package:inmans/a1/instagramAccounts/server/story_server.dart';
-import 'package:inmans/a1/instagramAccounts/video_share_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/broadcast_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/ig_tv_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/interaction_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/post_share_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/reels_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/spam_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/story_server.dart';
+import 'package:togetherearn/a1/instagramAccounts/video_share_server.dart';
+
 /*
 
 usersToFollow

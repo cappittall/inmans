@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/models/instagram_account.model.dart';
-import 'package:inmans/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/models/instagram_account.model.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
 
-import 'package:inmans/a1/instagramAccounts/add_instagram_account.dart';
+import 'package:togetherearn/a1/instagramAccounts/add_instagram_account.dart';
 
-import 'package:inmans/a1/utils/navigate.dart';
-import 'package:inmans/a1/widgets/background.dart';
-import 'package:inmans/a1/widgets/custom_app_bar.dart';
-import 'package:inmans/a1/widgets/custom_button.dart';
+import 'package:togetherearn/a1/utils/navigate.dart';
+import 'package:togetherearn/a1/widgets/background.dart';
+import 'package:togetherearn/a1/widgets/custom_app_bar.dart';
+import 'package:togetherearn/a1/widgets/custom_button.dart';
 
-import 'package:inmans/a1/models/user.model.dart';
+import 'package:togetherearn/a1/models/user.model.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:http/http.dart' as http;
-import 'package:inmans/a1/utils/constants.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
 
 import '../models/local.model.dart';
 import '../pages/register_page.dart';
@@ -163,7 +163,6 @@ class _InstagramAccountsState extends State<InstagramAccounts> {
                         //Write to local
                         Map<String, dynamic> userData = userDataFromUser(user);
                         writeUserDataToLocal(userData);
-                        
                       });
                     },
                     text: getString("addInstaAccount"),

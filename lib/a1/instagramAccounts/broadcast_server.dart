@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:inmans/a1/models/instagram_account.model.dart';
+import 'package:togetherearn/a1/models/instagram_account.model.dart';
 import '../server/values.dart';
 import 'server/server.dart';
 
-// LIVE BROADCAST ÇALIŞMIYOR SONRA YAPILACAK // 
+// LIVE BROADCAST ÇALIŞMIYOR SONRA YAPILACAK //
 /////////////////
 class LiveBroadCastServer {
   static Future<String> getLiveID(

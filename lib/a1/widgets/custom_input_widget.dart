@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/utils/constants.dart';
-import 'package:inmans/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class _Mask {
@@ -37,7 +37,6 @@ class CustomTextInput extends StatelessWidget {
     this.textInputAction = TextInputAction.next,
     this.enabled = true,
     this.onWhite = false,
-  
   }) : super(key: key);
 
   @override
@@ -57,7 +56,6 @@ class CustomTextInput extends StatelessWidget {
           textInputAction: textInputAction,
           style: TextStyle(color: onWhite ? Colors.black : Colors.white),
           enabled: enabled,
-          
           decoration: InputDecoration(
             prefixIcon: prefix,
             isDense: true,
@@ -71,7 +69,7 @@ class CustomTextInput extends StatelessWidget {
             hintStyle: const TextStyle(color: Colors.grey, fontSize: 20),
             errorStyle: TextStyle(
                 color: onWhite ? Colors.red : Colors.white, fontSize: 14),
-                      ),
+          ),
           autocorrect: false,
         ),
       ),

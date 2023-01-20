@@ -1,4 +1,4 @@
-# inmans
+# togetherearn
 
 A new Flutter project.
 

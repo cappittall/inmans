@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:inmans/a1/utils/constants.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
 
 class CircleCheckBox extends StatefulWidget {
   final Function onSelected;
   final bool selected;
 
-  const CircleCheckBox({Key key, this.onSelected, this.selected}) : super(key: key);
+  const CircleCheckBox({Key key, this.onSelected, this.selected})
+      : super(key: key);
 
   @override
   _CircleCheckBoxState createState() => _CircleCheckBoxState();

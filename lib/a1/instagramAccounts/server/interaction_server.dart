@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:inmans/a1/models/instagram_account.model.dart';
-import 'package:inmans/a1/utils/constants.dart';
+import 'package:togetherearn/a1/models/instagram_account.model.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
 import 'server.dart';
 import '../../server/values.dart';
 
 class InteractionServer {
-  
   Future<http.Response> createUser(Map body) {
     return http.post(
       Uri.parse(url_local),
-      headers:headers,
+      headers: headers,
       body: jsonEncode(body),
     );
   }

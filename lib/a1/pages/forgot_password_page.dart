@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:inmans/a1/pages/register_page.dart';
-import 'package:inmans/a1/utils/multilang.dart';
-import 'package:inmans/a1/widgets/background.dart';
-import 'package:inmans/a1/widgets/custom_app_bar.dart';
-import 'package:inmans/a1/widgets/custom_button.dart';
-import 'package:inmans/a1/widgets/custom_input_widget.dart';
+import 'package:togetherearn/a1/pages/register_page.dart';
+import 'package:togetherearn/a1/utils/multilang.dart';
+import 'package:togetherearn/a1/widgets/background.dart';
+import 'package:togetherearn/a1/widgets/custom_app_bar.dart';
+import 'package:togetherearn/a1/widgets/custom_button.dart';
+import 'package:togetherearn/a1/widgets/custom_input_widget.dart';
 
-import 'package:inmans/a1/utils/constants.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   @override
@@ -73,11 +73,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   sendPasswordResetMail(String text) {
     http.post(Uri.parse('$conUrl/dj-rest-auth/password/reset/'),
-    body:jsonEncode({'email': text})
-    );
+        body: jsonEncode({'email': text}));
 
     ///dj-rest-auth/password/reset/
   }
-
-  
 }

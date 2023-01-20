@@ -5,10 +5,10 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
-import 'package:inmans/a1/pages/register_page.dart';
-import 'package:inmans/a1/utils/constants.dart';
-import 'package:inmans/a1/models/local.model.dart';
-import 'package:inmans/a1/models/user.model.dart';
+import 'package:togetherearn/a1/pages/register_page.dart';
+import 'package:togetherearn/a1/utils/constants.dart';
+import 'package:togetherearn/a1/models/local.model.dart';
+import 'package:togetherearn/a1/models/user.model.dart';
 
 import '../utils/multilang.dart';
 
@@ -124,7 +124,7 @@ Future<User> createUpdateUser(body, bool updateServer, user, context) async {
   }
 
   print(jsonDecode(utf8.decode(response.bodyBytes)));
-  
+
   var userData = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
 
   print(mess);

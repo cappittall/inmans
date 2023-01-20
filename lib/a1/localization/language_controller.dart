@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:inmans/a1/instagramAccounts/globals.dart';
-import 'package:inmans/a1/localization/strings.dart';
+import 'package:togetherearn/a1/instagramAccounts/globals.dart';
+import 'package:togetherearn/a1/localization/strings.dart';
 
 import '../services/database/database_manager.dart';
 
@@ -228,7 +228,7 @@ class LanguageController with ChangeNotifier {
       "backroundmessage":
           "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor.",
       "eraseAccount": "Hesabı sil",
-      "userDeleted":"Kullanıcı silindi",
+      "userDeleted": "Kullanıcı silindi",
       "cancel": "İptal",
       "delete": "Sil",
     },
