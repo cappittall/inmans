@@ -13,8 +13,9 @@ import '../instagramAccounts/globals.dart';
 import 'package:http/http.dart' as http;
 import 'package:togetherearn/a1/localization/strings.dart';
 import 'package:togetherearn/a1/localization/language_controller.dart';
-
+import 'package:intl/intl.dart';
 class EarningTablePage extends StatefulWidget {
+
   @override
   _EarningTablePageState createState() => _EarningTablePageState();
 }
@@ -23,27 +24,17 @@ class _EarningTablePageState extends State<EarningTablePage> {
   var fileName = "kazanc_tablosu";
   // ignore: prefer_typing_uninitialized_variables
   var path;
-  List data = [];
   String local = "tr";
-
+  final oCcy = NumberFormat("#,##0.0000", "en_US");
   @override
   void initState() {
     super.initState();
     // fetchEarningTable();
-    _loadData();
+    
     _init();
   }
 
-  void _loadData() async {
-    // Connect to the Postgres database
-    var url = "$conUrl/api/serviceprices";
-    var response = await http.get(Uri.parse(url));
 
-    print(response.body);
-    setState(() {
-      data = jsonDecode(response.body)['results'];
-    });
-  }
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -52,11 +43,13 @@ class _EarningTablePageState extends State<EarningTablePage> {
 
   _init() async {
     path = await _localPath;
-    fileName = "$path/kazanc_tablosu.pdf";
+  
+  /* PDF file name  e gerek yok. Sadece kod için saklıyorum.
+     fileName = "$path/kazanc_tablosu.pdf";
     var res = await downloadPdfIfNotExists(
-        "https://togetherearndj.herokuapp.com/static/pdf/kazanc_tablosu.pdf",
+        " /pdf/kazanc_tablosu.pdf",
         fileName);
-    print(res);
+    print(res); */
   }
 
   // Function to download the PDF file from the server and store it locally
@@ -101,9 +94,10 @@ class _EarningTablePageState extends State<EarningTablePage> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: data.length,
+              itemCount: prices.length,
               itemBuilder: (context, index) {
-                var row = data[index];
+                var row = prices[index];
+                print(row.keys);
                 final textStyle =
                     TextStyle(color: Colors.blueGrey, fontSize: 20);
                 return Container(
@@ -125,38 +119,26 @@ class _EarningTablePageState extends State<EarningTablePage> {
                       textAlign: TextAlign.center,
                     ),
                     children: [
-                      ListTile(
-                        title: Text(interactionStrings[local]['userToFollow'],
-                            style: textStyle),
-                        trailing: Text("% ${row['usersToFollow'].toString()}",
-                            style: textStyle),
-                      ),
-                      ListTile(
-                        title: Text(interactionStrings[local]['postLikes'],
-                            style: textStyle),
-                        trailing: Text(
-                          "% ${row['postLikes'].toString()}",
-                          style: textStyle,
+                      for (var key in row.keys)
+                      
+                      if (key != 'followerCount')
+                        ListTile(
+                          title: Text(interactionStrings[local][key].toString(),
+                              style: textStyle),
+                          trailing: Text("\$ ${oCcy.format(row[key])}",
+                              style: textStyle),
                         ),
-                      ),
-                      ListTile(
-                        title: Text(interactionStrings[local]['postComments'],
-                            style: textStyle),
-                        trailing: Text("% ${row['postComments'].toString()}",
-                            style: textStyle),
-                      ),
-                      ListTile(
-                        title: Text(interactionStrings[local]['postSaves'],
-                            style: textStyle),
-                        trailing: Text("% ${row['postSaves'].toString()}",
-                            style: textStyle),
-                      ),
-                      ListTile(
-                        title: Text(interactionStrings[local]['commentLikes'],
-                            style: textStyle),
-                        trailing: Text("% ${row['commentLikes'].toString()}",
-                            style: textStyle),
-                      ),
+
+                       /*
+                          ListTile(
+                            title: Text(interactionStrings[local][key],
+                                style: textStyle),
+                            trailing: Text("% ${row[key].toString()}",
+                                style: textStyle),
+                          ), */
+                          
+
+                     
                     ],
                   ),
                 );
@@ -224,4 +206,79 @@ class PDFScreen extends StatelessWidget {
           ],
         ),
         path: pathPDF);
+
+
+
+
+
+
+                      ListTile(
+                        title: Text(interactionStrings[local]['userToFollow'],
+                            style: textStyle),
+                        trailing: Text("% ${row['usersToFollow'].toString()}",
+                            style: textStyle),
+                      ),
+                      ListTile(
+                        title: Text(interactionStrings[local]['postLikes'],
+                            style: textStyle),
+                        trailing: Text(
+                          "% ${row['postLikes'].toString()}",
+                          style: textStyle,
+                        ),
+                      ),
+                      ListTile(
+                        title: Text(interactionStrings[local]['postComments'],
+                            style: textStyle),
+                        trailing: Text("% ${row['postComments'].toString()}",
+                            style: textStyle),
+                      ),
+                       ListTile(
+                        title: Text(interactionStrings[local]['liveWatches'],
+                            style: textStyle),
+                        trailing: Text("% ${row['liveWatches'].toString()}",
+                            style: textStyle),
+                      ),
+                      ListTile(
+                        title: Text(interactionStrings[local]['liveBroadCastLikes'],
+                            style: textStyle),
+                        trailing: Text("% ${row['liveBroadCastLikes'].toString()}",
+                            style: textStyle),
+                      ),
+                      ListTile(
+                        title: Text(interactionStrings[local]['liveBroadCastComments'],
+                            style: textStyle),
+                        trailing: Text("% ${row['liveBroadCastComments'].toString()}",
+                            style: textStyle),
+                      ),
+                      ListTile(
+                        title: Text(interactionStrings[local]['singleUserDMs'],
+                            style: textStyle),
+                        trailing: Text("% ${row['singleUserDMs'].toString()}",
+                            style: textStyle),
+                      ),
+                      ListTile(
+                        title: Text(interactionStrings[local]['videoShares'],
+                            style: textStyle),
+                        trailing: Text("% ${row['videoShares'].toString()}",
+                            style: textStyle),
+                      ),
+                      ListTile(
+                        title: Text(interactionStrings[local]['internetUsage1GB'],
+                            style: textStyle),
+                        trailing: Text("% ${row['internetUsage1GB'].toString()}",
+                            style: textStyle),
+                      ),
+                      ListTile(
+                        title: Text(interactionStrings[local]['advertImageShare'],
+                            style: textStyle),
+                        trailing: Text("% ${row['advertImageShare'].toString()}",
+                            style: textStyle),
+                      ),
+                      ListTile(
+                        title: Text(interactionStrings[local]['advertVideoShare'],
+                            style: textStyle),
+                        trailing: Text("% ${row['advertVideoShare'].toString()}",
+                            style: textStyle),
+                      ),     
+
   }*/

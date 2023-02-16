@@ -85,13 +85,13 @@ function connect(){
             var proc = window.location.protocol=="https:"? "wss://":"ws://";
             const roomName = document.getElementById('room-name').textContent;
             console.log('Local mi? '+ proc + window.location.host
-            + '/ws/messages/'
+            + '/ws/'
             + roomName
             + '/');
 
             const messageSocket = new WebSocket(
                 proc + window.location.host
-                + '/ws/messages/'
+                + '/ws/'
                 + roomName
                 + '/'  );
                 
@@ -252,13 +252,13 @@ function connect(){
             var proc = window.location.protocol=="https:"? "wss://":"ws://";
             const roomName = document.getElementById('room-name').textContent;
             console.log('Local mi? '+ proc + window.location.host
-            + '/ws/messages/'
+            + '/ws/'
             + roomName
             + '/');
 
             const messageSocket = new WebSocket(
                 proc + window.location.host
-                + '/ws/messages/'
+                + '/ws/'
                 + roomName
                 + '/'  );
                 
@@ -421,13 +421,13 @@ function connect(){
             var proc = window.location.protocol=="https:"? "wss://":"ws://";
             const roomName = document.getElementById('room-name').textContent;
             console.log('Local mi? '+ proc + window.location.host
-            + '/ws/messages/'
+            + '/ws/'
             + roomName
             + '/');
 
             const messageSocket = new WebSocket(
                 proc + window.location.host
-                + '/ws/messages/'
+                + '/ws/'
                 + roomName
                 + '/'  );
                 

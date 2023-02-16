@@ -1,5 +1,5 @@
 const String bloksVersionID =
-    "38e807d1f50024907c1026934e57bf28a7c421e5ffcdc0a7b0aa31dbd44acd74";
+    "e097ac2261d546784637b3df264aa3275cb6281d706d91484f43c207d6661931";
 
 const String API_URL2 = "https://b.i.instagram.com/api/v1/";
 const String API_URL = "https://i.instagram.com/api/v1/";
@@ -13,3 +13,18 @@ String guID;
 String waterfallID;
 String osID;
 String userAgent;
+
+Map<String,String> headerscc;
+String url;
+String authorization;
+String dsUserID;
+String claim;
+String rur;
+String mid;
+String cCode;
+String timeson114;
+String shbid;
+String shbts;
+String mobilCountryCode;
+String regionHint;
+

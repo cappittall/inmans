@@ -30,6 +30,7 @@ import 'package:togetherearn/a1/widgets/background.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:togetherearn/a1/models/user.model.dart';
+import '../server/values.dart';
 import '../services/location/location_manager.dart';
 import 'balance.dart';
 import 'package:togetherearn/main.dart';
@@ -52,7 +53,7 @@ class _HomePageState extends State<HomePage> {
 
   User user;
   bool signedIn = false;
-  Map<String, dynamic> prices;
+
   bool connected = false;
   List<MostEarner> mostEarnings;
   List<DrawerItem> drawerItems;
@@ -61,8 +62,8 @@ class _HomePageState extends State<HomePage> {
   Timer timer;
   IOWebSocketChannel channel;
   InstagramInterractions interractions = InstagramInterractions();
-  List imgList = []; //= ['$conUrl/static/images/image1.jpeg'];
-  List imgNames = []; //= ['$conUrl/static/images/names.txt'];
+  List imgList = [];
+  List imgNames = [];
   String headline;
   @override
   void initState() {
@@ -76,17 +77,24 @@ class _HomePageState extends State<HomePage> {
 
     Future.delayed(Duration.zero, () async {
       await Server.getDeviceInfo(context);
+
       await Server.generateIDs();
     });
   }
 
   void _init() async {
     await connectToSocket();
+    await getServerToken();
+    await loadPriceData();
 
     user = await initUserState();
+
     headline = getString("backroundmessage");
+    Locale myLocale = Localizations.localeOf(context);
     setState(() {
       signedIn = user != null;
+      cCode = myLocale.toString();
+      print("cCode: $cCode");
     });
     timer = Timer.periodic(
         Duration(seconds: 60), (Timer t) => listenlocaiton(user));
@@ -105,6 +113,22 @@ class _HomePageState extends State<HomePage> {
 
     return image.path;
   } */
+
+  Map getAccountPrices(int followersCount) {
+    Map price;
+    // 500
+    for (var item in prices) {
+      int min = int.parse(item['followerCount'].split('-')[0]);
+      int max = min == 5000
+          ? 99000000
+          : int.parse(item['followerCount'].split('-')[1]);
+      if (min <= followersCount && followersCount <= max) {
+        price = item;
+        break;
+      }
+    }
+    return price;
+  }
 
   @override
   void didChangeDependencies() {
@@ -209,10 +233,10 @@ class _HomePageState extends State<HomePage> {
   void sendDataToWebSocket(place) {
     if (user == null) return;
     Map<String, dynamic> data = {
-      'action': 'Location',
+      'action': 'mobileLocation',
       'message': place.toString(),
       'sender': user.id,
-      'receiver': 0
+      'receivers': [0]
     };
     channel.sink.add(jsonEncode(data)); // to be implemented
   }
@@ -229,11 +253,15 @@ class _HomePageState extends State<HomePage> {
     channel.stream.listen((event) async {
       //Check if event comes not from this user
       var msg = jsonDecode(event)['message'];
-      if (msg['action'] != 'MobileAction' && msg['action'] != 'Location') {
-        print(
-            'Sender ile user id karşılaştırması ${msg['sender']} , ${user.id}');
+
+      if (msg['action'] != 'mobileAction' &&
+          msg['action'] != 'mobileLocation') {
+        print('msg...> $msg');
+        bool isUserIn = msg['receivers'].contains(user.id);
+        print('isUserIn $isUserIn');
+        if (!isUserIn) return;
+
         streamController.add(event);
-        prices ??= await getPriceList();
         Map<String, dynamic> profil = user.profil;
 
         var accounts =
@@ -245,25 +273,43 @@ class _HomePageState extends State<HomePage> {
           showSnackBar(context, getString("addInstagramAccountToStart"),
               Colors.redAccent);
         } else {
+          print('accounts>>>  $accounts');
           accounts.forEach((account) async {
-            String resp = await interractions.interactWithInstagramApi(
-                msg, account, prices, profil);
-            if (resp.toString().contains('challenge_required')) {
-              print('challenge_required');
-              // ignore: use_build_context_synchronously
-              showSnackBar(
-                  context,
-                  "${getString('challenge_required')} ${account.userName}",
-                  Colors.redAccent,
-                  isLong: true);
-            }
-            Map<String, dynamic> returnData = {
-              'action': 'MobileAction',
-              'message': resp.toString(),
-              'sender': user.id,
-              'receiver': 0
-            };
-            channel.sink.add(jsonEncode(returnData));
+            Map accountPriceList =
+                await getAccountPrices(account.followersCount);
+            var returnData;
+            await interractions
+                .interactWithInstagramApi(
+                    msg, account, accountPriceList, profil)
+                .then((resp) {
+              if (resp['error'] != null) {
+                print('Error varrr .${account.userName} - ${resp['error']}');
+
+                profil['instagram'].forEach((x) {
+                  if (x['id'] == account.id) {
+                    x['error'] = resp['error'];
+                  }
+                });
+                print("BURAYABAAAK: , ${user}");
+                writeUserDataToLocal(userDataFromUser(user));
+
+                account.error = resp['error'];
+                // ignore: use_build_context_synchronously
+                showSnackBar(
+                    context,
+                    "${getString(resp['error'])} ${account.userName}",
+                    Colors.redAccent,
+                    isLong: true);
+              } else {
+                returnData = {
+                  'action': 'mobileAction',
+                  'message': resp.toString(),
+                  'sender': user.id,
+                  'receivers': [0]
+                };
+                return channel.sink.add(jsonEncode(returnData));
+              }
+            });
           });
         }
       }
@@ -553,115 +599,118 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: Background(
-          child: Column(
-            children: [
-              Container(
-                height: 120,
-                width: double.infinity,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          getString("mostEarnings"),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 20),
-                        ),
-                      ]),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  height: 120,
+                  width: double.infinity,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            getString("mostEarnings"),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 20),
+                          ),
+                        ]),
+                  ),
                 ),
-              ),
-              // insert space here
-              const SizedBox(
-                height: 30,
-              ),
-              // insert slider here at main screen
-              CarouselSlider(
-                options: CarouselOptions(
-                  aspectRatio: 9 / 10,
-                  viewportFraction: 0.8,
-                  initialPage: 0,
-                  enableInfiniteScroll: true,
-                  reverse: false,
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 3),
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  enlargeCenterPage: true,
-                  scrollDirection: Axis.horizontal,
+                // insert space here
+                const SizedBox(
+                  height: 30,
                 ),
-                items: imgList.map((imgUrl) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.symmetric(horizontal: 10.0),
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                        ),
-                        child: Stack(
-                          children: [
-                            Image.network(imgUrl),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color.fromARGB(200, 0, 0, 0),
-                                      Color.fromARGB(0, 0, 0, 0)
+                // insert slider here at main screen
+                CarouselSlider(
+                  options: CarouselOptions(
+                    aspectRatio: 9 / 10,
+                    viewportFraction: 0.8,
+                    initialPage: 0,
+                    enableInfiniteScroll: true,
+                    reverse: false,
+                    autoPlay: true,
+                    autoPlayInterval: Duration(seconds: 3),
+                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enlargeCenterPage: true,
+                    scrollDirection: Axis.horizontal,
+                  ),
+                  items: imgList.map((imgUrl) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(horizontal: 10.0),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                          ),
+                          child: Stack(
+                            children: [
+                              Image.network(imgUrl),
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color.fromARGB(200, 0, 0, 0),
+                                        Color.fromARGB(0, 0, 0, 0)
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 80, horizontal: 20),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        // get index of image
+                                        "${imgNames[imgList.indexOf(imgUrl)].split(',')[0]}",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${getString("balance")}: ",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                          Text(
+                                            "\$${imgNames[imgList.indexOf(imgUrl)].split(',')[1]}",
+                                            style: const TextStyle(
+                                              color: Colors.greenAccent,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ],
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
                                   ),
                                 ),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 80, horizontal: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      // get index of image
-                                      "${imgNames[imgList.indexOf(imgUrl)].split(',')[0]}",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "${getString("balance")}: ",
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                        Text(
-                                          "\$${imgNames[imgList.indexOf(imgUrl)].split(',')[1]}",
-                                          style: const TextStyle(
-                                            color: Colors.greenAccent,
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                }).toList(),
-              )
-            ],
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }).toList(),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -690,12 +739,6 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       signedIn = false;
     });
-  }
-
-  getPriceList() async {
-    http.Response response = await http
-        .get(Uri.parse('$conUrl/api/serviceprices/'), headers: headers);
-    return json.decode(utf8.decode(response.bodyBytes))['results'][0];
   }
 
   getMostEarners() async {

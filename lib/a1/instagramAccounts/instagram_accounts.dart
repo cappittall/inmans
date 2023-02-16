@@ -81,11 +81,38 @@ class _InstagramAccountsState extends State<InstagramAccounts> {
                               padding: const EdgeInsets.only(left: 10),
                               child: Row(
                                 children: [
-                                  Text(
-                                    '${account.userName} - ${account.id} ${account.id.runtimeType}',
-                                    style: const TextStyle(fontSize: 20),
-                                  ),
-                                  const Spacer(),
+  
+                                  Expanded(
+                                    child: Card(
+                                      // background color transparent
+                                      color: Colors.white,
+                                      // elevation 0  
+                                      elevation: 2,
+                                      
+                                      child: Container(
+                                        
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              ' ${account.userName} - ${account.followersCount} ${getString("followers")} ',
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                     
+                                            Text(
+                                              ' ${account.error!=""?  " * ${getString(account.error)}": ""}  ',
+                                              style: const TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ), 
+                                  
+                                  
                                   IconButton(
                                       icon: const Icon(
                                         Icons.delete_outline,
@@ -102,7 +129,7 @@ class _InstagramAccountsState extends State<InstagramAccounts> {
                                                 Text(getString('no')))) {
                                           instagrams.removeWhere(
                                               (e) => e['id'] == account.id);
-
+                                  
                                           // headers
                                           Map<String, String> header = {
                                             "Content-Type":
@@ -110,7 +137,7 @@ class _InstagramAccountsState extends State<InstagramAccounts> {
                                             "Authorization":
                                                 "Token ${profil['token']}"
                                           };
-
+                                  
                                           //Databaseden de sil...
                                           http.Response response =
                                               await http.delete(
@@ -120,7 +147,7 @@ class _InstagramAccountsState extends State<InstagramAccounts> {
                                           if (response.statusCode == 204) {
                                             // update new stuation on user instace.
                                             profil['instagram'] = instagrams;
-
+                                  
                                             setState(() {
                                               user.profil = profil;
                                               Map<String, dynamic> userData =

@@ -25,7 +25,7 @@ void main() async {
   languageController.initialize();
 
   LocationManager.initializeLocation();
-  initializeDateFormatting('tr_TR', null)
+  initializeDateFormatting('tr', null)
       .then((_) => runApp(const togetherearn()));
 }
 

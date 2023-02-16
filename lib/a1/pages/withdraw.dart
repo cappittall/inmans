@@ -10,6 +10,7 @@ import 'package:togetherearn/a1/widgets/custom_app_bar.dart';
 import 'package:togetherearn/a1/widgets/custom_button.dart';
 import 'package:togetherearn/a1/widgets/custom_input_widget.dart';
 
+import '../server/values.dart';
 import '../services/balance_notifier.dart';
 import '../services/database/database_manager.dart';
 
@@ -67,10 +68,11 @@ class _WithdrawPageState extends State<WithdrawPage> {
                       style: const TextStyle(fontSize: 22),
                       textAlign: TextAlign.center),
                   CountryPickerDropdown(
-                    initialValue: 'TR',
+                    initialValue: cCode.split('_')[1],
                     itemBuilder: _buildDropdownItem,
                     priorityList: [
-                      CountryPickerUtils.getCountryByIsoCode('TR'),
+                      CountryPickerUtils.getCountryByIsoCode(
+                          cCode.split('_')[1]),
                     ],
                     sortComparator: (Country a, Country b) =>
                         a.phoneCode.compareTo(b.phoneCode),

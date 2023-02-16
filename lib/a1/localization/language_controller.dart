@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:togetherearn/a1/instagramAccounts/globals.dart';
 import 'package:togetherearn/a1/localization/strings.dart';
 
+import '../server/values.dart';
 import '../services/database/database_manager.dart';
 
 LanguageController languageController = LanguageController();
@@ -30,7 +31,7 @@ class LanguageController with ChangeNotifier {
     if (supportedLocalCodes.contains(defaultLocale)) {
       localeCode = defaultLocale;
     } else {
-      localeCode = 'tr';
+      localeCode = cCode.split('_')[1];
     }
 
     if (localDataBox.containsKey('langCode')) {
@@ -224,13 +225,16 @@ class LanguageController with ChangeNotifier {
       "notSignedIn": "Giriş yapmadınız",
       "signIn": "Giris yap",
       "challenge_required":
-          "Lütfen belirtilen instagram hesabınızı silip tekrar ekleyiniz. : ",
+          "Lütfen belirtilen instagram hesabınızı silip tekrar ekleyiniz.  ",
       "backroundmessage":
           "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor.",
       "eraseAccount": "Hesabı sil",
       "userDeleted": "Kullanıcı silindi",
       "cancel": "İptal",
       "delete": "Sil",
+      "active": "Aktif",
+      "login_required":"Tekrar Giriş gerekli",
+      "followers": "Takipçi",
     },
     "en": {
       "email": "email",
@@ -398,6 +402,9 @@ class LanguageController with ChangeNotifier {
       "userDeleted": "User deleted",
       "cancel": "Cancel",
       "delete": "Delete",
+      "active": "Active",
+      "login_required":"Login required",
+      "followers": "Followers",
     }
   };
 

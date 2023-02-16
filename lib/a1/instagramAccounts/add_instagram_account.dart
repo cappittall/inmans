@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unused_local_variable
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -15,6 +15,10 @@ import 'package:togetherearn/a1/widgets/custom_app_bar.dart';
 import 'package:togetherearn/a1/widgets/custom_button.dart';
 import 'package:togetherearn/a1/widgets/custom_input_widget.dart';
 import 'package:togetherearn/a1/utils/constants.dart';
+import 'package:sim_info/sim_info.dart';
+import 'package:togetherearn/a1/instagramAccounts/server/interaction_server.dart';
+
+import 'instagram_interractions.dart';
 
 class AddInstagramAccount extends StatefulWidget {
   final User user;
@@ -28,11 +32,25 @@ class _AddInstagramAccountState extends State<AddInstagramAccount> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   User user;
+  // initial value Türkiye=90
+  String _mobileCountryCode = "90";
 
   @override
+  void initState() {
+    super.initState();
+    getSimInfo();
+  }
+
+  void getSimInfo() async {
+    _mobileCountryCode = await SimInfo.getMobileCountryCode;
+    print("_mobileCountryCode>---->>>>> : $_mobileCountryCode");
+  }
+
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context).settings.arguments as User;
-
+    Locale myLocale = Localizations.localeOf(context);
+    useInheritedMediaQuery:
+    true;
     return Scaffold(
         body: Background(
       child: Container(
@@ -81,6 +99,7 @@ class _AddInstagramAccountState extends State<AddInstagramAccount> {
           ),
           Builder(builder: (context) {
             bool buttonLoading = false;
+            print("localeInfo>>>>> en_EN or tr_TR etc :  $myLocale");
 
             return StatefulBuilder(builder: (context, setButtonState) {
               return CustomButton(
@@ -88,17 +107,17 @@ class _AddInstagramAccountState extends State<AddInstagramAccount> {
                   if (buttonLoading) {
                     return;
                   }
-
                   setButtonState(() {
                     buttonLoading = true;
                   });
-
                   await Server.getDeviceInfo(context);
                   await Server.generateIDs();
 
                   var loginResult = await LoginServer.login(
-                      username: userNameController.text,
-                      password: passwordController.text);
+                      userNameController.text,
+                      passwordController.text,
+                      _mobileCountryCode,
+                      myLocale.toString());
 
                   print('Login Result: $loginResult');
                   if (loginResult == null) {
@@ -116,15 +135,24 @@ class _AddInstagramAccountState extends State<AddInstagramAccount> {
                     InstagramAccount account =
                         InstagramAccount.fromData(loginResult);
 
-                    int genderResult = await Server.getGender(account);
-
+                    Map<String, dynamic> instaUserDetail =
+                        await Server.getGender(account);
+                    print('checkit--instaUserDetail :, $instaUserDetail');
+     
                     // Test etme
                     String gender;
+                    if (instaUserDetail != null) {
+                      account.phoneNumber = instaUserDetail['phone_number'];
+                      account.countryCode = instaUserDetail['country_code'];
+                      account.email = instaUserDetail['email'];
+                      account.userName = instaUserDetail['username'];
+                      account.userId = instaUserDetail['pk'].toString();
 
-                    if (genderResult != null) {
-                      if (genderResult == 2) {
+                      int followersCount = await Server.getFollowerCount(
+                          loginResult['user_id'], account);
+                      if (instaUserDetail['gender'] == 2) {
                         gender = "Kadın";
-                      } else if (genderResult == 1) {
+                      } else if (instaUserDetail['gender'] == 1) {
                         gender = "Erkek";
                       } else {
                         gender = "Both";
@@ -132,8 +160,6 @@ class _AddInstagramAccountState extends State<AddInstagramAccount> {
                     } else {
                       gender = "Both";
                     }
-                    print('User , $user  ');
-
                     List tags = [
                       profil['place']['subLocality'],
                       profil['place']['subAdministrativeArea'],
@@ -151,9 +177,6 @@ class _AddInstagramAccountState extends State<AddInstagramAccount> {
 
                     Map<String, dynamic> body =
                         await instaDataFromAccount(account);
-
-                    print('HEADER: $header');
-                    print('BODY: ${jsonEncode(body)}');
                     http.Response response = await http.post(
                         Uri.parse("$conUrl/api/instagram/"),
                         body: jsonEncode(body),

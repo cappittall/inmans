@@ -302,8 +302,118 @@ takipçi sayısına göre kullanıcı belirlenen kategori hesaplamasına dahil e
 
 
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+//...
+
+String locale = Localizations.localeOf(context).toString();
 
 
 
+import 'package:flutter_device_locale/flutter_device_locale.dart';
+
+//...
+
+String locale = await DeviceLocale.getCurrentLocale;
 
 
+#TAKİPÇİ#
+işlem siparişi geldi. = 50 takipçi isteği
+userid yi aldı
+o anki takipçi sayısı = follow count u aldı = 20 adet mevcut takipçi var
+takip göndermeye başladı = 50 adet işlem emri gitti.
+işlem emirleri tamamlanınca. tekradan follow count sorgusu atmalı = follow count 45 adet geldi.
+böyle olunca
+50+ 20 = 70 adet = follow count olması gerekirdi. fakat 45 adet olmuş. bu sebebten.
+25 eksik var. 25 adet tekrar follow gönderilmeli.
+işlem sonrası follow count = 70 ise eğer işe tamamlandı ver.
+elif follow count tamamlanmayıpta. tüm user işlem emrini yaptıysa partial ver
+
+bu follow count isteğini. eğer sunucu yapacaksa. bir app. cihaza. socketten harici olarak bu isteği göndermeli ve sonucu kaydettirerek
+işleme devam etmeli.
+
+#BEĞENİ#
+işlem siparişi geldi. = 50 beğeni isteği
+medyaid yi aldı
+o anki tbeğeni sayısı = medyacount u aldı = 20 adet mevcut tbeğeni var
+beğeni göndermeye başladı = 50 adet işlem emri gitti.
+işlem emirleri tamamlanınca. tekradan medya count sorgusu atmalı = fmedya count 45 adet geldi.
+böyle olunca
+50+ 20 = 70 adet = medyacount olması gerekirdi. fakat 45 adet olmuş. bu sebebten.
+25 eksik var. 25 adet tekrar like gönderilmeli.
+işlem sonrası medya count = 70 ise eğer işe tamamlandı ver.
+elif medya count tamamlanmayıpta. tüm user işlem emrini yaptıysa partial ver
+
+bu medya count isteğini. eğer sunucu yapacaksa. bir app. cihaza. socketten harici olarak bu isteği göndermeli ve sonucu kaydettirerek
+işleme devam etmeli.
+
+#YORUM#
+işlem siparişi yorum verildi. = 50 yorum isteği
+medyaid yi aldı
+yorum göndermeye başladı = 50 adet işlem emri gitti.
+bu işlemler tamamlanınca complete ver.
+[burda apide başlangıç sayısı = 0 gelir]
+[burda apide tamamlandısayısı = verilen işlem sipariş sayısı gelir]
+
+
+#canlı yayın id alma#
+followdaki
+userid bul çalışcak
+
+self.hesapidbul  = userid
+
+self.hesapidbul = 
+
+        link = 'feed/user/' + self.hesapidbul + '/story/?supported_capabilities_new=%5B%7B%22name%22%3A%22SUPPORTED_SDK_VERSIONS%22%2C%22value%22%3A%2290.0%2C91.0%2C92.0%2C93.0%2C94.0%2C95.0%2C96.0%2C97.0%2C98.0%2C99.0%2C100.0%2C101.0%2C102.0%2C103.0%2C104.0%2C105.0%2C106.0%2C107.0%2C108.0%2C109.0%2C110.0%2C111.0%2C112.0%2C113.0%22%7D%2C%7B%22name%22%3A%22FACE_TRACKER_VERSION%22%2C%22value%22%3A%2214%22%7D%2C%7B%22name%22%3A%22COMPRESSION%22%2C%22value%22%3A%22ETC2_COMPRESSION%22%7D%2C%7B%22name%22%3A%22world_tracker%22%2C%22value%22%3A%22world_tracker_enabled%22%7D%2C%7B%22name%22%3A%22gyroscope%22%2C%22value%22%3A%22gyroscope_enabled%22%7D%5D'
+
+        self.SendRequestloginsonrasitoplu2get1a(link)
+
+        #print("çıktı: ", self.json1)
+
+        self.liveid = str(self.json1["broadcast"]["id"])
+        print("liveid: ", self.liveid)
+
+canlı yayın headerları python canlı yayın izle. canlıy ayın like ve canlı yayın yorum headerslarına göre yapılacak
+
+########################### custom admin site gereklilikleri #################
+
+takipçi.beğeni.yorum.canlı yayın izlenme.canlı yayın yorum.canlı yayın BEĞENİ
+yukardaki servisleri custom adminden tek sayfada yollama sayfalarının yapılması
+
+api dökümanı ve api key değiştirme butonu
+
+Filtreleme: 
+- kadın-erkek
+- ülke kodu -şehir, il-ilçe
+Kullanıcı sınıfı oluştur. 
+
+Api servis oluşturma
+- filtrelenmiş gurup
+- Servis adı: 
+    - Takipçi
+    - beğeni
+    - yorum
+    - canlı yayın izlenme
+    - canlı yayın yorum
+    - canlı yayın beğeni
+
+üyeler kazanç maliyet hesaplama tablosu (bu tabloda değişiklik yapınca. tüm applerde güncellenmeli)
+
+
+binance api ödeme yollama sayfası
+binance api keyi yazma kaydetme ve silme kısmı
+
+sıralı olarak kullanıcılara yapılacak ödeme işlem sırası ve ödeme 
+yapıldıltan sonra kullanıcı cihazına bildirim yollama özelliği
+
+bu kısımda kullanıcıların hesap cüzdanlarına. 
+sıralı olarak para gönderme işlemi yapabileceğimiz sayfa
+
+
+************** ÖNEMLİ SERVİSLER ********
+resim paylaşma
+video paylaşma
+hikaye videosu paylaşma
+
+bu işlemleri yapabileceğimiz. kullanıcı filitreli olarak işlem yapılabilen
+sipariş sayfası

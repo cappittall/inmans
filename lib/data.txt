@@ -39,11 +39,11 @@ def SendRequestcookieal(self):
             "X-Bloks-Is-Panorama-Enabled": "false",
             "X-IG-Device-ID": self.deviceid, #
             "X-IG-Android-ID": self.androidid, #
-            "X-IG-Connection-Type": "WIFI",
+            "X-IG-Connection-Type": "MOBILE(LTE)",
             "X-IG-Capabilities": "3brTvx8=",
             "X-IG-App-ID": "567067343352427",
             "User-Agent": self.USER_AGENT, #
-            "Accept-Language": "tr-TR, en-US",
+            "Accept-Language": "${cCode.replaceFirst('_', '-')}, en-US",
             "Accept-Encoding": "gzip, deflate",
             "Host": "b.i.instagram.com",
             "X-FB-HTTP-Engine": "Liger",
@@ -119,9 +119,9 @@ def pwdsifreleme(self):
 def SendRequest2pwd(self, endpoint, post=None):
         headersbg={
 
-                    "X-IG-App-Locale": "tr_TR",
-                    "X-IG-Device-Locale": "tr_TR",
-                    "X-IG-Mapped-Locale": "tr_TR",
+                    "X-IG-App-Locale": cCode,
+                    "X-IG-Device-Locale": cCode,
+                    "X-IG-Mapped-Locale": cCode,
                     "X-Pigeon-Session-Id": self.pigeonid, #
                     "X-Pigeon-Rawclienttime": "1608885245.740",
                     "X-IG-Connection-Speed": "-1kbps",
@@ -134,11 +134,11 @@ def SendRequest2pwd(self, endpoint, post=None):
                     "X-Bloks-Is-Panorama-Enabled": "false",
                     "X-IG-Device-ID": self.deviceid, #
                     "X-IG-Android-ID": self.androidid, #
-                    "X-IG-Connection-Type": "WIFI",
+                    "X-IG-Connection-Type": "MOBILE(LTE)",
                     "X-IG-Capabilities": "3brTvx8=",
                     "X-IG-App-ID": "567067343352427",
                     "User-Agent": self.USER_AGENT, #
-                    "Accept-Language": "tr-TR, en-US",
+                    "Accept-Language": "${cCode.replaceFirst('_', '-')}, en-US",
                     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
                     "Accept-Encoding": "gzip, deflate",
                     "Host": "b.i.instagram.com",

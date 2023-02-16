@@ -36,7 +36,7 @@ class InstagramInterractions {
   }
 
   /// This idens.
-  InstagramAccount account;
+
   String errorMessage;
   String shbid;
   String shbts;
@@ -46,22 +46,13 @@ class InstagramInterractions {
 
   String mediaId;
   Map json1;
-  String likeCountson;
-  String followCount;
-  Map prices;
-  Map operationData = {};
+  String likeCount;
+  String followerCount;
   String organic_tracking_token;
   var uuid = Uuid();
 
   TargetPlatform platform =
       Platform.isAndroid ? TargetPlatform.android : TargetPlatform.iOS;
-
-  String timestamp1(type) {
-    String timeson114 =
-        (DateTime.now().millisecondsSinceEpoch / 1000).round().toString();
-    // '1626522434.932' values comes from server.dart as used like that before.
-    return type ? timeson114 : '1626522434.932';
-  }
 
   String generateUUID(type) {
     String gen_uuid = uuid.v4();
@@ -82,17 +73,17 @@ class InstagramInterractions {
 
   // POST REQUEST
   Future<int> sendRequestloginsonrasitoplu2post1a(
-      String endpoint, String post) async {
+      account, String endpoint, String post) async {
     Map<String, String> headers_post = {
-      'X-IG-App-Locale': 'tr_TR',
-      'X-IG-Device-Locale': 'tr_TR',
-      'X-IG-Mapped-Locale': 'tr_TR',
+      'X-IG-App-Locale': cCode,
+      'X-IG-Device-Locale': cCode,
+      'X-IG-Mapped-Locale': cCode,
       'X-Pigeon-Session-Id': pigeonID,
       'X-Pigeon-Rawclienttime': timestamp1(true),
       'X-IG-Bandwidth-Speed-KBPS': '-1.000',
       'X-IG-Bandwidth-TotalBytes-B': '0',
       'X-IG-Bandwidth-TotalTime-MS': '0',
-      'X-IG-App-Startup-Country': 'TR', //Yok
+      'X-IG-App-Startup-Country': cCode.split('_')[1], //Yok
       'X-Bloks-Version-Id': bloksVersionID,
       'X-IG-WWW-Claim': account.claim,
       'X-Bloks-Is-Layout-RTL': 'false',
@@ -101,16 +92,17 @@ class InstagramInterractions {
       'X-IG-Family-Device-ID': appDeviceID,
       'X-IG-Android-ID': osID,
       "x-ig-timezone-offset": "10800",
-      "x-ig-connection-type": "MOBILE(HSPA)",
+      "x-ig-connection-type": "MOBILE(LTE)",
       "x-ig-capabilities": "3brTvx0\u003d",
       'X-IG-App-ID': '567067343352427',
       'User-Agent': userAgent,
-      'Accept-Language': 'tr-TR, en-US',
+      'Accept-Language': '${cCode.replaceFirst('_', '-')}, en-US',
       'Authorization': account.authToken,
       'IG-U-SHBID': shbid, // var farklı
       'IG-U-SHBTS': shbts, // var farklı
       'X-MID': account.mid,
       'IG-U-DS-USER-ID': account.dsUserID,
+      'IG-U-IG-DIRECT-REGION-HINT': account.regionHint,
       'IG-U-RUR': account.rur,
       'IG-INTENDED-USER-ID': account.dsUserID,
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', // YOK
@@ -128,8 +120,6 @@ class InstagramInterractions {
         headers: headers_post,
         body: post);
 
-    // TODO: verify=True, proxies=self.root_proxy, timeout=15)  # proxies=proxy
-
     json1 = json.decode(utf8.decode(response.bodyBytes));
 
     try {
@@ -141,21 +131,22 @@ class InstagramInterractions {
     try {
       shbid = response.headers['ig-set-ig-u-shbid'];
       shbts = response.headers['ig-set-ig-u-shbts'];
-      account.rur = response.headers['ig-set-ig-u-rur'];
+      rur = response.headers['ig-set-ig-u-rur'];
     } catch (e) {
       shbid = null;
       shbts = null;
+      rur = null;
     }
 
     return response.statusCode;
   }
 
   //GET REQUEST
-  Future<int> sendRequestloginsonrasitoplu2get1a(endpoint) async {
+  Future<int> sendRequestloginsonrasitoplu2get1a(account, endpoint) async {
     Map<String, String> headers_get = {
-      'X-IG-App-Locale': 'tr_TR',
-      'X-IG-Device-Locale': 'tr_TR',
-      'X-IG-Mapped-Locale': 'tr_TR',
+      'X-IG-App-Locale': cCode,
+      'X-IG-Device-Locale': cCode,
+      'X-IG-Mapped-Locale': cCode,
       'X-Pigeon-Session-Id': pigeonID,
       'X-Pigeon-Rawclienttime': timestamp1(true),
       'X-IG-Bandwidth-Speed-KBPS': '-1.000',
@@ -169,20 +160,21 @@ class InstagramInterractions {
       'X-IG-Family-Device-ID': appDeviceID,
       'X-IG-Android-ID': osID,
       "x-ig-timezone-offset": "10800",
-      "x-ig-connection-type": "MOBILE(HSPA)",
+      "x-ig-connection-type": "MOBILE(LTE)",
       "x-ig-capabilities": "3brTvx0\u003d",
       'X-IG-App-ID': '567067343352427',
       'User-Agent': userAgent,
       'Accept-Language': 'tr-TR, en-US',
       'Authorization': account.authToken,
       'X-MID': account.mid,
-      'IG-U-SHBID': "3810", // shbid, (replaced with server.dart values)
-      'IG-U-SHBTS': "1609266568.7728953", // shbts,  ``
+      'IG-U-SHBID': account.shbid, // shbid, (replaced with server.dart values)
+      'IG-U-SHBTS': account.shbts, // shbts,  ``
+      'IG-U-IG-DIRECT-REGION-HINT': account.regionHint,
       'IG-U-DS-USER-ID': account.dsUserID,
       'IG-U-RUR': account.rur,
       'IG-INTENDED-USER-ID': account.dsUserID,
       'Accept-Encoding': 'gzip, deflate',
-      'Host': 'i.instagram.com',
+      'Host': 'b.i.instagram.com',
       'X-FB-HTTP-Engine': 'Liger',
       'X-FB-Client-IP': 'True',
       'X-FB-Server-Cluster': 'True',
@@ -190,13 +182,11 @@ class InstagramInterractions {
     };
 
     http.Response response = await http.get(
-      Uri.parse('https://i.instagram.com/api/v1/$endpoint'),
+      Uri.parse('https://b.i.instagram.com/api/v1/$endpoint'),
       headers: headers_get,
     );
 
     json1 = jsonDecode(utf8.decode(response.bodyBytes));
-    // json1 = jsonDecode(jsonEncode(response.body));
-
     try {
       errorMessage = json1['message'];
     } catch (e) {
@@ -204,12 +194,13 @@ class InstagramInterractions {
     }
 
     try {
-      account.rur = response.headers['ig-set-ig-u-rur'];
+      rur = response.headers['ig-set-ig-u-rur'];
       shbid = response.headers['ig-set-ig-u-shbid'];
       shbts = response.headers['ig-set-ig-u-shbts'];
     } catch (e) {
       shbid = null;
       shbts = null;
+      rur = null;
     }
 
     return response.statusCode;
@@ -217,7 +208,7 @@ class InstagramInterractions {
 
   // C1 //////////////// MEDIA LIKE //////////////////////////
 
-  Future<int> mediaIdBul(userMediaLink) async {
+  Future<int> mediaIdBul(account, userMediaLink) async {
     // check https or http exists or not? if not add it.;
     userMediaLink = userMediaLink.contains('http')
         ? userMediaLink
@@ -225,7 +216,7 @@ class InstagramInterractions {
 
     String link = "oembed/?url=$userMediaLink?utm_medium=copy_link";
 
-    int status = await sendRequestloginsonrasitoplu2get1a(link);
+    int status = await sendRequestloginsonrasitoplu2get1a(account, link);
 
     if (status == 200) {
       mediaId = json1['media_id'].split('_')[0];
@@ -236,13 +227,13 @@ class InstagramInterractions {
     return status;
   }
 
-  Future<int> getLikeCount() async {
+  Future<int> getLikeCount(account) async {
     // Get number of like ;
     String link = "media/$mediaId/info/";
-    var status = await sendRequestloginsonrasitoplu2get1a(link);
+    var status = await sendRequestloginsonrasitoplu2get1a(account, link);
 
     if (status == 200) {
-      likeCountson = json1['items'][0]['like_count'].toString();
+      likeCount = json1['items'][0]['like_count'].toString();
       organic_tracking_token =
           json1['items'][0]['organic_tracking_token'].toString();
       userIdWhoLikes = json1['items'][0]['user']['pk'].toString();
@@ -254,16 +245,14 @@ class InstagramInterractions {
   }
 
   // C3
-  Future<int> likeMedia() async {
+  Future<int> likeMedia(account) async {
     Map<String, String> alfason = {
-      "inventory_source": "media_or_ad",
       "delivery_class": "organic",
       "media_id": mediaId,
-      "carousel_index": "0",
-      "radio_type": "mobile-hspa+",
+      "radio_type": "mobil-lte",
       "_uid": account.dsUserID, //  Bunlar ne hacı??  db_userid,
       "_uuid": guID, // db_guid,
-      "nav_chain": "039:feed_timeline:1,8ff:feed_short_url:2",
+      "nav_chain": "8Of:self_profile:11,8ff:feed_short_url:15",
       "is_carousel_bumped_post": "false",
       "container_module": "feed_short_url",
       "feed_position": "0"
@@ -273,13 +262,13 @@ class InstagramInterractions {
     String signature18 = Uri.encodeFull("signed_body=SIGNATURE.$ddd80&d=1");
 
     String link = "media/$mediaId/like/";
-    int status = await sendRequestloginsonrasitoplu2post1a(link, signature18);
-
+    int status =
+        await sendRequestloginsonrasitoplu2post1a(account, link, signature18);
     return status;
   }
 
 //////////////////////// FOLLOWIG /////////////////
-  Future<int> userIdBul(userToFollowLink) async {
+  Future<int> userIdBul(account, userToFollowLink) async {
     List b = userToFollowLink.split('/');
     userToFollowLink.endsWith('/')
         ? b.removeLast()
@@ -287,7 +276,7 @@ class InstagramInterractions {
     String userToFollow = b.last;
 
     var link = "users/$userToFollow/usernameinfo/?from_module=deep_link_util";
-    int status = await sendRequestloginsonrasitoplu2get1a(link);
+    int status = await sendRequestloginsonrasitoplu2get1a(account, link);
 
     if (status == 200) {
       userIdToFollow = json1['user']['pk'].toString();
@@ -296,20 +285,19 @@ class InstagramInterractions {
     return status;
   }
 
-  Future<int> getFollowCount() async {
+  Future<int> getFollowerCount(account) async {
+    // https://i.instagram.com/api/v1/users/" + "2238287305" + "/info/?from_module=self_profile");
     String link =
         "users/$userIdToFollow/info/?from_module=self_profile$userIdToFollow";
-    int status = await sendRequestloginsonrasitoplu2get1a(link);
-
-    followCount = json1['user']['follower_count'].toString();
-
+    int status = await sendRequestloginsonrasitoplu2get1a(account, link);
+    followerCount = json1['user']['follower_count'].toString();
     return status;
   }
 
-  Future<int> followToTheUser() async {
+  Future<int> followToTheUser(account) async {
     Map<String, String> alfason = {
       "user_id": userIdToFollow,
-      "radio_type": "mobile-hspa+",
+      "radio_type": "mobil-lte",
       "_uid": account.dsUserID,
       "device_id": osID,
       "_uuid": guID,
@@ -321,13 +309,14 @@ class InstagramInterractions {
     var signature18 = Uri.encodeFull("signed_body=SIGNATURE.$ddd80");
     String link = "friendships/create/$userIdToFollow/";
 
-    int status = await sendRequestloginsonrasitoplu2post1a(link, signature18);
+    int status =
+        await sendRequestloginsonrasitoplu2post1a(account, link, signature18);
 
     return status;
   }
 
 // make comment
-  Future<int> mediaComment(comment) async {
+  Future<int> mediaComment(account, comment) async {
     int count = 0;
 
     String commentURL = "media/$mediaId/comment/";
@@ -336,15 +325,14 @@ class InstagramInterractions {
       "user_breadcrumb": "",
       "delivery_class": "organic",
       "idempotence_token": adID,
-      "carousel_index": "0",
-      "radio_type": "wifi-none",
+      "radio_type": "mobil-lte",
       "_uid": account.dsUserID,
       "_uuid": guID,
       "nav_chain":
-          "1nj:feed_timeline:6,CommentThreadFragment:comments_v2_feed_short_url:9",
+          "039:feed_timeline:10,8ff:feed_short_url:20,CommentThreadFragment:comments_v2_feed_short_url:21",
       "comment_text": comment,
       "is_carousel_bumped_post": "false",
-      "container_module": "comments_v2_feed_contextual_profile",
+      "container_module": "comments_v2_feed_short_url",
       "feed_position": "0"
     };
 
@@ -355,84 +343,122 @@ class InstagramInterractions {
     return statusCode;
   }
 
-  Future<String> interactWithInstagramApi(
+  Future preceedPayment(account, msg, profil, operationData, prices) async {
+    // CREATE PAYMENT REQUEST
+    if (!account.ghost && msg['isFree'] == false) {
+      Map<String, dynamic> body = {
+        "operation_id": null,
+        "type": msg['action'],
+        "pdflink": "",
+        "amount": prices[msg['action']],
+        "ghost": account.ghost,
+        "operation_data": operationData
+      };
+
+      http.Response response = await http.post(
+          Uri.parse('$conUrl/api/earnlist/'),
+          headers: getUserHeader(profil['token']),
+          body: jsonEncode(body));
+
+      print('Status kodu ${response.statusCode} \n$body \n$headers');
+      operationData.clear();
+      return response.statusCode;
+    }
+    return false;
+  }
+
+  Future<Map> interactWithInstagramApi(
       Map<String, dynamic> msg,
-      InstagramAccount accounta,
+      InstagramAccount account,
       Map<String, dynamic> prices,
       Map<String, dynamic> profil) async {
-    account = accounta;
     print(
-        'Interrations started : insta username: ${account.userName} \nMessage: $msg');
+        'Interrations started : \nInsta username>>: ${account.userName} \nMessage>>: $msg');
 
     int statusSon;
     int status1;
     int status2;
-    int alacak = 0;
-    String accountUserName = account.userName;
-    operationData['instagram'] = accountUserName;
+    int alacak;
+    var operationData = {};
+    operationData['accountUserName'] = account.userName;
 
     print('Hey burdamıyoz??  ${msg['action']} ');
 
+    // POST LIKE
     if (msg['action'] == 'postLikes') {
-      String userMediaLink = msg['message'];
-      status1 = await mediaIdBul(userMediaLink);
+      String userMediaLink = msg['link'];
+      status1 = await mediaIdBul(account, userMediaLink);
       if (status1 == 200) {
-        status2 = await getLikeCount();
+        status2 = await getLikeCount(account);
         if (status2 == 200) {
-          statusSon = await likeMedia();
+          statusSon = await likeMedia(account);
           operationData['mediaID'] = mediaId;
+          if (statusSon == 200) {
+            alacak = await preceedPayment(
+                account, msg, profil, operationData, prices);
+          }
         }
       }
     }
 
+    // FOLLOW USER
     if (msg['action'] == 'usersToFollow') {
-      String userToFollowLink = msg['message'];
-      status1 = await userIdBul(userToFollowLink); // gets userIdToFollow
+      String userToFollowLink = msg['link'];
+      status1 =
+          await userIdBul(account, userToFollowLink); // gets userIdToFollow
       if (status1 == 200) {
-        status2 = await getFollowCount();
+        status2 = await getFollowerCount(account);
         if (status2 == 200) {
-          statusSon = await followToTheUser();
+          statusSon = await followToTheUser(account);
           //"operationData": {"accountID": "[FOLLOWEDUSERID]"}
           operationData['accountID'] = userIdToFollow;
+          if (statusSon == 200) {
+            alacak = await preceedPayment(
+                account, msg, profil, operationData, prices);
+          }
         }
       }
     }
 
+    // POST COMMENT
     if (msg['action'] == 'postComments') {
-      String userMediaLink = msg['message'].split('|').first;
-      String comment = msg['message'].split('|').last;
+      String userMediaLink = msg['link'];
+      String comment = msg['comments'][account.id];
       print('User media : $userMediaLink');
       print('Message : $comment');
 
-      status1 = await mediaIdBul(userMediaLink);
+      status1 = await mediaIdBul(account, userMediaLink);
       if (status1 == 200) {
-        statusSon = await mediaComment(comment);
+        statusSon = await mediaComment(account, comment);
         //"operationData": {"mediaID": "[MEDIAID]", "text": "[COMMENTTEXT]"}
         operationData['mediaID'] = mediaId;
         operationData['text'] = comment;
+        if (statusSon == 200) {
+          alacak =
+              await preceedPayment(account, msg, profil, operationData, prices);
+        }
       }
     }
 
+    // POST SHARE
     if (msg['action'] == 'postShares') {
-      // for image
-      String imageLink = msg['message'].split('|').first;
-      String text = msg['message'].split('|').last;
+      String imageLink = msg['link'];
+      String comment = msg['comments'][account.id];
       http.Response response = await http.get(Uri.parse(imageLink));
-
       statusSon = await ShareImagePostServer.sharePost(
-          account: account, text: text, idToInteract: response.bodyBytes);
-      // "operationData": {"link": "[POSTLINK]","text": ""}
+          account: account, text: comment, idToInteract: response.bodyBytes);
       operationData['link'] = imageLink;
-      operationData['text'] = text;
+      operationData['text'] = comment;
+      if (statusSon == 200) {
+        alacak =
+            await preceedPayment(account, msg, profil, operationData, prices);
+      }
     }
 
+    // VIDEO SHARE
     if (msg['action'] == 'videoShares') {
-      String userMediaLink = msg['message'].split('|').first;
-      String comment = msg['message'].split('|').last;
-
-      print("userMediaLink $userMediaLink");
-      // https://stackoverflow.com/questions/54197053/download-file-from-url-save-to-phones-storage
-
+      String userMediaLink = msg['link'];
+      String comment = msg['comments'][account.id];
       HttpClient httpClient = HttpClient();
       Uint8List bytes;
       try {
@@ -454,29 +480,26 @@ class InstagramInterractions {
       // "operationData": {"link": "[POSTLINK]","text": ""}
       operationData['link'] = userMediaLink;
       operationData['text'] = comment;
+      if (statusSon == 200) {
+        alacak =
+            await preceedPayment(account, msg, profil, operationData, prices);
+      }
     }
 
-    if (statusSon == 200 && !account.ghost) {
-      String tokenn = profil['token'];
-      Map<String, dynamic> body = {
-        "operation_id": null,
-        "type": msg['action'],
-        "pdflink": "",
-        "amount": prices[msg['action']],
-        "ghost": account.ghost,
-        "operation_data": operationData
-      };
-
-      http.Response response = await http.post(
-          Uri.parse('$conUrl/api/earnlist/'),
-          headers: getUserHeader(profil['token']),
-          body: jsonEncode(body));
-
-      print('Status kodu ${response.statusCode} \n$body \n$headers');
-      alacak = response.statusCode;
-    }
-
-    return 'Insta: $accountUserName (1,2,S:$status1, $status2, $statusSon hesaba yazdımı?: $alacak Error: $errorMessage ';
+    Map socketResponse = {
+      'account': account.userName,
+      'status1': status1,
+      'status2': status2,
+      'statusFinal': statusSon,
+      'alacak': alacak,
+      'error': errorMessage,
+      'likeCount': likeCount,
+      'followerCount': followerCount,
+      'mediaId': mediaId,
+      'userIdToFollow': userIdToFollow,
+      'operationData': jsonEncode(operationData)
+    };
+    return socketResponse;
   }
 
   Future<void> downloadFile(imgUrl) async {

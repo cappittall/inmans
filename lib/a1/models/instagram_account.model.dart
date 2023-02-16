@@ -2,7 +2,7 @@ import 'package:encrypt/encrypt.dart';
 
 class InstagramAccount {
   int id;
-  String user_id;
+  String userId;
   String userName;
   String password;
   String claim;
@@ -21,10 +21,18 @@ class InstagramAccount {
   String adminArea;
   String locality;
   String subLocality;
+  String shbid;
+  String shbts;
+  String regionHint;
+  String phoneNumber;
+  int countryCode;
+  String email;
+  int followersCount;
+  String error;
 
   InstagramAccount({
     this.id,
-    this.user_id,
+    this.userId,
     this.userName,
     this.password,
     this.sessionID,
@@ -39,31 +47,44 @@ class InstagramAccount {
     this.locationTags,
     this.gender,
     this.followerCount,
+    this.shbid,
+    this.shbts,
+    this.regionHint,
+    this.phoneNumber,
+    this.countryCode,
+    this.email,
+    this.followersCount,
+    this.error,
   });
 
   factory InstagramAccount.fromData(Map<String, dynamic> data) {
     final key = Key.fromLength(32);
-
     final iv = IV.fromLength(16);
-
     final encrypter = Encrypter(AES(key));
     final encrypted = encrypter.encrypt(data["password"], iv: iv);
-
     return InstagramAccount(
         id: data['id'], // database den gelen id
-        user_id: data["user_id"],
-        userName: data["userName"],
+        userId: data["user_id"],
+        userName: data["user_name"],
         password: encrypted.base64,
-        pwdPassword: data["pwdPassword"],
+        pwdPassword: data["pwd_password"],
         claim: data["claim"],
-        authToken: data["authToken"],
+        authToken: data["auth_token"],
         csrftoken: data["csrftoken"],
         rur: data["rur"],
-        dsUserID: data["dsUserID"],
-        sessionID: data["sessionID"],
+        dsUserID: data["ds_user_id"],
+        sessionID: data["session_id"],
         mid: data["mid"],
         ghost: data["ghost"],
-        gender: data["gender"] ?? 'gd yok');
+        gender: data["gender"] ?? 'gd yok',
+        shbid: data["shbid"],
+        shbts: data["shbts"],
+        regionHint: data["region_hint"],
+        phoneNumber: data["phone_number"],
+        countryCode: data["country_code"],
+        email: data["email"],
+        followersCount: data["followers_count"],
+        error: data["error"]??'');
   }
 
   void setTags(List tags) {
@@ -81,17 +102,17 @@ class InstagramAccount {
 Future<Map<String, dynamic>> instaDataFromAccount(
     InstagramAccount account) async {
   Map<String, dynamic> data = {
-    "profil" : account.id,
+    "profil": account.id,
     "user_id": "07666e7a-1957-11ec-9f88-1e00620a1240",
-    "userName": account.userName ?? "",
+    "user_name": account.userName ?? "",
     "password": account.password ?? "",
-    "pwdPassword": account.pwdPassword ?? "",
+    "pwd-password": account.pwdPassword ?? "",
     "claim": account.claim ?? "",
-    "authToken": account.authToken ?? "",
+    "auth_token": account.authToken ?? "",
     "csrftoken": account.csrftoken ?? "",
     "rur": account.rur ?? "",
-    "dsUserID": account.dsUserID ?? "",
-    "sessionID": account.sessionID ?? "",
+    "ds_user_id": account.dsUserID ?? "",
+    "session_id": account.sessionID ?? "",
     "mid": account.mid ?? "",
     "ghost": account.ghost ?? false,
     "gender": account.gender ?? "",
@@ -99,6 +120,14 @@ Future<Map<String, dynamic>> instaDataFromAccount(
     "adminArea": account.adminArea ?? "",
     "locality": account.locality ?? "",
     "subLocality": account.subLocality ?? "",
+    "shbid": account.shbid ?? "",
+    "shbts": account.shbts ?? "",
+    "regionHint": account.regionHint ?? "",
+    "phone_number": account.phoneNumber ?? "",
+    "country_code": account.countryCode ?? 0,
+    "email": account.email ?? "",
+    "followers_count": account.followersCount ?? 0,
+    "error": account.error ?? "",
   };
   return data;
 }

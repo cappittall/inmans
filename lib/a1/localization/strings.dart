@@ -1,7 +1,7 @@
 Map<String, Map<String, String>> interactionStrings = {
   "tr": {
     "follow": "Takip",
-    "userToFollow":"Takip edilecek hesap",
+    "usersToFollow":"Takip edilecek hesap",
     "postLikes": "Gönderi beğeni",
     "postSaves": "Gönderi kaydetme",
     "postComments": "Gönderi yorum",
@@ -11,12 +11,12 @@ Map<String, Map<String, String>> interactionStrings = {
     "igtvLike": "IGTV Beğeni",
     "igtvComment": "IGTV yorum",
     "postShare": "Gönderi paylaşımı",
-    "videoShare": "Video paylaşımı",
+    "videoShares": "Video paylaşımı",
     "storyShare": "Hikaye paylaşımı",
-    "singleUserDM": "DM (Tekli)",
-    "multiUserDM": "DM (Çoklu)",
-    "liveLike": "Canlı yayın beğeni",
-    "liveComment": "Canlı yayın yorum",
+    "singleUserDMs": "DM (Tekli)",
+    "multiUserDMs": "DM (Çoklu)",
+    "liveBroadCastLikes": "Canlı yayın beğeni",
+    "liveBroadCastComments": "Canlı yayın yorum",
     "postSpam": "Gönderi spam",
     "userFradulentSpam": "Dolandırıcı hesap spam",
     "userSpam": "Hesap spam",
@@ -30,11 +30,16 @@ Map<String, Map<String, String>> interactionStrings = {
     "failed": "Başarısız",
     "spam": "Spam",
     "suicideSpam":"İntihar spam",
-    "liveWatch": "Canlı yayın izlenme"
+    "liveWatches": "Canlı yayın izlenme",
+    "internetUsage1GB": "1GB internet kullanımı",
+    "advertImageShare":"Reklam resmi paylaşma",
+    "advertVideoShare": "Reklam video paylaşma",  
+    "followerCount":"Takipçi sayısı",
+
   },
   "en": {
     "follow": "Follow",
-    "userToFollow": "Users to follow",
+    "usersToFollow": "Users to follow",
     "postLikes": "Post like",
     "postSaves": "Post save",
     "postComments": "Post comment",
@@ -44,12 +49,12 @@ Map<String, Map<String, String>> interactionStrings = {
     "igtvLike": "IGTV like",
     "igtvComment": "IGTV comment",
     "postShare": "Post share",
-    "videoShare": "Video share",
+    "videoShares": "Video share",
     "storyShare": "Story share",
-    "multiUserDM": "Direct message (Multi)",
-    "singleUserDM": "Direct message (Single)",
-    "liveLike": "Live broadcast like",
-    "liveComment": "Live broadcast comment",
+    "multiUserDMs": "Direct message (Multi)",
+    "singleUserDMs": "Direct message (Single)",
+    "liveBroadCastLikes": "Live broadcast like",
+    "liveBroadCastComments": "Live broadcast comment",
     "postSpam": "Post spam",
     "userFradulentSpam": "Fradulent account spam",
     "userSpam": "Account spam",
@@ -63,6 +68,11 @@ Map<String, Map<String, String>> interactionStrings = {
     "failed": "Failed",
     "spam": "Spam",
     "suicideSpam": "Suicide Spam",
-    "liveWatch": "Live watch"
+    "liveWatches": "Live watch",
+    "internetUsage1GB":"1GB internet usage",
+    "advertImageShare":"Share advert image",
+    "advertVideoShare":"Share advert video",
+    "followerCount":"Follower number"  
+
   }
 };

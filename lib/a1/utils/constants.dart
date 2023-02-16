@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 const String appName = "Together Earn";
 const String packageName = "app.togetherearn.com";
@@ -11,31 +13,39 @@ const kSecondColor = Color(0xFF913248);
 const secureKey = "jibAaQNZD30RwR+82JIcogQVs8LClBbMrm9/tyJm3ig=";
 // ignore: constant_identifier_names
 
-const privacyPolicyURL =
-    "https://inmansdj.herokuapp.com/privacy-policy.pdf";
+const privacyPolicyURL = "https://inmansdj.herokuapp.com/privacy-policy.pdf";
 
 /// SET WHERE YOU WORK !!!!!!!!
-const bool isLocal = false;
+const bool isLocal = true;
 // Database connection constans
 
-const url_server = "https://inmansdj.herokuapp.com";
-const url_local = "http://192.168.1.154:8000";
+const url_server = "https://inmansdj.herokuapp.com/i";
+const url_local = "http://192.168.1.154:8000/i";
 
-const serversocketUrl = 'wss://inmansdj.herokuapp.com/ws/messages/0/';
-const localSocetUrl = "ws://192.168.1.154:8000/ws/messages/0/";
+const serversocketUrl = 'wss://inmansdj.herokuapp.com/ws/0/';
+const localSocetUrl = "ws://192.168.1.154:8000/ws/0/";
 
-const token_server = "cdba9ea8e96e9050166563405a48efaf0400df44";
-const token_local = "bb7576144f622d6494aea92c669f75ac47f4ba1c";
+String token;
+List prices = [];
+/* const token_server = "962d8dc23df1f295fceb3957eeb4649fed3530ec";
+const token_local = "8252e1885fdab94170cd33d9be1479a3c1e8354e"; */
 
 // LOCAL OR SERVER ?
-const token = isLocal ? token_local : token_server;
+// const token = isLocal ? token_local : token_server;
 const conUrl = isLocal ? url_local : url_server;
 const socketUrl = isLocal ? localSocetUrl : serversocketUrl;
 
-Map<String, String> headers = {
-  "Content-Type": "application/json; charset=UTF-8",
-  "Authorization": "Token $token"
-};
+void getServerToken() async {
+  http.Response tokenResponse = await http.get(Uri.parse('$conUrl/$secureKey'));
+  token = jsonDecode(tokenResponse.body)['token'];
+}
+
+void loadPriceData() async {
+    // Connect to the Postgres database
+    var url = "$conUrl/api/kazanctablosu/";
+    var response = await http.get(Uri.parse(url));
+    prices = jsonDecode(utf8.decode(response.bodyBytes))['results'];
+}
 
 getUserHeader(token) {
   Map<String, String> headers = {
@@ -45,10 +55,19 @@ getUserHeader(token) {
   return headers;
 }
 
+Map<String, String> headers = getUserHeader(token);
+
 class Screen1Arguments {
   Map<String, dynamic> myReturnMap;
 
   Screen1Arguments(this.myReturnMap);
+}
+
+String timestamp1(type) {
+  String timeson114 =
+      (DateTime.now().millisecondsSinceEpoch / 1000).round().toString();
+  // '1626522434.932' values comes from server.dart as used like that before.
+  return type ? timeson114 : '1626522434.932';
 }
 
 Map<String, dynamic> choices = {

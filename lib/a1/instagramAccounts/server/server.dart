@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:togetherearn/a1/models/instagram_account.model.dart';
 import 'package:togetherearn/a1/instagramAccounts/globals.dart';
 import 'package:togetherearn/a1/server/values.dart';
+import "package:togetherearn/a1/utils/constants.dart";
 
 class Server {
   static Uuid uuid = const Uuid();
@@ -26,13 +27,13 @@ class Server {
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin.androidInfo;
       String userAgent =
-          "Instagram 184.0.0.30.117 Android (${androidDeviceInfo.version.sdkInt}/${androidDeviceInfo.version.release}; ${dpi}dpi; $resolution; ${androidDeviceInfo.manufacturer}; ${androidDeviceInfo.model}; ${androidDeviceInfo.version.codename}; ${androidDeviceInfo.product}; ${Platform.localeName}; 302733750)";
+          "Instagram 187.0.0.32.120 Android (${androidDeviceInfo.version.sdkInt}/${androidDeviceInfo.version.release}; ${dpi}dpi; $resolution; ${androidDeviceInfo.manufacturer}; ${androidDeviceInfo.model}; ${androidDeviceInfo.version.codename}; ${androidDeviceInfo.product}; ${Platform.localeName}; 289692181)";
       setUserAgent(userAgent);
     } else if (Platform.isIOS) {
       IosDeviceInfo iosDeviceInfo = await deviceInfoPlugin.iosInfo;
 
       String iosUserAgent =
-          "Instagram 184.0.0.30.117 (${iosDeviceInfo.model}; iPhone OS ${iosDeviceInfo.systemVersion.replaceAll(".", "_")}; ${Platform.localeName}; ${Platform.localeName}; scale=$pixelRatio; $resolution; 302733750)";
+          "Instagram 187.0.0.32.120 (${iosDeviceInfo.model}; iPhone OS ${iosDeviceInfo.systemVersion.replaceAll(".", "_")}; ${Platform.localeName}; ${Platform.localeName}; scale=$pixelRatio; $resolution; 289692181)";
       setUserAgent(iosUserAgent);
     }
   }
@@ -105,15 +106,15 @@ class Server {
   static Map<String, String> createHeader(
       InstagramAccount account, bool needsContentLength) {
     Map<String, String> headers = {
-      'X-IG-App-Locale': 'tr_TR',
-      'X-IG-Device-Locale': 'tr_TR',
-      'X-IG-Mapped-Locale': 'tr_TR',
+      'X-IG-App-Locale': cCode,
+      'X-IG-Device-Locale': cCode,
+      'X-IG-Mapped-Locale': cCode,
       'X-Pigeon-Session-Id': pigeonID,
       'X-Pigeon-Rawclienttime': '1626522434.932',
       'X-IG-Bandwidth-Speed-KBPS': '599.000',
       'X-IG-Bandwidth-TotalBytes-B': '5532785',
       'X-IG-Bandwidth-TotalTime-MS': '11802',
-      'X-IG-App-Startup-Country': 'TR',
+      'X-IG-App-Startup-Country': cCode.split('_')[1],
       'X-Bloks-Version-Id': bloksVersionID,
       'X-IG-WWW-Claim': account.claim,
       'X-Bloks-Is-Layout-RTL': 'false',
@@ -128,7 +129,7 @@ class Server {
       'X-IG-Capabilities': '3brTvx0=',
       'X-IG-App-ID': '567067343352427',
       'User-Agent': userAgent,
-      'Accept-Language': 'tr-TR, en-US',
+      'Accept-Language': '${cCode.replaceFirst('_', '-')}, en-US',
       'Authorization': account.authToken,
       'X-MID': account.mid,
       'IG-U-IG-DIRECT-REGION-HINT':
@@ -163,16 +164,16 @@ class Server {
 
   static Map<String, String> headerType1(InstagramAccount account) {
     Map<String, String> header = {
-      "X-IG-App-Locale": "tr_TR",
-      "X-IG-Device-Locale": "tr_TR",
-      "X-IG-Mapped-Locale": "tr_TR",
+      "X-IG-App-Locale": cCode,
+      "X-IG-Device-Locale": cCode,
+      "X-IG-Mapped-Locale": cCode,
       "X-Pigeon-Session-Id": pigeonID,
       "X-Pigeon-Rawclienttime": "1609072393.620",
       "X-IG-Connection-Speed": 10000.toString() + "kbps",
       "X-IG-Bandwidth-Speed-KBPS": 9999999.toString(),
       "X-IG-Bandwidth-TotalBytes-B": 900000.toString(),
       "X-IG-Bandwidth-TotalTime-MS": 150.toString(),
-      "X-IG-App-Startup-Country": "TR",
+      "X-IG-App-Startup-Country": cCode.split('_')[1],
       "X-Bloks-Version-Id": bloksVersionID,
       "X-IG-WWW-Claim": account.claim,
       "X-Bloks-Is-Layout-RTL": "false",
@@ -181,11 +182,11 @@ class Server {
       "X-IG-Android-ID": osID,
       "retry_context": "json.dumps(self.imaj8)",
 
-      "X-IG-Connection-Type": "WIFI",
+      "X-IG-Connection-Type": "MOBILE(LTE)",
       "X-IG-Capabilities": "3brTvx8=",
       "X-IG-App-ID": "567067343352427",
       "User-Agent": userAgent,
-      "Accept-Language": "tr-TR, en-US",
+      "Accept-Language": "${cCode.replaceFirst('_', '-')}, en-US",
       "Cookie":
           "ds_user=${account.userName}; ds_user_id=${account.dsUserID}; mid=${account.mid}; sessionid=${account.sessionID}; csrftoken=${account.csrftoken}; rur=${account.rur}",
       "Authorization": account.authToken,
@@ -222,7 +223,7 @@ class Server {
 
   static Future sendRequest2Get(endpoint, InstagramAccount account) async {
     Map<String, String> header = {
-      "X-IG-Connection-Type": "WIFI",
+      "X-IG-Connection-Type": "MOBILE(LTE)",
       "X-IG-Capabilities": "3brTvx8=",
       "X-IG-App-ID": "567067343352427",
       "User-Agent": userAgent,
@@ -263,27 +264,27 @@ class Server {
 
   static Future sendRequest4Get(endpoint, InstagramAccount account) async {
     Map<String, String> header = {
-      "X-IG-App-Locale": "tr_TR",
-      "X-IG-Device-Locale": "tr_TR",
-      "X-IG-Mapped-Locale": "tr_TR",
+      "X-IG-App-Locale": cCode,
+      "X-IG-Device-Locale": cCode,
+      "X-IG-Mapped-Locale": cCode,
       "X-Pigeon-Session-Id": pigeonID,
       "X-Pigeon-Rawclienttime": "1609072393.620",
       "X-IG-Connection-Speed": 10000.toString() + "kbps",
       "X-IG-Bandwidth-Speed-KBPS": 9999999.toString(),
       "X-IG-Bandwidth-TotalBytes-B": 900000.toString(),
       "X-IG-Bandwidth-TotalTime-MS": 150.toString(),
-      "X-IG-App-Startup-Country": "TR",
+      "X-IG-App-Startup-Country": cCode.split('_')[1],
       "X-Bloks-Version-Id": bloksVersionID,
       "X-IG-WWW-Claim": account.claim,
       "X-Bloks-Is-Layout-RTL": "false",
       "X-Bloks-Is-Panorama-Enabled": "false",
       "X-IG-Device-ID": instaDeviceID,
       "X-IG-Android-ID": osID,
-      "X-IG-Connection-Type": "WIFI",
+      "X-IG-Connection-Type": "MOBILE(LTE)",
       "X-IG-Capabilities": "3brTvx8=",
       "X-IG-App-ID": "567067343352427",
       "User-Agent": userAgent,
-      "Accept-Language": "tr-TR, en-US",
+      "Accept-Language": "${cCode.replaceFirst('_', '-')}, en-US",
       "Cookie":
           "ds_user=${account.userName}; ds_user_id=${account.dsUserID}; mid=${account.mid}; sessionid=${account.sessionID}; csrftoken=${account.csrftoken}; rur=${account.rur}",
       "Authorization": account.authToken,
@@ -311,27 +312,26 @@ class Server {
 
   static Map<String, String> profileHeader(InstagramAccount account) {
     Map<String, String> header = {
-      "X-IG-App-Locale": "tr_TR",
-      "X-IG-Device-Locale": "tr_TR",
-      "X-IG-Mapped-Locale": "tr_TR",
+      "X-IG-App-Locale": cCode, //
+      "X-IG-Device-Locale": cCode,
+      "X-IG-Mapped-Locale": cCode,
       "X-Pigeon-Session-Id": pigeonID,
-      "X-Pigeon-Rawclienttime": "1609072393.620",
-      "X-IG-Connection-Speed": 10000.toString() + "kbps",
-      "X-IG-Bandwidth-Speed-KBPS": 9999999.toString(),
-      "X-IG-Bandwidth-TotalBytes-B": 900000.toString(),
-      "X-IG-Bandwidth-TotalTime-MS": 150.toString(),
-      "X-IG-App-Startup-Country": "TR",
+      'X-Pigeon-Rawclienttime': timestamp1(true),
+      'X-IG-Bandwidth-Speed-KBPS': '-1.000',
+      'X-IG-Bandwidth-TotalBytes-B': '0',
+      'X-IG-Bandwidth-TotalTime-MS': '0',
+      "X-IG-App-Startup-Country": cCode.split('_')[1],
       "X-Bloks-Version-Id": bloksVersionID,
       "X-IG-WWW-Claim": account.claim,
       "X-Bloks-Is-Layout-RTL": "false",
       "X-Bloks-Is-Panorama-Enabled": "false",
       "X-IG-Device-ID": instaDeviceID,
       "X-IG-Android-ID": osID,
-      "X-IG-Connection-Type": "WIFI",
+      "X-IG-Connection-Type": "MOBILE(LTE)",
       "X-IG-Capabilities": "3brTvx8=",
       "X-IG-App-ID": "567067343352427",
       "User-Agent": userAgent,
-      "Accept-Language": "tr-TR, en-US",
+      "Accept-Language": "${cCode.replaceFirst('_', '-')}, en-US",
       "Cookie":
           "ds_user=${account.userName}; ds_user_id=${account.dsUserID}; mid=${account.mid}; sessionid=${account.sessionID}; csrftoken=${account.csrftoken}; rur=${account.rur}",
       "Authorization": account.authToken,
@@ -350,42 +350,71 @@ class Server {
     return header;
   }
 
-  static Future<int> getFollowerCount(InstagramAccount account) async {
-    Uri uri = Uri.parse("https://i.instagram.com/api/v1/users/" +
-        "2238287305" +
-        "/info/?from_module=self_profile");
+  static Future<int> getFollowerCount(String userId, account) async {
+    String link =
+        "https://i.instagram.com/api/v1/users/$userId/info/?from_module=self_profile";
+    Map<String, String> headers_get = {
+      'X-IG-App-Locale': cCode,
+      'X-IG-Device-Locale': cCode,
+      'X-IG-Mapped-Locale': cCode,
+      'X-Pigeon-Session-Id': pigeonID,
+      'X-Pigeon-Rawclienttime': timestamp1(true),
+      'X-IG-Bandwidth-Speed-KBPS': '-1.000',
+      'X-IG-Bandwidth-TotalBytes-B': '0',
+      'X-IG-Bandwidth-TotalTime-MS': '0',
+      'X-Bloks-Version-Id': bloksVersionID,
+      'X-IG-WWW-Claim': account.claim,
+      'X-Bloks-Is-Layout-RTL': 'false',
+      'X-Bloks-Is-Panorama-Enabled': 'true',
+      'X-IG-Device-ID': instaDeviceID,
+      'X-IG-Family-Device-ID': appDeviceID,
+      'X-IG-Android-ID': osID,
+      "x-ig-timezone-offset": "10800",
+      "x-ig-connection-type": "MOBILE(LTE)",
+      "x-ig-capabilities": "3brTvx0\u003d",
+      'X-IG-App-ID': '567067343352427',
+      'User-Agent': userAgent,
+      'Accept-Language': 'tr-TR, en-US',
+      'Authorization': account.authToken,
+      'X-MID': account.mid,
+      'IG-U-SHBID': account.shbid, // shbid, (replaced with server.dart values)
+      'IG-U-SHBTS': account.shbts, // shbts,  ``
+      'IG-U-IG-DIRECT-REGION-HINT': account.regionHint,
+      'IG-U-DS-USER-ID': account.dsUserID,
+      'IG-U-RUR': account.rur,
+      'IG-INTENDED-USER-ID': account.dsUserID,
+      'Accept-Encoding': 'gzip, deflate',
+      'Host': 'b.i.instagram.com',
+      'X-FB-HTTP-Engine': 'Liger',
+      'X-FB-Client-IP': 'True',
+      'X-FB-Server-Cluster': 'True',
+      'Connection': 'keep-alive'
+    };
 
-    var response = await http.get(uri, headers: profileHeader(account));
-
+    var response = await http.get(Uri.parse(link), headers: headers_get);
     if (response.statusCode == 200) {
-      int followerCount = jsonDecode(response.body)["user"]["follower_count"];
-
-      if (followerCount != null) {
-        return followerCount;
-      } else {
-        return 0;
-      }
+      var followerCount = jsonDecode(response.body)['user']['follower_count'];
+      return followerCount;
     } else {
-      return 0;
+      return null;
     }
   }
 
-  static Future<int> getGender(InstagramAccount account) async {
+  static Future getGender(InstagramAccount account) async {
     Uri uri = Uri.parse(
         "https://i.instagram.com/api/v1/accounts/current_user/?edit=true");
 
     var response = await http.get(uri, headers: profileHeader(account));
 
     if (response.statusCode == 200) {
-      int gender = jsonDecode(response.body)["user"]["gender"];
+      //TODO: user bilgileri kontrol et
 
-      if (gender != null) {
-        return gender;
-      } else {
-        return 0;
-      }
+      print('instaUserDetails:All> ${jsonDecode(response.body).keys.toList()}');
+      print(
+          'instaUserDetails:---> ${jsonDecode(response.body)['user'].keys.toList()}');
+      return jsonDecode(response.body)['user'];
     } else {
-      return 0;
+      return null;
     }
   }
 }
