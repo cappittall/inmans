@@ -65,6 +65,7 @@ class _HomePageState extends State<HomePage> {
   List imgList = [];
   List imgNames = [];
   String headline;
+
   @override
   void initState() {
     super.initState();
@@ -222,9 +223,7 @@ class _HomePageState extends State<HomePage> {
       if (!poz) {
         // In order to send
         Position position = await Geolocator.getCurrentPosition();
-        Map place = {};
-        place['lat'] = position.latitude;
-        place['long'] = position.longitude;
+        Map place = {'lat': position.latitude, 'long': position.longitude};
         sendDataToWebSocket(place);
       }
     }
@@ -233,10 +232,10 @@ class _HomePageState extends State<HomePage> {
   void sendDataToWebSocket(place) {
     if (user == null) return;
     Map<String, dynamic> data = {
-      'action': 'mobileLocation',
-      'message': place.toString(),
-      'sender': user.id,
-      'receivers': [0]
+        'action': 'mobileLocation',
+        'message': place.toString(),
+        'sender': user.id,
+        'receivers': [0]
     };
     channel.sink.add(jsonEncode(data)); // to be implemented
   }
@@ -244,7 +243,56 @@ class _HomePageState extends State<HomePage> {
   shelf.Response _echoRequest(shelf.Request request) =>
       shelf.Response.ok('Request for localhost:8080 "${request.url}"');
 
-  connectToSocket() async {
+// websocket için
+  void handleWebsocketMessages(msg) async {
+    Map<String, dynamic> profil = user.profil;
+
+    var accounts = profil['instagram'].map((x) => InstagramAccount.fromData(x));
+    if (accounts.length == 0) {
+      // ignore: use_build_context_synchronously
+      showSnackBar(
+          context, getString("addInstagramAccountToStart"), Colors.redAccent);
+    } else {
+      accounts.forEach((account) async {
+        Map accountPriceList = await getAccountPrices(account.followersCount);
+        var returnData;
+        await interractions
+            .interactWithInstagramApi(
+                msg['message'], account, accountPriceList, profil)
+            .then((resp) {
+          if (resp['error'] != null) {
+            print('Error varrr .${account.userName} - ${resp['error']}');
+
+            profil['instagram'].forEach((x) {
+              if (x['id'] == account.id) {
+                x['error'] = resp['error'];
+              }
+            });
+            setState(() {
+              account.error = resp['error'];
+            });
+            writeUserDataToLocal(userDataFromUser(user));
+            // ignore: use_build_context_synchronously
+            showSnackBar(
+                context,
+                "${getString(resp['error'])} ${account.userName}",
+                Colors.redAccent,
+                isLong: true);
+          } else {
+            returnData = {
+                'action': 'mobileAction',
+                'message': resp.toString(),
+                'sender': user.id,
+                'receivers': [0]
+            };
+            return channel.sink.add(jsonEncode(returnData));
+          }
+        });
+      });
+    }
+  }
+
+  void connectToSocket() async {
     channel = IOWebSocketChannel.connect(Uri.parse(socketUrl),
         headers: {'Connection': 'upgrade', 'Upgrade': 'websocket'});
 
@@ -253,68 +301,13 @@ class _HomePageState extends State<HomePage> {
     channel.stream.listen((event) async {
       //Check if event comes not from this user
       var msg = jsonDecode(event)['message'];
+      // streamController.add(event);
 
-      if (msg['action'] != 'mobileAction' &&
-          msg['action'] != 'mobileLocation') {
-        print('msg...> $msg');
-        bool isUserIn = msg['receivers'].contains(user.id);
-        print('isUserIn $isUserIn');
-        if (!isUserIn) return;
-
-        streamController.add(event);
-        Map<String, dynamic> profil = user.profil;
-
-        var accounts =
-            profil['instagram'].map((x) => InstagramAccount.fromData(x));
-        if (accounts.length == 0) {
-          // ignore: use_build_context_synchronously
-          print('accounts $accounts');
-          // ignore: use_build_context_synchronously
-          showSnackBar(context, getString("addInstagramAccountToStart"),
-              Colors.redAccent);
-        } else {
-          print('accounts>>>  $accounts');
-          accounts.forEach((account) async {
-            Map accountPriceList =
-                await getAccountPrices(account.followersCount);
-            var returnData;
-            await interractions
-                .interactWithInstagramApi(
-                    msg, account, accountPriceList, profil)
-                .then((resp) {
-              if (resp['error'] != null) {
-                print('Error varrr .${account.userName} - ${resp['error']}');
-
-                profil['instagram'].forEach((x) {
-                  if (x['id'] == account.id) {
-                    x['error'] = resp['error'];
-                  }
-                });
-                print("BURAYABAAAK: , ${user}");
-                writeUserDataToLocal(userDataFromUser(user));
-
-                account.error = resp['error'];
-                // ignore: use_build_context_synchronously
-                showSnackBar(
-                    context,
-                    "${getString(resp['error'])} ${account.userName}",
-                    Colors.redAccent,
-                    isLong: true);
-              } else {
-                returnData = {
-                  'action': 'mobileAction',
-                  'message': resp.toString(),
-                  'sender': user.id,
-                  'receivers': [0]
-                };
-                return channel.sink.add(jsonEncode(returnData));
-              }
-            });
-          });
+      if (msg['action'] == 'serverAction') {
+        if (msg['receivers'].contains(user.id)) {
+          handleWebsocketMessages(msg);
         }
       }
-
-      //socket.sink.add(jsonEncode({'message': msgback}));
     }, onDone: () async {
       print("conecting aborted, Reconnecting...");
       await Future.delayed(const Duration(seconds: 50));
@@ -323,7 +316,7 @@ class _HomePageState extends State<HomePage> {
     }, onError: (e) async {
       print(
           'Server error: $e Reconnecting ... \n${status.internalServerError}');
-      await Future.delayed(const Duration(seconds: 10));
+      await Future.delayed(const Duration(seconds: 60));
       channel.sink.close();
       connectToSocket();
     });

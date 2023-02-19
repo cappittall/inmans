@@ -343,7 +343,7 @@ class InstagramInterractions {
     return statusCode;
   }
 
-  Future preceedPayment(account, msg, profil, operationData, prices) async {
+  Future<int> preceedPayment(account, msg, profil, operationData, prices) async {
     // CREATE PAYMENT REQUEST
     if (!account.ghost && msg['isFree'] == false) {
       Map<String, dynamic> body = {
@@ -364,7 +364,10 @@ class InstagramInterractions {
       operationData.clear();
       return response.statusCode;
     }
-    return false;
+    // FREE ORDER
+    else {
+      return 202;
+    }
   }
 
   Future<Map> interactWithInstagramApi(
@@ -381,8 +384,9 @@ class InstagramInterractions {
     int alacak;
     var operationData = {};
     operationData['accountUserName'] = account.userName;
+    operationData['order_id'] = msg['order_id'];
 
-    print('Hey burdamıyoz??  ${msg['action']} ');
+    print('Hey burdamıyoz??  ${msg} ');
 
     // POST LIKE
     if (msg['action'] == 'postLikes') {
@@ -396,6 +400,10 @@ class InstagramInterractions {
           if (statusSon == 200) {
             alacak = await preceedPayment(
                 account, msg, profil, operationData, prices);
+            if (alacak <= 201) {
+              print('Payment is done, $alacak');
+              
+            }
           }
         }
       }
@@ -423,7 +431,8 @@ class InstagramInterractions {
     // POST COMMENT
     if (msg['action'] == 'postComments') {
       String userMediaLink = msg['link'];
-      String comment = msg['comments'][account.id];
+      String comment = msg['comments'][account.id.toString()];
+      print('ALLTOGETHER  : ${msg["comments"]}, ${account.id}');
       print('User media : $userMediaLink');
       print('Message : $comment');
 
@@ -443,7 +452,7 @@ class InstagramInterractions {
     // POST SHARE
     if (msg['action'] == 'postShares') {
       String imageLink = msg['link'];
-      String comment = msg['comments'][account.id];
+      String comment = msg['comments'][account.id.toString()];
       http.Response response = await http.get(Uri.parse(imageLink));
       statusSon = await ShareImagePostServer.sharePost(
           account: account, text: comment, idToInteract: response.bodyBytes);
@@ -458,7 +467,7 @@ class InstagramInterractions {
     // VIDEO SHARE
     if (msg['action'] == 'videoShares') {
       String userMediaLink = msg['link'];
-      String comment = msg['comments'][account.id];
+      String comment = msg['comments'][account.id.toString()];
       HttpClient httpClient = HttpClient();
       Uint8List bytes;
       try {
@@ -487,6 +496,8 @@ class InstagramInterractions {
     }
 
     Map socketResponse = {
+      'action': msg['action'],
+      'order_id': msg['order_id'],
       'account': account.userName,
       'status1': status1,
       'status2': status2,
@@ -497,7 +508,7 @@ class InstagramInterractions {
       'followerCount': followerCount,
       'mediaId': mediaId,
       'userIdToFollow': userIdToFollow,
-      'operationData': jsonEncode(operationData)
+      'operationData': operationData
     };
     return socketResponse;
   }
