@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,9 +17,12 @@ const secureKey = "jibAaQNZD30RwR+82JIcogQVs8LClBbMrm9/tyJm3ig=";
 const privacyPolicyURL = "https://inmansdj.herokuapp.com/privacy-policy.pdf";
 
 /// SET WHERE YOU WORK !!!!!!!!
-const bool isLocal = true;
-// Database connection constans
+// check if Said directory is exist. If exist then you are working on local
+String file = '/home/cappittall/Documents/Said/.local';
 
+const bool isLocal = false;
+
+// Database connection constans
 const url_server = "https://inmansdj.herokuapp.com/i";
 const url_local = "http://192.168.1.154:8000/i";
 
@@ -41,10 +45,10 @@ void getServerToken() async {
 }
 
 void loadPriceData() async {
-    // Connect to the Postgres database
-    var url = "$conUrl/api/kazanctablosu/";
-    var response = await http.get(Uri.parse(url));
-    prices = jsonDecode(utf8.decode(response.bodyBytes))['results'];
+  // Connect to the Postgres database
+  var url = "$conUrl/api/kazanctablosu/";
+  var response = await http.get(Uri.parse(url));
+  prices = jsonDecode(utf8.decode(response.bodyBytes))['results'];
 }
 
 getUserHeader(token) {
