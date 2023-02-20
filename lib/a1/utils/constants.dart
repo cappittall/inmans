@@ -14,18 +14,18 @@ const kSecondColor = Color(0xFF913248);
 const secureKey = "jibAaQNZD30RwR+82JIcogQVs8LClBbMrm9/tyJm3ig=";
 // ignore: constant_identifier_names
 
-const privacyPolicyURL = "https://inmansdj.herokuapp.com/privacy-policy.pdf";
+const privacyPolicyURL = "https://euronatuur.com/i/privacy-policy.pdf";
 
 /// SET WHERE YOU WORK !!!!!!!!
 // check if Said directory is exist. If exist then you are working on local
 String file = '/home/cappittall/Documents/Said/.local';
 
-const bool isLocal = true;
+const bool isLocal = false;
 // Database connection constans
-const url_server = "https://inmansdj.herokuapp.com/i";
+const url_server = "https://euronatuur.com/i";
 const url_local = "http://192.168.1.154:8000/i";
 
-const serversocketUrl = 'wss://inmansdj.herokuapp.com/ws/0/';
+const serversocketUrl = 'wss://euronatuur.com/ws/0/';
 const localSocetUrl = "ws://192.168.1.154:8000/ws/0/";
 
 String token;
