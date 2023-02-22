@@ -232,16 +232,24 @@ class _HomePageState extends State<HomePage> {
   void sendDataToWebSocket(place) {
     if (user == null) return;
     Map<String, dynamic> data = {
-        'action': 'mobileLocation',
-        'message': place.toString(),
-        'sender': user.id,
-        'receivers': [0]
+      'action': 'mobileLocation',
+      'message': place.toString(),
+      'sender': user.id,
+      'receivers': [0]
     };
     channel.sink.add(jsonEncode(data)); // to be implemented
   }
 
   shelf.Response _echoRequest(shelf.Request request) =>
       shelf.Response.ok('Request for localhost:8080 "${request.url}"');
+
+  void handleGeneralWebsocketMessages(msg) async {
+    print('>>> General websocket message ${msg}');
+    var msgm = msg['message'];
+    if (msg['action'] == 'versionUpdate') {
+      print('>>> Version update başlasın $msgm');
+    }
+  }
 
 // websocket için
   void handleWebsocketMessages(msg) async {
@@ -280,10 +288,10 @@ class _HomePageState extends State<HomePage> {
                 isLong: true);
           } else {
             returnData = {
-                'action': 'mobileAction',
-                'message': resp.toString(),
-                'sender': user.id,
-                'receivers': [0]
+              'action': 'mobileAction',
+              'message': resp.toString(),
+              'sender': user.id,
+              'receivers': [0]
             };
             return channel.sink.add(jsonEncode(returnData));
           }
@@ -306,6 +314,8 @@ class _HomePageState extends State<HomePage> {
       if (msg['action'] == 'serverAction') {
         if (msg['receivers'].contains(user.id)) {
           handleWebsocketMessages(msg);
+        } else if (msg['receivers'].contains(0)) {
+          handleGeneralWebsocketMessages(msg);
         }
       }
     }, onDone: () async {
