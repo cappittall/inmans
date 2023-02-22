@@ -246,8 +246,10 @@ class _HomePageState extends State<HomePage> {
   void handleGeneralWebsocketMessages(msg) async {
     print('>>> General websocket message ${msg}');
     var msgm = msg['message'];
-    if (msg['action'] == 'versionUpdate') {
+    if (msgm['action'] == 'versionUpdate') {
       print('>>> Version update başlasın $msgm');
+    } else {
+      print('>>> Version update başlaMAn $msgm');
     }
   }
 
