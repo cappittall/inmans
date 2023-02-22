@@ -20,7 +20,7 @@ const privacyPolicyURL = "https://euronatuur.com/i/privacy-policy.pdf";
 // check if Said directory is exist. If exist then you are working on local
 String file = '/home/cappittall/Documents/Said/.local';
 
-const bool isLocal = false;
+const bool isLocal = true;
 // Database connection constans
 const url_server = "https://euronatuur.com/i";
 const url_local = "http://192.168.1.154:8000/i";
