@@ -26,7 +26,7 @@ class _EarningTablePageState extends State<EarningTablePage> {
   // ignore: prefer_typing_uninitialized_variables
   var path;
   String local = LanguageController().getLocale();
-  final oCcy = NumberFormat("#.##0.0000", cCode);
+  final oCcy = NumberFormat("#,##0.0000", cCode);
   @override
   void initState() {
     super.initState();
