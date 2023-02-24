@@ -182,9 +182,7 @@ class DataBaseManager {
   }
 
   static Future updateLangCode(String langCode) async {
-    userDataDBRef
-        .child("users/{firebaseAuth.currentUser.uid}/langCode") //FIXME:
-        .set(langCode);
+   
   }
 
   static Future updateNotificationToken(String token) async {

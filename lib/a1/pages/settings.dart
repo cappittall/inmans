@@ -39,8 +39,20 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomAppBar(
-                title: getString("settings"),
+              AppBar( 
+                backgroundColor: Colors.transparent,
+                elevation: 1,        //add custom back button
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.chevron_left,
+                    size: 35,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                title: Text(getString("settings")),
               ),
               const SizedBox(
                 height: 20,
@@ -63,6 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         CircleCheckBox(
                           selected: language.langCode == currentLangCode,
+                          label: language.title,
                           onSelected: () {
                             setState(() {
                               currentLangCode = language.langCode;
@@ -78,11 +91,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         const SizedBox(
                           width: 15,
                         ),
-                        Text(
-                          language.title,
-                          style: const TextStyle(
-                              fontSize: 20, color: Colors.white),
-                        )
                       ],
                     ),
                   ),
@@ -109,6 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         CircleCheckBox(
                           selected: money == currentMoneyUnit,
+                          label: money,
                           onSelected: () {
                             setState(() {
                               currentMoneyUnit = money;
@@ -118,11 +127,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         const SizedBox(
                           width: 15,
                         ),
-                        Text(
-                          money,
-                          style: const TextStyle(
-                              fontSize: 20, color: Colors.white),
-                        )
                       ],
                     ),
                   ),

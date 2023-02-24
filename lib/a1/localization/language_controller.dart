@@ -54,7 +54,6 @@ class LanguageController with ChangeNotifier {
   void changeLocale(String langCode) {
     locale = Locale(langCode);
     localDataBox.put('langCode', langCode);
-    DataBaseManager.updateLangCode(langCode);
     notifyListeners();
   }
 
@@ -235,6 +234,8 @@ class LanguageController with ChangeNotifier {
       "active": "Aktif",
       "login_required":"Tekrar Giriş gerekli",
       "followers": "Takipçi",
+      "binance":"Binance borsası TETHER USDT TRC20 hesap adresinizi yazınız."
+      
     },
     "en": {
       "email": "email",
@@ -405,6 +406,7 @@ class LanguageController with ChangeNotifier {
       "active": "Active",
       "login_required":"Login required",
       "followers": "Followers",
+      "binance":"Enter your Binance exchange TETHER USDT TRC20 account address."
     }
   };
 

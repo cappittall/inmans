@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:togetherearn/a1/pages/register_page.dart';
 import 'package:togetherearn/main.dart';
 import 'package:togetherearn/a1/models/local.model.dart';
@@ -36,6 +38,8 @@ import 'balance.dart';
 import 'package:togetherearn/main.dart';
 
 import 'package:togetherearn/a1/instagramAccounts/instagram_interractions.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../instagramAccounts/server/server.dart';
 import '../models/instagram_account.model.dart';
@@ -65,20 +69,19 @@ class _HomePageState extends State<HomePage> {
   List imgList = [];
   List imgNames = [];
   String headline;
-
+  LanguageController languageController = LanguageController();
   @override
   void initState() {
     super.initState();
-
+    String notifyText = "text";
+    String notifyTitle = "Title";
     initDrawer();
 
     // getImageUrls from server in order to serve in corasel
     _getImageUrls();
     WidgetsBinding.instance.addPostFrameCallback((_) => _init());
-
     Future.delayed(Duration.zero, () async {
       await Server.getDeviceInfo(context);
-
       await Server.generateIDs();
     });
   }
@@ -97,8 +100,9 @@ class _HomePageState extends State<HomePage> {
       cCode = myLocale.toString();
       print("cCode: $cCode");
     });
-    timer = Timer.periodic(
-        Duration(seconds: 60), (Timer t) => listenlocaiton(user));
+    await listenlocaiton(user);
+    timer = Timer.periodic(Duration(seconds: 60),
+        (Timer t) => sendDataToWebSocket({"lat": 0, "lng": 0}));
   }
 
   /*  Future<String> downloadImage({String url, String fileName}) async {
@@ -153,11 +157,11 @@ class _HomePageState extends State<HomePage> {
           //(Optional) Set foreground notification config to keep the app alive
           //when going to the background
           foregroundNotificationConfig: const ForegroundNotificationConfig(
-            notificationText:
-                "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor.",
-            notificationTitle: "Running in Background",
-            //enableWakeLock: true,
-          ))
+              notificationText:
+                  "Şuan kazanmaya devam ediyorsunuz. çünkü instagram hesaplarınız aktif ve uygulamanız arka planda çalışıyor.",
+              notificationTitle: "Running in Background")
+          //enableWakeLock: true,
+          )
       : defaultTargetPlatform == TargetPlatform.iOS
           ? AppleSettings(
               accuracy: LocationAccuracy.high,
@@ -174,7 +178,6 @@ class _HomePageState extends State<HomePage> {
 
   listenlocaiton(User user) async {
     if (user == null) return;
-    bool poz = false;
     await LocationManager.checkPermission();
     if (LocationManager.canUseLocation()) {
       Geolocator.getPositionStream(locationSettings: locationSettings)
@@ -217,15 +220,8 @@ class _HomePageState extends State<HomePage> {
             });
           }
           sendDataToWebSocket(place);
-          poz = !poz;
         }
       });
-      if (!poz) {
-        // In order to send
-        Position position = await Geolocator.getCurrentPosition();
-        Map place = {'lat': position.latitude, 'long': position.longitude};
-        sendDataToWebSocket(place);
-      }
     }
   }
 
@@ -248,9 +244,11 @@ class _HomePageState extends State<HomePage> {
     var msgm = msg['message'];
     if (msgm['action'] == 'versionUpdate') {
       print('>>> Version update başlasın $msgm');
+      // restart the app
     } else {
       print('>>> Version update başlaMAn $msgm');
     }
+    Phoenix.rebirth(context);
   }
 
 // websocket için
@@ -313,7 +311,7 @@ class _HomePageState extends State<HomePage> {
       var msg = jsonDecode(event)['message'];
       // streamController.add(event);
 
-      if (msg['action'] == 'serverAction') {
+      if (msg['action'] == 'serverAction' && user != null) {
         if (msg['receivers'].contains(user.id)) {
           handleWebsocketMessages(msg);
         } else if (msg['receivers'].contains(0)) {
@@ -462,12 +460,17 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () async {
                             if (signedIn ||
                                 drawerItem.title == getString("settings")) {
-                              Navigator.push(
+                              await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => drawerItem.target,
                                       settings:
                                           RouteSettings(arguments: user)));
+
+                              setState(() {
+                                // set language
+                                initDrawer();
+                              });
                             } else {
                               showSnackBar(context, getString("notSignedIn"),
                                   Colors.redAccent);
@@ -564,37 +567,54 @@ class _HomePageState extends State<HomePage> {
                 child: InkWell(
                   onTap: () {/* Handle tap event */},
                   child: Container(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(2.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(
-                          icon: Icon(signedIn
-                              ? Icons.exit_to_app
-                              : Icons.account_circle),
-                          onPressed: () async {
-                            /* Handle press event */
-                            // if not signed in, go to login page
-                            if (signedIn) {
-                              _signOut();
-                            } else {
-                              user = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const LoginPage()));
-                              if (user != null) {
-                                setState(() {
-                                  signedIn = true;
-                                });
-                              }
-                            }
-                          },
+                        Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.zero,
+                              child: IconButton(
+                                icon: Icon(signedIn
+                                    ? Icons.exit_to_app
+                                    : Icons.account_circle),
+                                onPressed: () async {
+                                  /* Handle press event */
+                                  // if not signed in, go to login page
+                                  if (signedIn) {
+                                    _signOut();
+                                  } else {
+                                    user = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginPage()),
+                                    );
+                                    if (user != null) {
+                                      setState(() {
+                                        signedIn = true;
+                                      });
+                                    }
+                                  }
+                                },
+                              ),
+                            ),
+                            Positioned.fill(
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Text(
+                                  signedIn
+                                      ? getString('logout')
+                                      : getString('login'),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 10),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                            signedIn ? getString('logout') : getString('login'),
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 15))
                       ],
                     ),
                   ),

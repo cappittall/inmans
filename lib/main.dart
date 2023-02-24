@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -8,15 +12,27 @@ import 'package:togetherearn/a1/localization/language_controller.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/date_symbol_data_local.dart';
 import 'a1/models/user.model.dart';
+import 'a1/pages/version.dart';
 import 'a1/services/location/location_manager.dart';
+import 'package:http/http.dart' as http;
+import 'package:package_info_plus/package_info_plus.dart';
+import 'a1/utils/constants.dart';
 
 bool emulator;
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  /* HttpOverrides.global = new MyHttpOverrides();
-  await Hive.initFlutter(); */
+  HttpOverrides.global = MyHttpOverrides();
 
   await Hive.initFlutter();
 
@@ -26,7 +42,8 @@ void main() async {
 
   LocationManager.initializeLocation();
   initializeDateFormatting('tr', null)
-      .then((_) => runApp(const togetherearn()));
+      // Phoenix is a package that allows you to restart the app
+      .then((_) => runApp(Phoenix(child: togetherearn())));
 }
 
 class togetherearn extends StatefulWidget {
@@ -41,7 +58,7 @@ class _togetherearnState extends State<togetherearn> {
 
   User user;
   bool signedIn;
-
+  bool versionFailed;
   bool verificationRequired;
   void checkVersion() async {}
 
@@ -53,6 +70,21 @@ class _togetherearnState extends State<togetherearn> {
   }
 
   Future<User> _init() async {
+    // check version from pubspec.yaml
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = '${packageInfo.version}.${packageInfo.buildNumber}';
+    var response = await http.get(Uri.parse('$conUrl/api/versioncontrol/'));
+    var ver = jsonDecode(utf8.decode(response.bodyBytes))['results'][0];
+
+    print('Response:${ver['version']} - ${ver.runtimeType}');
+    if (version != ver['version']) {
+      print('Version: ${packageInfo.version}');
+      print('Version: ${packageInfo.buildNumber}');
+      versionFailed = true;
+      // direct user to playstore
+    } else {
+      versionFailed = false;
+    }
     // ignore: void_checks
     user = await initUserState();
     signedIn = user != null ? true : false;
@@ -63,6 +95,7 @@ class _togetherearnState extends State<togetherearn> {
   Widget build(BuildContext context) {
     print('Signedin in Main.dart >>>>>>>$signedIn');
     return MaterialApp(
+
         title: "Together Earn  ",
         debugShowCheckedModeBanner: false,
         home: Scaffold(
@@ -85,12 +118,14 @@ class _togetherearnState extends State<togetherearn> {
                   ];
                   supportedLocales:
                   const [
-                    Locale("tr"),
-                    Locale("en"),
+                    Locale('en', 'US'),
+                    Locale('tr', 'TR'),
                   ];
                   print('Snapshot:  ${snapshot.hasData}');
                   if (signedIn == null) {
                     return const SplashScreen();
+                  } else if (versionFailed) {
+                    return const VersionFailed();
                   } else {
                     return HomePage();
                   }

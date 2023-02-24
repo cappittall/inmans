@@ -73,7 +73,7 @@ class _AccountPageState extends State<AccountPage> {
     ibanController = TextEditingController(text: profil['iban'] ?? '');
     bankController = TextEditingController(text: profil['bank'] ?? '');
     tcController = TextEditingController(text: profil['tc'] ?? '');
-    coinController = TextEditingController(text: profil['coin'] ?? '');
+    coinController = TextEditingController();
     coinAddressController =
         TextEditingController(text: profil['coin_adresi'] ?? '');
 
@@ -105,7 +105,7 @@ class _AccountPageState extends State<AccountPage> {
                         hintText: getString("lastName"),
                         controller: lastNameController,
                       ),
-                      CupertinoButton(
+                      /*CupertinoButton(
                         onPressed: () async {
                           var resultDate = await showDatePicker(
                             context: context,
@@ -171,19 +171,19 @@ class _AccountPageState extends State<AccountPage> {
                             ],
                           )),
                         ),
-                      ),
+                      ),*/
                       CustomTextInput(
                         hintText: getString("email"),
                         controller: emailController,
                         enabled: false,
                         inputType: TextInputType.emailAddress,
                       ),
-                      CustomTextInput(
+                      /*CustomTextInput(
                         hintText: getString("phone"),
                         controller: phoneController,
                         inputType: TextInputType.phone,
                       ),
-                      /* CustomTextInput(
+                       CustomTextInput(
                         hintText: "TC No",
                         controller: tcController,
                         enabled: true,
@@ -201,7 +201,7 @@ class _AccountPageState extends State<AccountPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: Text(
-                          "*" + getString("nameShouldBeSame"),
+                          "*" + getString("binance"),
                           style: const TextStyle(
                               fontSize: 15, color: Colors.white),
                         ),
@@ -222,14 +222,14 @@ class _AccountPageState extends State<AccountPage> {
                         controller: bankController,
                         inputType: TextInputType.streetAddress,
                       ) */
-                      CustomTextInput(
-                        hintText: 'Crypto', //getString("Cripto"),
+                      /*CustomTextInput(
+                        hintText: 'Binance, TETHER USDT TRC20 address', //getString("Cripto"),
                         controller: coinController,
                         inputType: TextInputType.streetAddress,
                         enabled: false,
-                      ),
+                      ),*/
                       CustomTextInput(
-                        hintText: 'Crypto address', // getString("bank"),
+                        hintText: 'Binance, TETHER USDT TRC20 address', // getString("bank"),
                         controller: coinAddressController,
                         inputType: TextInputType.streetAddress,
                       ),

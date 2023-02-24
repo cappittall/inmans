@@ -173,6 +173,7 @@ Future<User> signIn(String email, String password, BuildContext context) async {
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
-    throw Exception('Failed to create user. ${jsonDecode(response.body)}');
+    throw Exception('Failed to login: $userData');
+
   }
 }

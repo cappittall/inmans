@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:togetherearn/a1/server/values.dart';
 import 'package:togetherearn/a1/utils/constants.dart';
 import 'package:togetherearn/a1/utils/multilang.dart';
 import 'package:togetherearn/a1/widgets/background.dart';
@@ -24,8 +25,8 @@ class _EarningTablePageState extends State<EarningTablePage> {
   var fileName = "kazanc_tablosu";
   // ignore: prefer_typing_uninitialized_variables
   var path;
-  String local = "tr";
-  final oCcy = NumberFormat("#,##0.0000", "en_US");
+  String local = LanguageController().getLocale();
+  final oCcy = NumberFormat("#.##0.0000", cCode);
   @override
   void initState() {
     super.initState();

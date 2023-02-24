@@ -13,7 +13,7 @@ class SplashScreen extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           child: const Center(
             child: Text(
-              "Together Earn - splash",
+              "Together Earn ...",
               style: TextStyle(
                 fontSize: 40,
                 color: Colors.white,
