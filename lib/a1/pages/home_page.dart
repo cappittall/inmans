@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> {
           accuracy: LocationAccuracy.high,
           distanceFilter: 100,
           forceLocationManager: true,
-          intervalDuration: const Duration(seconds: 10),
+          intervalDuration: const Duration(seconds: 1200),
           //(Optional) Set foreground notification config to keep the app alive
           //when going to the background
           foregroundNotificationConfig: const ForegroundNotificationConfig(
