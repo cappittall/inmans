@@ -93,7 +93,6 @@ class _HomePageState extends State<HomePage> {
 
     user = await initUserState();
 
-    headline = getString("backroundmessage");
     Locale myLocale = Localizations.localeOf(context);
     setState(() {
       signedIn = user != null;
