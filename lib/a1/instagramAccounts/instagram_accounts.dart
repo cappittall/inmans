@@ -81,38 +81,14 @@ class _InstagramAccountsState extends State<InstagramAccounts> {
                               padding: const EdgeInsets.only(left: 10),
                               child: Row(
                                 children: [
-  
                                   Expanded(
-                                    child: Card(
-                                      // background color transparent
-                                      color: Colors.white,
-                                      // elevation 0  
-                                      elevation: 2,
-                                      
-                                      child: Container(
-                                        
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              ' ${account.userName} - ${account.followersCount} ${getString("followers")} ',
-                                              style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                     
-                                            Text(
-                                              ' ${account.error!=""?  " * ${getString(account.error)}": ""}  ',
-                                              style: const TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
+                                    child: Text(
+                                      ' ${account.userName} - ${account.followersCount} ${getString("followers")} \n${account.error != "" ? "* ${getString(account.error)}" : ""}  ',
+                                      style: const TextStyle(
+                                        fontSize: 15,
                                       ),
                                     ),
-                                  ), 
-                                  
-                                  
+                                  ),
                                   IconButton(
                                       icon: const Icon(
                                         Icons.delete_outline,
@@ -120,8 +96,13 @@ class _InstagramAccountsState extends State<InstagramAccounts> {
                                         size: 25,
                                       ),
                                       onPressed: () async {
+                                        // ignore: use_build_context_synchronously
                                         if (await confirm(context,
-                                            title: Text(getString('attention')),
+                                            title: Text(
+                                              getString("attention"),
+                                              style:
+                                                  const TextStyle(fontSize: 20),
+                                            ),
                                             content:
                                                 Text(getString('areyousure')),
                                             textOK: Text(getString('yes')),
@@ -129,7 +110,7 @@ class _InstagramAccountsState extends State<InstagramAccounts> {
                                                 Text(getString('no')))) {
                                           instagrams.removeWhere(
                                               (e) => e['id'] == account.id);
-                                  
+
                                           // headers
                                           Map<String, String> header = {
                                             "Content-Type":
@@ -137,17 +118,19 @@ class _InstagramAccountsState extends State<InstagramAccounts> {
                                             "Authorization":
                                                 "Token ${profil['token']}"
                                           };
-                                  
+
                                           //Databaseden de sil...
                                           http.Response response =
                                               await http.delete(
                                                   Uri.parse(
                                                       "$conUrl/api/instagram/${account.id}/"),
                                                   headers: header);
-                                          if (response.statusCode == 204) {
+                                          print('response.statusCode...' +
+                                              response.statusCode.toString());
+                                          if (response.statusCode == 200) {
                                             // update new stuation on user instace.
                                             profil['instagram'] = instagrams;
-                                  
+
                                             setState(() {
                                               user.profil = profil;
                                               Map<String, dynamic> userData =
@@ -157,12 +140,16 @@ class _InstagramAccountsState extends State<InstagramAccounts> {
                                           } else {
                                             //TODO: Handle if writing db deletion of insta account failed.
                                             // ignore: use_build_context_synchronously
+                                            setState(() {
+                                              loading = false;
+                                            });
                                             showSnackBar(
                                                 context,
                                                 '${getString("somethingWentWrong")} - Status Code: ${response.statusCode} ',
                                                 Colors.redAccent);
                                           }
                                         }
+                                        setState(() { });
                                       })
                                 ],
                               ),

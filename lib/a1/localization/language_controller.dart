@@ -389,7 +389,7 @@ class LanguageController with ChangeNotifier {
       "phoneVRequired": "Verified phone number is required to request withdraw",
       "starredFields": "*Starred fields are required.",
       "nosucces": "Operation failed",
-      "attantion": "Attention! ",
+      "attention": "Attention! ",
       "areyousure": "Are you sure to delete item? ",
       "yes": "Yes",
       "no": "No",

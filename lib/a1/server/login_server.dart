@@ -15,7 +15,7 @@ class LoginServer {
     url =
         "https://b.i.instagram.com/api/v1/zr/token/result/?device_id=%22$osID%22&token_hash=&custom_device_id=%22$instaDeviceID%22&fetch_reason=token_expired";
 
-      headerscc = {
+    headerscc = {
       "X-IG-Connection-Speed": "-1kbps",
       "X-IG-Bandwidth-Speed-KBPS": "-1.000",
       "X-IG-Bandwidth-TotalBytes-B": "0",
@@ -152,44 +152,43 @@ class LoginServer {
       authorization = response.headers["ig-set-authorization"]; //kaydolcak
       dsUserID = response.headers["ig-set-ig-u-ds-user-id"]; //kaydolcak
       claim = response.headers["x-ig-set-www-claim"]; //kaydolcak
-      print( "Son rur, autorizations, dsuserid, claim: $rur, $authorization, $dsUserID, $claim" );
-
+      print(
+          "Son rur, autorizations, dsuserid, claim: $rur, $authorization, $dsUserID, $claim");
     }
-    var status = await getNewToken();
-    var status2 = await accountFamily();
-    var status3 = await getInbox();
-
-    Map<String, dynamic> loginResult = {
-      "user_name": userName,
-      "password": password,
-      "pwd_password": "#PWD_INSTAGRAM:0:$timeson114:$password",
-      "claim": claim,
-      "auth_token": authorization,
-      "rur": rur,
-      "ds_user_id": dsUserID,
-      "mid": mid,
-      "ghost": ghost,
-      "shbid": shbid,
-      "shbts": shbts,
-      "region_hint": regionHint,
-
-    };
-    return loginResult;
+    await getNewToken().then((value) {
+            accountFamily().then((value2) => {
+               getInbox().then((value) {
+                  Map<String, dynamic> loginResult = {
+                    "user_name": userName,
+                    "password": password,
+                    "pwd_password": "#PWD_INSTAGRAM:0:$timeson114:$password",
+                    "claim": claim,
+                    "auth_token": authorization,
+                    "rur": rur,
+                    "ds_user_id": dsUserID,
+                    "mid": mid,
+                    "ghost": ghost,
+                    "shbid": shbid,
+                    "shbts": shbts,
+                    "region_hint": regionHint,
+                  };
+                  return loginResult;
+               }) //getInbox
+            }); //accountFamily
+    }); //getNewToken
   }
 
 // 1-yenitoken1()
   static Future getNewToken() async {
-
-      headerscc['X-IG-App-Locale']= cCode;
-      headerscc['X-IG-Device-Locale']= cCode;
-      headerscc['X-IG-Mapped-Locale']= cCode;
-      headerscc['X-Pigeon-Session-Id']= pigeonID;
-      headerscc['Authorization']= authorization;
-      headerscc['X-MID']= mid;
-      headerscc['IG-U-DS-USER-ID']= dsUserID;
-      headerscc['IG-INTENDED-USER-ID']= dsUserID;
-      headerscc['X-IG-Family-Device-ID']= appDeviceID;
-    
+    headerscc['X-IG-App-Locale'] = cCode;
+    headerscc['X-IG-Device-Locale'] = cCode;
+    headerscc['X-IG-Mapped-Locale'] = cCode;
+    headerscc['X-Pigeon-Session-Id'] = pigeonID;
+    headerscc['Authorization'] = authorization;
+    headerscc['X-MID'] = mid;
+    headerscc['IG-U-DS-USER-ID'] = dsUserID;
+    headerscc['IG-INTENDED-USER-ID'] = dsUserID;
+    headerscc['X-IG-Family-Device-ID'] = appDeviceID;
 
     var response = await http.get(Uri.parse(url), headers: headerscc);
     print(response.statusCode);

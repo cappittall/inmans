@@ -69,12 +69,12 @@ class _HomePageState extends State<HomePage> {
   List imgList = [];
   List imgNames = [];
   String headline;
+  Map<String, dynamic> place;
+
   LanguageController languageController = LanguageController();
   @override
   void initState() {
     super.initState();
-    String notifyText = "text";
-    String notifyTitle = "Title";
     initDrawer();
 
     // getImageUrls from server in order to serve in corasel
@@ -99,9 +99,10 @@ class _HomePageState extends State<HomePage> {
       cCode = myLocale.toString();
       print("cCode: $cCode");
     });
-    await listenlocaiton(user);
-    timer = Timer.periodic(Duration(seconds: 60),
-        (Timer t) => sendDataToWebSocket({"lat": 0, "lng": 0}));
+
+    Map place = await listenlocaiton(user);
+    timer = Timer.periodic(
+        Duration(seconds: 60), (Timer t) => sendDataToWebSocket(place));
   }
 
   /*  Future<String> downloadImage({String url, String fileName}) async {
@@ -175,28 +176,21 @@ class _HomePageState extends State<HomePage> {
               distanceFilter: 100,
             );
 
-  listenlocaiton(User user) async {
-    if (user == null) return;
-    await LocationManager.checkPermission();
-    if (LocationManager.canUseLocation()) {
-      Geolocator.getPositionStream(locationSettings: locationSettings)
-          .listen((Position position) async {
-        if (position != null && channel.closeCode == null) {
-          //&& channel.closeCode == null
+  Future<Map<String, dynamic>> listenlocaiton(User user) async {
+    if (user == null) return {"lat": 0, "long": 0};
+    while (true) {
+      await LocationManager.checkPermission();
+      if (LocationManager.canUseLocation()) {
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position position) async {
+          if (position != null) {
+            List<Placemark> placemarks = await placemarkFromCoordinates(
+              position.latitude,
+              position.longitude,
+            );
 
-          List<Placemark> placemarks = await placemarkFromCoordinates(
-            position.latitude,
-            position.longitude,
-          );
-
-          Map<String, dynamic> userData = userDataFromUser(user);
-          Map<String, dynamic> place = placemarks[0].toJson();
-          Map<String, dynamic> dbplace = userData['profil']['place'];
-          // Daha iyi bir karşılaştırma için önceden lat,lon silelim
-
-          if ((dbplace['administrativeArea'] != place['administrativeArea'] &&
-              dbplace['subAdministrativeArea'] !=
-                  place['subAdministrativeArea'])) {
+            Map<String, dynamic> userData = userDataFromUser(user);
+            place = placemarks[0].toJson();
             place['lat'] = position.latitude;
             place['long'] = position.longitude;
 
@@ -208,20 +202,27 @@ class _HomePageState extends State<HomePage> {
               "Content-Type": "application/json; charset=UTF-8",
               "Authorization": "Token ${userData['profil']['token']}"
             };
-            //TODO: Databaseden de sil...
+            //Databaseden de değiştir..
             http.Response response = await http.patch(
                 Uri.parse("$conUrl/api/profil/${userData['profil']['id']}/"),
                 body: jsonEncode(userData['profil']),
                 headers: header);
 
-            setState(() {
-              user = User.fromJson(userData);
-            });
+            user = User.fromJson(userData);
           }
-          sendDataToWebSocket(place);
-        }
-      });
+        });
+      }
+
+      if (place != null) {
+          break;
+      } else {
+         // ignore: use_build_context_synchronously
+         showSnackBar(
+          context, getString("winMoreWithLocation"), Colors.redAccent);
+        await Future.delayed(Duration(seconds: 15));
+      }
     }
+    return {"lat": place['lat'] ?? 0, "long": place['long'] ?? 0};
   }
 
   void sendDataToWebSocket(place) {

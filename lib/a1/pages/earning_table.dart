@@ -26,7 +26,7 @@ class _EarningTablePageState extends State<EarningTablePage> {
   // ignore: prefer_typing_uninitialized_variables
   var path;
   String local = LanguageController().getLocale();
-  final oCcy = NumberFormat("#,##0.0000", cCode);
+  final oCcy = NumberFormat("#,##0.000", cCode);
   @override
   void initState() {
     super.initState();
@@ -95,7 +95,7 @@ class _EarningTablePageState extends State<EarningTablePage> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: prices.length,
+              itemCount: prices.length - 1,
               itemBuilder: (context, index) {
                 var row = prices[index];
                 print(row.keys);
