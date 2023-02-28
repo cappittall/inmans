@@ -190,10 +190,12 @@ class _HomePageState extends State<HomePage> {
             );
 
             Map<String, dynamic> userData = userDataFromUser(user);
-            place = placemarks[0].toJson();
-            place['lat'] = position.latitude;
-            place['long'] = position.longitude;
-
+            
+            if (placemarks.isNotEmpty && position != null) {
+              place = placemarks[0].toJson();
+              place['lat'] = position.latitude;
+              place['long'] = position.longitude;
+            }
             userData['profil']['place'] = place;
             print('>>> Userdatap place ${userData['profil']['place']}');
             writeUserDataToLocal(userData);

@@ -61,7 +61,6 @@ dependencies:
   permission_handler: ^10.0.2
   video_player: ^2.4.7
   carousel_slider: ^4.2.1
-  flutter_full_pdf_viewer: ^1.0.6
   device_info_plus: ^3.2.4
   device_preview: ^1.1.0
   sim_info: ^0.1.3
