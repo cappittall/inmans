@@ -748,7 +748,12 @@ class _HomePageState extends State<HomePage> {
       var body = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
 
       print("$body , ${body.runtimeType}");
-      imgList = body['urls'];
+      List<dynamic> urlList = body['urls'];
+      urlList.forEach((element) {
+        imgList.add(domainUrl + element.split('django_instagram2')[1]);
+        print(element);
+
+      });
       imgNames = body['names'];
       print("Image urls ve names: \n $imgList, \n $imgNames");
       setState(() {});
