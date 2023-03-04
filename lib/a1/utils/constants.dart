@@ -22,11 +22,11 @@ String file = '/home/cappittall/Documents/Said/.local';
 
 const bool isLocal = false;
 // Database connection constans
-const url_server = "https://euronatuur.com/i";
+const url_server = "https://togetherearn.com/i";
 const url_local = "http://192.168.1.154:8000/i";
 var domainUrl = url_server.substring(0, url_server.length - 2 );
 
-const serversocketUrl = 'wss://euronatuur.com/ws/0/';
+const serversocketUrl = 'wss://togetherearn.com/ws/0/';
 const localSocetUrl = "ws://192.168.1.154:8000/ws/0/";
 
 String token;

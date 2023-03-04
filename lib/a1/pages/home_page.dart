@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
+
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geolocator/geolocator.dart';
@@ -100,7 +102,10 @@ class _HomePageState extends State<HomePage> {
       print("cCode: $cCode");
     });
 
-    Map place = await listenlocaiton(user);
+    // create a new isolate for the function
+    // final myIsolate = await Isolate.spawn(_isolateFunction, null);
+    listenLocaiton(user);
+
     timer = Timer.periodic(
         Duration(seconds: 60), (Timer t) => sendDataToWebSocket(place));
   }
@@ -176,7 +181,7 @@ class _HomePageState extends State<HomePage> {
               distanceFilter: 100,
             );
 
-  Future<Map<String, dynamic>> listenlocaiton(User user) async {
+  Future<Map<String, dynamic>> listenLocaiton(User user) async {
     if (user == null) return {"lat": 0, "long": 0};
     while (true) {
       await LocationManager.checkPermission();
@@ -190,7 +195,7 @@ class _HomePageState extends State<HomePage> {
             );
 
             Map<String, dynamic> userData = userDataFromUser(user);
-            
+
             if (placemarks.isNotEmpty && position != null) {
               place = placemarks[0].toJson();
               place['lat'] = position.latitude;
@@ -216,11 +221,11 @@ class _HomePageState extends State<HomePage> {
       }
 
       if (place != null) {
-          break;
+        break;
       } else {
-         // ignore: use_build_context_synchronously
-         showSnackBar(
-          context, getString("winMoreWithLocation"), Colors.redAccent);
+        // ignore: use_build_context_synchronously
+        showSnackBar(
+            context, getString("winMoreWithLocation"), Colors.redAccent);
         await Future.delayed(Duration(seconds: 15));
       }
     }
@@ -754,7 +759,6 @@ class _HomePageState extends State<HomePage> {
       urlList.forEach((element) {
         imgList.add(domainUrl + element.split('django_instagram2')[1]);
         print(element);
-
       });
       imgNames = body['names'];
       print("Image urls ve names: \n $imgList, \n $imgNames");
