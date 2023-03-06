@@ -10,23 +10,21 @@ const String packageName = "app.togetherearn.com";
 
 const kMainColor = Colors.white;
 const kSecondColor = Color(0xFF913248);
-
+Map<String, dynamic> place;
 const secureKey = "jibAaQNZD30RwR+82JIcogQVs8LClBbMrm9/tyJm3ig=";
-// ignore: constant_identifier_names
 
-const privacyPolicyURL = "https://euronatuur.com/i/privacy-policy.pdf";
-
-/// SET WHERE YOU WORK !!!!!!!!
-// check if Said directory is exist. If exist then you are working on local
-String file = '/home/cappittall/Documents/Said/.local';
-
+// TODO: DOMAIN DEĞİŞTİRMEK İÇİN - Incase of changing domain
+const String domain="togetherearn.com";
 const bool isLocal = false;
+
+// Privacy Policy URL
+const privacyPolicyURL = "https://$domain/i/privacy-policy.pdf";
 // Database connection constans
-const url_server = "https://togetherearn.com/i";
+const url_server = "https://$domain/i";
 const url_local = "http://192.168.1.154:8000/i";
 var domainUrl = url_server.substring(0, url_server.length - 2 );
-
-const serversocketUrl = 'wss://togetherearn.com/ws/0/';
+// Socket connection constans
+const serversocketUrl = 'wss://$domain/ws/0/';
 const localSocetUrl = "ws://192.168.1.154:8000/ws/0/";
 
 String token;

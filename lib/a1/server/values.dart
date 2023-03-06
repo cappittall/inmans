@@ -14,17 +14,18 @@ String waterfallID;
 String osID;
 String userAgent;
 
-Map<String,String> headerscc;
+Map<String, String> headerscc;
 String url;
-String authorization;
+
 String dsUserID;
-String claim;
-String rur;
-String mid;
+
 String cCode;
 String timeson114;
+
+/* String authorization;
+String regionHint;
 String shbid;
 String shbts;
-String mobilCountryCode;
-String regionHint;
-
+String claim;
+String rur;
+String mid; */

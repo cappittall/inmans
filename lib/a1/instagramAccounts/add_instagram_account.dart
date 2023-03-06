@@ -15,9 +15,9 @@ import 'package:togetherearn/a1/widgets/custom_app_bar.dart';
 import 'package:togetherearn/a1/widgets/custom_button.dart';
 import 'package:togetherearn/a1/widgets/custom_input_widget.dart';
 import 'package:togetherearn/a1/utils/constants.dart';
-import 'package:sim_info/sim_info.dart';
-import 'package:togetherearn/a1/instagramAccounts/server/interaction_server.dart';
 
+import 'package:togetherearn/a1/instagramAccounts/server/interaction_server.dart';
+import 'package:country_codes/country_codes.dart';
 import 'instagram_interractions.dart';
 
 class AddInstagramAccount extends StatefulWidget {
@@ -38,11 +38,15 @@ class _AddInstagramAccountState extends State<AddInstagramAccount> {
   @override
   void initState() {
     super.initState();
+    
     getSimInfo();
   }
 
   void getSimInfo() async {
-    _mobileCountryCode = await SimInfo.getMobileCountryCode;
+    await CountryCodes.init();
+    final Locale deviceLocale = CountryCodes.getDeviceLocale();
+    final CountryDetails details = CountryCodes.detailsForLocale();
+    _mobileCountryCode = details.dialCode;
     print("_mobileCountryCode>---->>>>> : $_mobileCountryCode");
   }
 

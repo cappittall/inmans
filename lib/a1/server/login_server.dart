@@ -53,30 +53,22 @@ class LoginServer {
     }
 
     var headers = response.headers;
+    var mid = headers["ig-set-x-mid"];
 
-    // mid: ig-set-x-mid
-
-    mid = headers["ig-set-x-mid"];
-
-    // headers.forEach((key, value) {
-    //   print("===");
-    //   print(key);
-    //   print(value);
-
-    return [mid];
+    print("0.mid>>>: $mid, mid.runtimeType: ${mid.runtimeType}");
+    return mid.toString();
   }
 
-  static Future<Map<String, dynamic>> login(
-      String userName, String password, _mobileCountryCode, countryCode,
+  static Future<Map<String, dynamic>> login(String userName, String password,
+      String mobilCountryCode, String countryCode,
       {bool ghost = false}) async {
     String url = API_URL + "accounts/login/";
-    List tokens = await sendRequestForCookies();
-    cCode = countryCode;
-    mobilCountryCode = _mobileCountryCode;
+    String mid = await sendRequestForCookies();
+    cCode = countryCode.toString();
     print(
-        "Got tokens $tokens, countryCode:  $mobilCountryCode, localeInfo: $countryCode");
+        "Got tokens $mid, countryCode:  $mobilCountryCode, localeInfo: $countryCode");
 
-    if (tokens == null) {
+    if (mid == null) {
       return null;
     }
 
@@ -104,7 +96,7 @@ class LoginServer {
 
     String signature = Server.generateSignature(data: jsonEncode(body));
 
-    var headerslg = {
+    Map<String, String> headerslg = {
       'X-IG-App-Locale': cCode,
       'X-IG-Device-Locale': cCode,
       'X-IG-Mapped-Locale': cCode,
@@ -126,7 +118,7 @@ class LoginServer {
       'X-IG-App-ID': '567067343352427',
       'User-Agent': userAgent,
       'Accept-Language': '${countryCode.replaceFirst('_', '-')}, en-US',
-      'X-MID': mid,
+      'X-MID': mid.toString(),
       'IG-INTENDED-USER-ID': '0',
       'Content-Type': ' application/x-www-form-urlencoded; charset=UTF-8',
       'Accept-Encoding': 'gzip, deflate',
@@ -134,77 +126,80 @@ class LoginServer {
       'Connection': 'keep-alive',
     };
 
+    print("0-headerslg: $headerslg . ${headerslg.runtimeType}");
+
     var response =
         await http.post(Uri.parse(url), headers: headerslg, body: signature);
 
-    print(
-        'Ahanda buraya bak: ${response.statusCode}, \n*********************\n\nHeaderslg: $headerslg \nSignature: $signature');
+    print('0-Ahanda : ${response.statusCode}, \n**Signature: $signature');
 
     if (response.statusCode == 200) {
-      print("Headers: ");
-      print(response.headers);
-      print("Body:");
-      print(response.body);
+      Map<String, String> result = {
+        "mid": mid.toString(),
+        "rur": response.headers["ig-set-ig-u-rur"],
+        "authorization": response.headers["ig-set-authorization"], //kaydolcak
+        "dsUserID": response.headers["ig-set-ig-u-ds-user-id"], //kaydolcak
+        "claim": response.headers["x-ig-set-www-claim"], //kaydolcak
+        "mobilCountryCode": mobilCountryCode.toString()
+      };
+      print("1-result: $result");
 
-      print("Login Headers:");
+      return getNewToken(result).then((result) async {
+        print("2-getNewToken: $result");
+        return accountFamily(result).then((result) async {
+          print("3-accountFamily: $result");
+          return getInbox(result).then((result) async {
+            print("4-getInbox: $result");
+            Map<String, dynamic> loginResult = {
+              "user_name": userName,
+              "password": password,
+              "pwd_password": "#PWD_INSTAGRAM:0:$timeson114:$password",
+              "claim": result["claim"],
+              "auth_token": result["authorization"],
+              "rur": result["rur"],
+              "ds_user_id": dsUserID,
+              "mid": result["mid"],
+              "ghost": ghost,
+              "shbid": result["shbid"],
+              "shbts": result["shbts"],
+              "region_hint": result["regionHint"],
+            };
+            print('5-Son-loginResult: $loginResult');
+            return loginResult;
+          });
+        });
+      });
 
-      rur = response.headers["ig-set-ig-u-rur"];
-      authorization = response.headers["ig-set-authorization"]; //kaydolcak
-      dsUserID = response.headers["ig-set-ig-u-ds-user-id"]; //kaydolcak
-      claim = response.headers["x-ig-set-www-claim"]; //kaydolcak
-      print(
-          "Son rur, autorizations, dsuserid, claim: $rur, $authorization, $dsUserID, $claim");
+    } else {
+      print('Login failed: ${response.statusCode}');
+      return null;
     }
-    await getNewToken().then((value) {
-            accountFamily().then((value2) => {
-               getInbox().then((value) {
-                  Map<String, dynamic> loginResult = {
-                    "user_name": userName,
-                    "password": password,
-                    "pwd_password": "#PWD_INSTAGRAM:0:$timeson114:$password",
-                    "claim": claim,
-                    "auth_token": authorization,
-                    "rur": rur,
-                    "ds_user_id": dsUserID,
-                    "mid": mid,
-                    "ghost": ghost,
-                    "shbid": shbid,
-                    "shbts": shbts,
-                    "region_hint": regionHint,
-                  };
-                  return loginResult;
-               }) //getInbox
-            }); //accountFamily
-    }); //getNewToken
   }
 
+
+
 // 1-yenitoken1()
-  static Future getNewToken() async {
+  static Future getNewToken(Map result) async {
     headerscc['X-IG-App-Locale'] = cCode;
     headerscc['X-IG-Device-Locale'] = cCode;
     headerscc['X-IG-Mapped-Locale'] = cCode;
     headerscc['X-Pigeon-Session-Id'] = pigeonID;
-    headerscc['Authorization'] = authorization;
-    headerscc['X-MID'] = mid;
+    headerscc['Authorization'] = result["authorization"];
+    headerscc['X-MID'] = result["mid"];
     headerscc['IG-U-DS-USER-ID'] = dsUserID;
     headerscc['IG-INTENDED-USER-ID'] = dsUserID;
     headerscc['X-IG-Family-Device-ID'] = appDeviceID;
 
     var response = await http.get(Uri.parse(url), headers: headerscc);
-    print(response.statusCode);
-    print(response.headers);
-    mid = response.headers["ig-set-x-mid"]; //kaydolcak
-    rur = response.headers["ig-set-ig-u-rur"];
-    return true;
-    // headers.forEach((key, value) {
-    //   print("===");
-    //   print(key);
-    //   print(value);
+    result['status'] = response.statusCode.toString();
+    result["mid"] = response.headers["ig-set-x-mid"];
+    result["rur"] = response.headers["ig-set-ig-u-rur"];
+    return result;
   }
 
-// 2-account_family()
-  static Future accountFamily() async {
-    var headers = {
+  // 2-account_family()
+  static Future accountFamily(result) async {
+    Map<String, String> headers = {
       'X-IG-App-Locale': cCode,
       'X-IG-Device-Locale': cCode,
       'X-IG-Mapped-Locale': cCode,
@@ -226,8 +221,8 @@ class LoginServer {
       'X-IG-App-ID': '567067343352427',
       'User-Agent': userAgent,
       'Accept-Language': 'tr-TR, en-US',
-      'Authorization': authorization,
-      'X-MID': mid,
+      'Authorization': result["authorization"],
+      'X-MID': result["mid"].toString(),
       'IG-U-DS-USER-ID': dsUserID,
       'IG-INTENDED-USER-ID': dsUserID,
       'Accept-Encoding': 'gzip, deflate',
@@ -240,20 +235,16 @@ class LoginServer {
     var uri =
         "https://b.i.instagram.com/api/v1/multiple_accounts/get_account_family/";
     var response = await http.get(Uri.parse(url), headers: headers);
-    print(response.statusCode);
-    print(response.headers);
-    print(response.body);
-    shbid = response.headers['ig-set-ig-u-shbid']; //kaydolcak
-    shbts = response.headers['ig-set-ig-u-shbts']; //kaydolcak
-    rur = response.headers["ig-set-ig-u-rur"];
-    print('shbid: $shbid, shbts: $shbts');
-
-    return true;
+    result['status'] = response.statusCode.toString();
+    result["shbid"] = response.headers['ig-set-ig-u-shbid']; //kaydolcak
+    result["shbts"] = response.headers['ig-set-ig-u-shbts']; //kaydolcak
+    result["rur"] = response.headers["ig-set-ig-u-rur"];
+    return result;
   }
 
 // 3-inbox1()
-  static Future getInbox() async {
-    var headers = {
+  static Future getInbox(result) async {
+    Map<String, String> headers = {
       'X-IG-App-Locale': cCode,
       'X-IG-Device-Locale': cCode,
       'X-IG-Mapped-Locale': cCode,
@@ -262,9 +253,9 @@ class LoginServer {
       'X-IG-Bandwidth-Speed-KBPS': '-1.000',
       'X-IG-Bandwidth-TotalBytes-B': '0',
       'X-IG-Bandwidth-TotalTime-MS': '0',
-      'X-IG-App-Startup-Country': mobilCountryCode,
+      'X-IG-App-Startup-Country': result["mobilCountryCode"].toString(),
       'X-Bloks-Version-Id': bloksVersionID,
-      'X-IG-WWW-Claim': claim,
+      'X-IG-WWW-Claim': result["claim"],
       'X-Bloks-Is-Layout-RTL': 'false',
       'X-Bloks-Is-Panorama-Enabled': 'true',
       'X-IG-Device-ID': instaDeviceID,
@@ -276,12 +267,12 @@ class LoginServer {
       'X-IG-App-ID': '567067343352427',
       'User-Agent': userAgent,
       'Accept-Language': '$cCode, en-US',
-      'Authorization': authorization,
-      'X-MID': mid,
-      'IG-U-SHBID': shbid,
-      'IG-U-SHBTS': shbts,
+      'Authorization': result["authorization"],
+      'X-MID': result["mid"],
+      'IG-U-SHBID': result["shbid"],
+      'IG-U-SHBTS': result["shbts"],
       'IG-U-DS-USER-ID': dsUserID,
-      'IG-U-RUR': rur,
+      'IG-U-RUR': result["rur"],
       'IG-INTENDED-USER-ID': dsUserID,
       'Accept-Encoding': 'gzip, deflate',
       'Host': 'z-p42.i.instagram.com',
@@ -293,15 +284,13 @@ class LoginServer {
 
     url =
         'https://z-p42.i.instagram.com/api/v1/direct_v2/inbox/?visual_message_return_type=unseen&persistentBadging=true&limit=0';
+    print('headers:headers.runtimeType: ${headers.runtimeType}');
     var response = await http.get(Uri.parse(url), headers: headers);
-
-    print("Status1:  ${response.statusCode}, ${response.body}");
-    //print(response.headers);
-    //print(response2.cookies);
-    rur = response.headers['ig-set-ig-u-rur']; //kaydolcak
-    regionHint =
+    result['status'] = response.statusCode.toString();
+    result['rur'] = response.headers['ig-set-ig-u-rur']; //kaydolcak
+    result['regionHint'] =
         response.headers['ig-set-ig-u-ig-direct-region-hint']; //kaydolcak
 
-    return true;
+    return result;
   }
 }

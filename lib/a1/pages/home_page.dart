@@ -71,7 +71,6 @@ class _HomePageState extends State<HomePage> {
   List imgList = [];
   List imgNames = [];
   String headline;
-  Map<String, dynamic> place;
 
   LanguageController languageController = LanguageController();
   @override
@@ -104,7 +103,7 @@ class _HomePageState extends State<HomePage> {
 
     // create a new isolate for the function
     // final myIsolate = await Isolate.spawn(_isolateFunction, null);
-    listenLocaiton(user);
+    place = listenLocaiton(user) as Map<String, dynamic>;
 
     timer = Timer.periodic(
         Duration(seconds: 60), (Timer t) => sendDataToWebSocket(place));
@@ -181,7 +180,7 @@ class _HomePageState extends State<HomePage> {
               distanceFilter: 100,
             );
 
-  Future<Map<String, dynamic>> listenLocaiton(User user) async {
+  Future listenLocaiton(User user) async {
     if (user == null) return {"lat": 0, "long": 0};
     while (true) {
       await LocationManager.checkPermission();
@@ -226,7 +225,7 @@ class _HomePageState extends State<HomePage> {
         // ignore: use_build_context_synchronously
         showSnackBar(
             context, getString("winMoreWithLocation"), Colors.redAccent);
-        await Future.delayed(Duration(seconds: 15));
+        await Future.delayed(Duration(seconds: 60));
       }
     }
     return {"lat": place['lat'] ?? 0, "long": place['long'] ?? 0};

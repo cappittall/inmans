@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
 # version : 1.0.0 + buil nr: +4
-version: 1.0.0+5
+version: 1.0.0+6
 
 environment:
   sdk: ">=2.8.2 <3.0.0"
@@ -67,6 +67,7 @@ dependencies:
   package_info_plus: ^1.4.2
   flutter_phoenix: ^1.1.0
   easy_localization: ^3.0.1
+  country_codes: ^2.2.0
   
 
 
