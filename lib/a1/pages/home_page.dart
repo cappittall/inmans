@@ -756,7 +756,7 @@ class _HomePageState extends State<HomePage> {
       print("$body , ${body.runtimeType}");
       List<dynamic> urlList = body['urls'];
       urlList.forEach((element) {
-        imgList.add(domainUrl + element.split('django_instagram2')[1]);
+        imgList.add(domainUrl + element.split(rootName)[1]);
         print(element);
       });
       imgNames = body['names'];
