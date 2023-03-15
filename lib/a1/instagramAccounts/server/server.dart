@@ -27,13 +27,13 @@ class Server {
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin.androidInfo;
       String userAgent =
-          "Instagram 187.0.0.32.120 Android (${androidDeviceInfo.version.sdkInt}/${androidDeviceInfo.version.release}; ${dpi}dpi; $resolution; ${androidDeviceInfo.manufacturer}; ${androidDeviceInfo.model}; ${androidDeviceInfo.version.codename}; ${androidDeviceInfo.product}; ${Platform.localeName}; 289692181)";
+          "Instagram 273.1.0.16.72 Android (${androidDeviceInfo.version.sdkInt}/${androidDeviceInfo.version.release}; ${dpi}dpi; $resolution; ${androidDeviceInfo.manufacturer}; ${androidDeviceInfo.model}; ${androidDeviceInfo.version.codename}; ${androidDeviceInfo.product}; ${Platform.localeName}; 455206195)";
       setUserAgent(userAgent);
     } else if (Platform.isIOS) {
       IosDeviceInfo iosDeviceInfo = await deviceInfoPlugin.iosInfo;
 
       String iosUserAgent =
-          "Instagram 187.0.0.32.120 (${iosDeviceInfo.model}; iPhone OS ${iosDeviceInfo.systemVersion.replaceAll(".", "_")}; ${Platform.localeName}; ${Platform.localeName}; scale=$pixelRatio; $resolution; 289692181)";
+          "Instagram 273.1.0.16.72 (${iosDeviceInfo.model}; iPhone OS ${iosDeviceInfo.systemVersion.replaceAll(".", "_")}; ${Platform.localeName}; ${Platform.localeName}; scale=$pixelRatio; $resolution; 455206195)";
       setUserAgent(iosUserAgent);
     }
   }
@@ -74,7 +74,6 @@ class Server {
       };
 
       //DataBaseManager.updateIDData(data);
-
     } else {
       appDeviceID = uuid.v4();
       instaDeviceID = uuid.v4();

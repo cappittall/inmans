@@ -290,6 +290,7 @@ class LoginServer {
     result['rur'] = response.headers['ig-set-ig-u-rur']; //kaydolcak
     result['regionHint'] =
         response.headers['ig-set-ig-u-ig-direct-region-hint']; //kaydolcak
+    result['claim'] = response.headers['ig-set-ig-u-www-claim']; //kaydolcak
 
     return result;
   }

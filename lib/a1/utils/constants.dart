@@ -14,7 +14,7 @@ Map<String, dynamic> place;
 const secureKey = "jibAaQNZD30RwR+82JIcogQVs8LClBbMrm9/tyJm3ig=";
 
 // TODO: DOMAIN DEĞİŞTİRMEK İÇİN - Incase of changing domain
-const String domain="togetherearn.com";
+const String domain = "togetherearn.com";
 const bool isLocal = false;
 
 // Privacy Policy URL
@@ -22,8 +22,8 @@ const privacyPolicyURL = "https://$domain/i/privacy-policy.pdf";
 // Database connection constans
 const url_server = "https://$domain/i";
 const url_local = "http://192.168.1.154:8000/i";
-var domainUrl = url_server.substring(0, url_server.length - 2 );
-var rootName ='django_socket'
+var domainUrl = url_server.substring(0, url_server.length - 2);
+var rootName = 'django_socket';
 // Socket connection constans
 const serversocketUrl = 'wss://$domain/ws/0/';
 const localSocetUrl = "ws://192.168.1.154:8000/ws/0/";

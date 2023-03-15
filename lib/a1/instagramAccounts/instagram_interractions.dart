@@ -318,32 +318,45 @@ class InstagramInterractions {
 // make comment
   Future<int> mediaComment(account, comment) async {
     int count = 0;
-
+    var response;
     String commentURL = "media/$mediaId/comment/";
+    while (true) {
+      Map<String, String> body = {
+        "user_breadcrumb": "",
+        "delivery_class": "organic",
+        "idempotence_token": adID,
+        "radio_type": "mobil-lte",
+        "_uid": account.dsUserID,
+        "_uuid": guID,
+        "nav_chain":
+            "039:feed_timeline:10,8ff:feed_short_url:20,CommentThreadFragment:comments_v2_feed_short_url:21",
+        "comment_text": comment,
+        "is_carousel_bumped_post": "false",
+        "container_module": "comments_v2_feed_short_url",
+        "feed_position": "0"
+      };
 
-    Map<String, String> body = {
-      "user_breadcrumb": "",
-      "delivery_class": "organic",
-      "idempotence_token": adID,
-      "radio_type": "mobil-lte",
-      "_uid": account.dsUserID,
-      "_uuid": guID,
-      "nav_chain":
-          "039:feed_timeline:10,8ff:feed_short_url:20,CommentThreadFragment:comments_v2_feed_short_url:21",
-      "comment_text": comment,
-      "is_carousel_bumped_post": "false",
-      "container_module": "comments_v2_feed_short_url",
-      "feed_position": "0"
-    };
+      response = await Server.sendRequest3(
+          commentURL, account, generateSignature(data: jsonEncode(body)));
+      // responce body de 'failed to mention' varsa
+      // coment içindeki @username varsa onları çıkartarak tekrar deneyebiliriz.
+      var json1 = json.decode(utf8.decode(response.bodyBytes));
 
-    int statusCode = await Server.sendRequest3(
-        commentURL, account, generateSignature(data: jsonEncode(body)));
-
+      if (json1['message'] == 'failed to mention') {
+        json1['non_mentionable_users'].forEach((x) {
+          comment = comment.replaceAll('@${x['username']}', '');
+        });
+      } else {
+        break;
+      }
+      
+    }
     //return result;
-    return statusCode;
+    return response.statusCode;
   }
 
-  Future<int> preceedPayment(account, msg, profil, operationData, prices) async {
+  Future<int> preceedPayment(
+      account, msg, profil, operationData, prices) async {
     // CREATE PAYMENT REQUEST
     if (!account.ghost && msg['isFree'] == false) {
       Map<String, dynamic> body = {
@@ -402,7 +415,6 @@ class InstagramInterractions {
                 account, msg, profil, operationData, prices);
             if (alacak <= 201) {
               print('Payment is done, $alacak');
-              
             }
           }
         }
