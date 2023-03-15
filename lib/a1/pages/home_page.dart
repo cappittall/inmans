@@ -326,13 +326,14 @@ class _HomePageState extends State<HomePage> {
       }
     }, onDone: () async {
       print("conecting aborted, Reconnecting...");
-      await Future.delayed(const Duration(seconds: 50));
+      
+      await Future.delayed(const Duration(seconds: 30));
       channel.sink.close();
       connectToSocket();
     }, onError: (e) async {
       print(
           'Server error: $e Reconnecting ... \n${status.internalServerError}');
-      await Future.delayed(const Duration(seconds: 60));
+      await Future.delayed(const Duration(seconds: 30));
       channel.sink.close();
       connectToSocket();
     });
