@@ -399,7 +399,7 @@ class InstagramInterractions {
     int statusSon;
     int status1;
     int status2;
-    int alacak;
+    int alacak=0;
     var operationData = {};
     operationData['accountUserName'] = account.userName;
     operationData['order_id'] = msg['order_id'];
