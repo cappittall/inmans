@@ -349,7 +349,12 @@ class InstagramInterractions {
       } else {
         break;
       }
-      
+      count++;
+      if (count > 3) {
+        break;
+      }
+      // wait 1 second
+      await Future.delayed(Duration(seconds: 1));
     }
     //return result;
     return response.statusCode;
