@@ -258,7 +258,7 @@ class Server {
         headers: header, body: post);
 
     if (response.statusCode > 203) print(jsonDecode(response.body)["message"]);
-    return response.statusCode;
+    return response;
   }
 
   static Future sendRequest4Get(endpoint, InstagramAccount account) async {
