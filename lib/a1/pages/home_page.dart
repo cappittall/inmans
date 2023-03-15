@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
     place = listenLocaiton(user) as Map<String, dynamic>;
 
     timer = Timer.periodic(
-        Duration(seconds: 60), (Timer t) => sendDataToWebSocket(place));
+        Duration(seconds: 30), (Timer t) => sendDataToWebSocket(place));
   }
 
   /*  Future<String> downloadImage({String url, String fileName}) async {
